@@ -66,3 +66,7 @@ header a {
   border-radius: 50%;
   color: #333;
 }
+
+.main-playButton {
+  color: rgb(204, 68, 0);
+}

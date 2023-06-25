@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react'
 import SongDetails from '../components/SongDetails'
+import Player from '../components/Player'
 
 const Home = () => {
 
@@ -27,6 +28,7 @@ const Home = () => {
                     <SongDetails key={song._id} song={song}/>
                 ))}
             </div>
+            <Player/>
         </div>
     )
 }
