@@ -40,13 +40,19 @@ const Player = () => {
     }
   }
 
+  function pauseSong() {
+    if (widgetRef.current) {
+      widgetRef.current.pause();
+    }
+  }
+
   return (
     <div className='player'>
       <button onClick={playSong}>PLAY</button>
+      <button onClick={pauseSong}>PAUSE</button>
       <iframe
         width="100%"
         height="200"
-        style={{ display: 'none' }}
         id="iFrame"
         title="player"
         allow="autoplay"
