@@ -1,12 +1,35 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useReducer } from 'react';
 import '../styles.css';
 
 const Player = ({ song }) => {
   const widgetRef = useRef(null);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [sliderValue, setSliderValue] = useState(0);
+
+  const initialState = {
+    currentTime: 0,
+    duration: 0,
+    isPlaying: false,
+    sliderValue: 0,
+  };
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'SET_CURRENT_TIME':
+        return { ...state, currentTime: action.payload };
+      case 'SET_DURATION':
+        return { ...state, duration: action.payload };
+      case 'SET_IS_PLAYING':
+        return { ...state, isPlaying: action.payload };
+      case 'SET_SLIDER_VALUE':
+        return { ...state, sliderValue: action.payload };
+      case 'RESET':
+        return initialState;
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { currentTime, duration, isPlaying, sliderValue } = state;
 
   useEffect(() => {
     if (!window.SC) {
@@ -26,13 +49,13 @@ const Player = ({ song }) => {
         widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
           widgetRef.current.bind(window.SC.Widget.Events.PLAY_PROGRESS, ({ currentSound }) => {
             const position = currentSound.currentPosition / 1000;
-            setCurrentTime(position);
-            setSliderValue((position / duration) * 100);
+            dispatch({ type: 'SET_CURRENT_TIME', payload: position });
+            dispatch({ type: 'SET_SLIDER_VALUE', payload: (position / duration) * 100 });
           });
 
           widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
             widgetRef.current.getDuration((soundDuration) => {
-              setDuration(soundDuration / 1000);
+              dispatch({ type: 'SET_DURATION', payload: soundDuration / 1000 });
             });
           });
 
@@ -42,52 +65,52 @@ const Player = ({ song }) => {
         });
       }
     }
-  }, []);
+  }, [duration]);
 
   useEffect(() => {
     if (isPlaying) {
       const interval = setInterval(() => {
-        setCurrentTime((prevTime) => prevTime + 0.1);
-        setSliderValue((currentTime / duration) * 100);
+        dispatch({ type: 'SET_CURRENT_TIME', payload: currentTime + 0.1 });
+        dispatch({ type: 'SET_SLIDER_VALUE', payload: (currentTime / duration) * 100 });
       }, 100);
 
       return () => clearInterval(interval);
     }
   }, [isPlaying, currentTime, duration]);
 
-  function playSong() {
+  const playSong = () => {
     if (widgetRef.current) {
       widgetRef.current.play();
-      setIsPlaying(true);
+      dispatch({ type: 'SET_IS_PLAYING', payload: true });
     }
-  }
+  };
 
-  function pauseSong() {
+  const pauseSong = () => {
     if (widgetRef.current) {
       widgetRef.current.pause();
-      setIsPlaying(false);
+      dispatch({ type: 'SET_IS_PLAYING', payload: false });
     }
-  }
+  };
 
-  function restartSong() {
+  const restartSong = () => {
     if (widgetRef.current) {
       widgetRef.current.seekTo(0);
       widgetRef.current.play();
-      setIsPlaying(true);
-      setCurrentTime(0);
-      setSliderValue(0);
+      dispatch({ type: 'SET_IS_PLAYING', payload: true });
+      dispatch({ type: 'SET_CURRENT_TIME', payload: 0 });
+      dispatch({ type: 'SET_SLIDER_VALUE', payload: 0 });
     }
-  }
+  };
 
-  function handleSliderChange(event) {
+  const handleSliderChange = (event) => {
     const sliderValue = parseInt(event.target.value);
-    setSliderValue(sliderValue);
+    dispatch({ type: 'SET_SLIDER_VALUE', payload: sliderValue });
     const newPosition = (sliderValue / 100) * duration;
-    setCurrentTime(newPosition);
+    dispatch({ type: 'SET_CURRENT_TIME', payload: newPosition });
     if (widgetRef.current) {
       widgetRef.current.seekTo(newPosition * 1000);
     }
-  }
+  };
 
   return (
     <div className='player'>
@@ -115,6 +138,6 @@ const Player = ({ song }) => {
       ></iframe>
     </div>
   );
-}
+};
 
 export default Player;
