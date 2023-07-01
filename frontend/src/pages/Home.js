@@ -4,31 +4,30 @@ import Player from '../components/Player'
 
 const Home = () => {
 
-    const [songs, setSongs] = useState(null)
+    const [song, setSongs] = useState(null)
 
     // fire only once (when component renders)
     useEffect(() => {
-        const fetchSongs = async() => {
-            const response = await fetch('http://localhost:4000/api/songs')
+        const fetchRand = async() => {
+            const response = await fetch('http://localhost:4000/api/songs/random/random')
             const json = await response.json()
 
             if(response.ok) {
+                console.log(json)
                 setSongs(json)
             }
         }
 
-        fetchSongs()
+        fetchRand()
 
     }, [])
 
     return(
         <div className='Home'>
             <div className='songs'>
-                {songs && songs.map((song) => (
-                    <SongDetails key={song._id} song={song}/>
-                ))}
+                {song && <Player song={song} />}
+                {song && <SongDetails song={song} />}
             </div>
-            <Player/>
         </div>
     )
 }

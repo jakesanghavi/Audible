@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import '../styles.css';
 
-const Player = () => {
+const Player = ({song}) => {
   const widgetRef = useRef(null);
 
   useEffect(() => {
@@ -25,10 +25,6 @@ const Player = () => {
           widgetRef.current.bind(window.SC.Widget.Events.FINISH, () => {
             console.log('Track finished');
           });
-
-          // // Example: Seek to a specific position (in milliseconds)
-          // const seekToPosition = 30000; // 30 seconds
-          // widgetRef.current.seekTo(seekToPosition);
         });
       }
     }
@@ -46,17 +42,25 @@ const Player = () => {
     }
   }
 
+  function restartSong() {
+    if (widgetRef.current) {
+      widgetRef.current.seekTo(0);
+      widgetRef.current.play();
+    }
+  }
+
   return (
     <div className='player'>
       <button onClick={playSong}>PLAY</button>
       <button onClick={pauseSong}>PAUSE</button>
+      <button onClick={restartSong}>RESTART</button>
       <iframe
         width="100%"
         height="200"
         id="iFrame"
         title="player"
         allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/983989414&color=%23050301&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"
+        src={song.soundcloud_link}
       ></iframe>
     </div>
   );
