@@ -2,6 +2,7 @@ const express = require('express')
 
 const {
     getSongs,
+    getRandom,
     getSong,
     postSong,
     deleteSong,
@@ -12,6 +13,9 @@ const router = express.Router()
 
 // GET all songs
 router.get('/', getSongs)
+
+// GET one random song
+router.get('/random/random/', getRandom)
 
 //GET single song
 router.get('/:id', getSong)

@@ -7,6 +7,15 @@ const getSongs = async(request, response) => {
     response.status(200).json(songs)
 }
 
+// GET one random song
+const getRandom = async(request, response) => {
+    t = Song.aggregate([{ $sample: {size: 1}}]).then(results => {
+        return response.status(200).json(results[0])
+    }).catch(error => {
+        return response.status(500).json({ error: 'Internal Server Error' });
+    })
+}
+
 // GET one song
 const getSong = async(request, response) => {
     const {id} = request.params
@@ -76,6 +85,7 @@ const updateSong = async(request, response) => {
 
 module.exports = {
     getSongs,
+    getRandom,
     getSong,
     postSong,
     deleteSong,

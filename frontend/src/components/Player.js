@@ -26,9 +26,9 @@ const Player = () => {
             console.log('Track finished');
           });
 
-          // Example: Seek to a specific position (in milliseconds)
-          const seekToPosition = 30000; // 30 seconds
-          widgetRef.current.seekTo(seekToPosition);
+          // // Example: Seek to a specific position (in milliseconds)
+          // const seekToPosition = 30000; // 30 seconds
+          // widgetRef.current.seekTo(seekToPosition);
         });
       }
     }
