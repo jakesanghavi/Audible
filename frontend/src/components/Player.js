@@ -47,12 +47,6 @@ const Player = ({ song }) => {
         widgetRef.current = window.SC.Widget(document.getElementById('iFrame'));
 
         widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
-          widgetRef.current.bind(window.SC.Widget.Events.PLAY_PROGRESS, ({ currentSound }) => {
-            const position = currentSound.currentPosition / 1000;
-            dispatch({ type: 'SET_CURRENT_TIME', payload: position });
-            dispatch({ type: 'SET_SLIDER_VALUE', payload: (position / duration) * 100 });
-          });
-
           widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
             widgetRef.current.getDuration((soundDuration) => {
               dispatch({ type: 'SET_DURATION', payload: soundDuration / 1000 });
@@ -112,21 +106,33 @@ const Player = ({ song }) => {
     }
   };
 
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className='player'>
-      <button onClick={playSong}>PLAY</button>
-      <button onClick={pauseSong}>PAUSE</button>
-      <button onClick={restartSong}>RESTART</button>
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={sliderValue}
-        onChange={handleSliderChange}
-        className="slider"
-      />
-      <div className="progress-bar">
-        <div className="progress" style={{ width: `${sliderValue}%` }}></div>
+      <div className='slider-container'>
+        <div className="time-label current-time-label">{formatTime(currentTime)}</div>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={sliderValue}
+          onChange={handleSliderChange}
+          className="song-slider"
+        />
+        <div className="time-label duration-label">{formatTime(duration)}</div>
+      </div>
+      <div className='player-controls'>
+        <div className="progress-bar">
+          <div className="progress" style={{ width: `${sliderValue}%` }}></div>
+        </div>
+        <button onClick={playSong}>PLAY</button>
+        <button onClick={pauseSong}>PAUSE</button>
+        <button onClick={restartSong}>RESTART</button>
       </div>
       <iframe
         width="100%"
