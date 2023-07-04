@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import json
 
 # Connect to MongoDB
-client = MongoClient("mongodb+srv://jake123:pipJ3UUy0KAcfgEB@jssd.tllqcsq.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://<username>:<password>@jssd.tllqcsq.mongodb.net/?retryWrites=true&w=majority")
 db = client["test"]
 collection = db["songs"]
 
