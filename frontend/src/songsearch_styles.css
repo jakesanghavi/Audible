@@ -1,6 +1,26 @@
-.song-list-container {
-    max-height: 200px; /* Adjust the desired height */
-    overflow: scroll;
+.allSearch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .song-search {
+    background: #fff;
+    border-radius: 4px;
+    margin: 0 auto;
+    position: relative;
+    width: 500px; /* Set the desired width */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+  }
+  
+  #searchBar {
+    width: 100%;
+  }
+  
+  .song-list-container {
+    max-height: 200px;
+    overflow: auto;
+    width: 100%;
   }
   
   .song-list {
@@ -11,4 +31,11 @@
   
   .song-list li {
     padding: 5px;
+    white-space: nowrap;
   }
+  
+  .error-message {
+    text-align: center;
+  }
+  
+  

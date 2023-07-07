@@ -113,6 +113,7 @@ const Player = ({ song, skip_init, onSkip }) => {
       // dispatch({ type: 'SET_SKIP_VALUE', payload: skip_init + 1 });
       // skip_init = skip_init + 1
       onSkip()
+      restartSong()
     }
   };
 
@@ -145,6 +146,7 @@ const Player = ({ song, skip_init, onSkip }) => {
           onChange={handleSliderChange}
           className="song-slider"
           list="ticks"
+          disabled={true}
         />
         <div className="time-label duration-label">{formatTime(duration)}</div>
         <datalist id="ticks">

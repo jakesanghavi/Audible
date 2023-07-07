@@ -7,6 +7,7 @@ const Home = () => {
   const [song, setSong] = useState(null);
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
+  const [winner, setWinner]=useState(false);
 
   useEffect(() => {
     const fetchRand = async () => {
@@ -35,8 +36,25 @@ const Home = () => {
   }, []);
 
   const handleIncorrectGuess = () => {
+    setWinner(false)
     setSkip((prevSkip) => prevSkip >= 4 ? 4: prevSkip + 1);
+    if (skip >= 4) {
+        const txt = document.getElementById("win-or-lose");
+        txt.className = "lose";
+        txt.innerHTML = "You lose. Better luck next time!"
+        const modal = document.getElementById("modal");
+        modal.style.display = "block";
+    }
   };
+
+  const handleCorrectGuess = () => {
+    setWinner(false)
+    const txt = document.getElementById("win-or-lose");
+    txt.className = "win";
+    txt.innerHTML = "Congratulations! You win!"
+    const modal = document.getElementById("modal");
+    modal.style.display = "block";
+  }
 
   return (
     <div className='Home'>
@@ -47,9 +65,10 @@ const Home = () => {
             song={song}
             songs={songs}
             onIncorrectGuess={handleIncorrectGuess}
+            onCorrectGuess={handleCorrectGuess}
           />
         )}
-        {song && <SongDetails song={song} />}
+        {songs && <SongDetails song={song} />}
       </div>
     </div>
   );
