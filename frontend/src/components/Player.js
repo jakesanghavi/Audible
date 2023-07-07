@@ -67,7 +67,6 @@ const Player = ({ song, skip_init, onSkip }) => {
   }, []);
 
   useEffect(() => {
-    console.log(skip_init)
     if (isPlaying) {
       if(currentTime >= skips[skip_init]) {
         widgetRef.current.pause();
@@ -119,13 +118,21 @@ const Player = ({ song, skip_init, onSkip }) => {
 
   const handleSliderChange = (event) => {
     const sliderValue = parseInt(event.target.value);
+  
+    // Disable slider if sliderValue is greater than skips[skip_init]
+    if (sliderValue > skips[skip_init]) {
+      return;
+    }
+  
     dispatch({ type: 'SET_SLIDER_VALUE', payload: sliderValue });
     const newPosition = sliderValue;
     dispatch({ type: 'SET_CURRENT_TIME', payload: newPosition });
+  
     if (widgetRef.current) {
       widgetRef.current.seekTo(newPosition * 1000);
     }
   };
+  
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -146,7 +153,6 @@ const Player = ({ song, skip_init, onSkip }) => {
           onChange={handleSliderChange}
           className="song-slider"
           list="ticks"
-          disabled={true}
         />
         <div className="time-label duration-label">{formatTime(duration)}</div>
         <datalist id="ticks">
@@ -165,7 +171,7 @@ const Player = ({ song, skip_init, onSkip }) => {
         <button onClick={playSong}>PLAY</button>
         <button onClick={pauseSong}>PAUSE</button>
         <button onClick={restartSong}>RESTART</button>
-        <button onClick={skipUpdate}>SKIP</button>
+        <button id="skip" onClick={skipUpdate}>SKIP</button>
       </div>
       <iframe
         width="100%"

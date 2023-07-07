@@ -35,8 +35,12 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
   };
 
   const filteredSongs = songs
-    .filter((song) => song.song_title.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) => a.song_title.localeCompare(b.song_title));
+  .filter((song) => {
+    const titleMatch = song.song_title.toLowerCase().includes(searchQuery.toLowerCase());
+    const lengthMatch = song.artist.toLowerCase().includes(searchQuery.toLowerCase());
+    return titleMatch || lengthMatch;
+  })
+  .sort((a, b) => a.song_title.localeCompare(b.song_title));
 
   const isSongSelected = selectedItem === searchQuery;
   const searchBarClass = isSongSelected ? 'selected' : '';

@@ -36,6 +36,7 @@
   
   .error-message {
     text-align: center;
+    color: var(--error)
   }
   
   
