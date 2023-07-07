@@ -6,7 +6,7 @@ const Player = ({ song }) => {
 
   const initialState = {
     currentTime: 0,
-    duration: 0,
+    duration: 15,
     isPlaying: false,
     sliderValue: 0,
   };
@@ -15,8 +15,8 @@ const Player = ({ song }) => {
     switch (action.type) {
       case 'SET_CURRENT_TIME':
         return { ...state, currentTime: action.payload };
-      case 'SET_DURATION':
-        return { ...state, duration: action.payload };
+      // case 'SET_DURATION':
+      //   return { ...state, duration: action.payload };
       case 'SET_IS_PLAYING':
         return { ...state, isPlaying: action.payload };
       case 'SET_SLIDER_VALUE':
@@ -30,6 +30,7 @@ const Player = ({ song }) => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const { currentTime, duration, isPlaying, sliderValue } = state;
+
 
   useEffect(() => {
     if (!window.SC) {
@@ -47,11 +48,11 @@ const Player = ({ song }) => {
         widgetRef.current = window.SC.Widget(document.getElementById('iFrame'));
 
         widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
-          widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
-            widgetRef.current.getDuration((soundDuration) => {
-              dispatch({ type: 'SET_DURATION', payload: soundDuration / 1000 });
-            });
-          });
+          // widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
+          //   widgetRef.current.getDuration((soundDuration) => {
+          //     dispatch({ type: 'SET_DURATION', payload: soundDuration / 1000 });
+          //   });
+          // });
 
           widgetRef.current.bind(window.SC.Widget.Events.FINISH, () => {
             console.log('Track finished');
@@ -59,18 +60,18 @@ const Player = ({ song }) => {
         });
       }
     }
-  }, [duration]);
+  }, []);
 
   useEffect(() => {
     if (isPlaying) {
       const interval = setInterval(() => {
         dispatch({ type: 'SET_CURRENT_TIME', payload: currentTime + 0.1 });
-        dispatch({ type: 'SET_SLIDER_VALUE', payload: (currentTime / duration) * 100 });
+        dispatch({ type: 'SET_SLIDER_VALUE', payload: currentTime });
       }, 100);
 
       return () => clearInterval(interval);
     }
-  }, [isPlaying, currentTime, duration]);
+  }, [isPlaying, currentTime]);
 
   const playSong = () => {
     if (widgetRef.current) {
@@ -99,7 +100,7 @@ const Player = ({ song }) => {
   const handleSliderChange = (event) => {
     const sliderValue = parseInt(event.target.value);
     dispatch({ type: 'SET_SLIDER_VALUE', payload: sliderValue });
-    const newPosition = (sliderValue / 100) * duration;
+    const newPosition = sliderValue;
     dispatch({ type: 'SET_CURRENT_TIME', payload: newPosition });
     if (widgetRef.current) {
       widgetRef.current.seekTo(newPosition * 1000);
@@ -119,12 +120,22 @@ const Player = ({ song }) => {
         <input
           type="range"
           min="0"
-          max="100"
+          max="15"
+          step="0.1"
           value={sliderValue}
           onChange={handleSliderChange}
           className="song-slider"
+          list="ticks"
         />
         <div className="time-label duration-label">{formatTime(duration)}</div>
+        <datalist id="ticks">
+          <option>0</option>
+          <option>1</option>
+          <option>3</option>
+          <option>6</option>
+          <option>10</option>
+          <option>15</option>
+        </datalist>
       </div>
       <div className='player-controls'>
         <div className="progress-bar">
