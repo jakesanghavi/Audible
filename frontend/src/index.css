@@ -12,20 +12,39 @@ body {
   font-family: "Poppins";
 }
 header {
-  background: #fff;
+  background: #333;
 }
 header .container {
-  max-width: 1400px;
+  /* max-width: 1400px; */
   margin: 0 auto;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  /* justify-content: space-between;  */
 }
+
+.hamburger-holder {
+  flex: 1;
+  padding: 0 20px;
+}
+
+.home-name-holder {
+  flex: 5;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.blank-space {
+  flex: 50;
+  padding: 0 10px;
+}
+
 header a {
-  color: #333;
+  color: #fff;
   text-decoration: none;
 }
+
 .pages{
   max-width: 1400px;
   padding: 20px;
@@ -38,35 +57,108 @@ header a {
   grid-template-columns: 3fr 1fr;
   gap: 100px;
 }
-.song-details {
-  background: #fff;
-  border-radius: 4px;
-  margin: 20px auto;
+
+#sidebarMenu {
+  height: 100%;
+  position: fixed;
+  left: 0;
+  width: 250px;
+  margin-top: 54px;
+  transform: translateX(-250px);
+  transition: transform 250ms ease-in-out;
+  background: #04A03B;
+}
+.sidebarMenuInner{
+  margin:0;
+  padding:0;
+  border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+.sidebarMenuInner li{
+  list-style: none;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
   padding: 20px;
-  position: relative;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-}
-.song-details h4 {
-  margin: 0 0 10px 0;
-  font-size: 1.2em;
-  color: var(--primary);
-}
-.song-details p {
-  margin: 0;
-  font-size: 0.9em;
-  color: #555;
-}
-.song-details span {
-  position: absolute;
-  top: 20px;
-  right: 20px;
   cursor: pointer;
-  background: #f1f1f1;
-  padding: 6px;
-  border-radius: 50%;
-  color: #333;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+.sidebarMenuInner li span{
+  display: block;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.50);
+}
+.sidebarMenuInner li a{
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+input[type="checkbox"]:checked ~ #sidebarMenu {
+  transform: translateX(0);
 }
 
-.main-playButton {
-  color: rgb(204, 68, 0);
+input[type=checkbox] {
+  transition: all 0.2s;
+  box-sizing: border-box;
+  display: none;
+}
+.sidebarIconToggle {
+  transition: all 0.2s;
+  box-sizing: border-box;
+  cursor: pointer;
+  /* position: absolute; */
+  z-index: 99;
+  width: 5%;
+  /* height: 100%;
+  width: 100%;
+  top: 22px;
+  left: 15px;
+  height: 22px;
+  width: 22px; */
+}
+.spinner {
+  transition: all 0.2s;
+  box-sizing: border-box;
+  position: absolute;
+  height: 3px;
+  width: 100%;
+  background-color: #fff;
+}
+.horizontal {
+  transition: all 0.3s;
+  box-sizing: border-box;
+  position: relative;
+  float: left;
+  margin-top: 3px;
+}
+.diagonal.part-1 {
+  position: relative;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  float: left;
+}
+.diagonal.part-2 {
+  transition: all 0.3s;
+  box-sizing: border-box;
+  position: relative;
+  float: left;
+  margin-top: 3px;
+}
+input[type=checkbox]:checked ~ .sidebarIconToggle > .horizontal {
+  transition: all 0.2s;
+  box-sizing: border-box;
+  opacity: 0;
+}
+input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-1 {
+  transition: all 0.3s;
+  box-sizing: border-box;
+  transform: rotate(135deg);
+  margin-top: 8px;
+}
+input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
+  transition: all 0.3s;
+  box-sizing: border-box;
+  transform: rotate(-135deg);
+  margin-top: -9px;
 }
