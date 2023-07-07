@@ -1,3 +1,5 @@
+import '../songDetails_styles.css';
+
 const SongDetails = ({song}) => {
 
     const decodeHTMLEntities = (text) => {
@@ -5,8 +7,6 @@ const SongDetails = ({song}) => {
         const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
         return decodedString;
     };
-
-    console.log(decodeHTMLEntities("Me &amp; you"))
 
     return (
         <div className='song-details'>
