@@ -1,7 +1,7 @@
 import { useEffect, useRef, useReducer } from 'react';
 import '../player_styles.css';
 
-const Player = ({ song }) => {
+const Player = ({ song, skip_init, onSkip }) => {
   const widgetRef = useRef(null);
 
   const initialState = {
@@ -9,6 +9,8 @@ const Player = ({ song }) => {
     duration: 15,
     isPlaying: false,
     sliderValue: 0,
+    // skip: skip_init,
+    skips: [1,3,6,10,15]
   };
 
   const reducer = (state, action) => {
@@ -21,6 +23,8 @@ const Player = ({ song }) => {
         return { ...state, isPlaying: action.payload };
       case 'SET_SLIDER_VALUE':
         return { ...state, sliderValue: action.payload };
+      case 'SET_SKIP_VALUE':
+        return { ...state, skip_init: action.payload > 4 ? 4 : action.payload };
       case 'RESET':
         return initialState;
       default:
@@ -29,7 +33,7 @@ const Player = ({ song }) => {
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { currentTime, duration, isPlaying, sliderValue } = state;
+  const { currentTime, duration, isPlaying, sliderValue, skips } = state;
 
 
   useEffect(() => {
@@ -63,15 +67,22 @@ const Player = ({ song }) => {
   }, []);
 
   useEffect(() => {
+    console.log(skip_init)
     if (isPlaying) {
-      const interval = setInterval(() => {
-        dispatch({ type: 'SET_CURRENT_TIME', payload: currentTime + 0.1 });
-        dispatch({ type: 'SET_SLIDER_VALUE', payload: currentTime });
-      }, 100);
-
-      return () => clearInterval(interval);
+      if(currentTime >= skips[skip_init]) {
+        widgetRef.current.pause();
+        dispatch({ type: 'SET_IS_PLAYING', payload: false });
+      }
+      else {
+        const interval = setInterval(() => {
+          dispatch({ type: 'SET_CURRENT_TIME', payload: currentTime + 0.1 });
+          dispatch({ type: 'SET_SLIDER_VALUE', payload: currentTime });
+        }, 100);
+  
+        return () => clearInterval(interval);
+      }
     }
-  }, [isPlaying, currentTime]);
+  }, [isPlaying, currentTime, skip_init, skips]);
 
   const playSong = () => {
     if (widgetRef.current) {
@@ -94,6 +105,14 @@ const Player = ({ song }) => {
       dispatch({ type: 'SET_IS_PLAYING', payload: true });
       dispatch({ type: 'SET_CURRENT_TIME', payload: 0 });
       dispatch({ type: 'SET_SLIDER_VALUE', payload: 0 });
+    }
+  };
+
+  const skipUpdate = () => {
+    if (widgetRef.current) {
+      // dispatch({ type: 'SET_SKIP_VALUE', payload: skip_init + 1 });
+      // skip_init = skip_init + 1
+      onSkip()
     }
   };
 
@@ -144,6 +163,7 @@ const Player = ({ song }) => {
         <button onClick={playSong}>PLAY</button>
         <button onClick={pauseSong}>PAUSE</button>
         <button onClick={restartSong}>RESTART</button>
+        <button onClick={skipUpdate}>SKIP</button>
       </div>
       <iframe
         width="100%"

@@ -1,0 +1,14 @@
+.song-list-container {
+    max-height: 200px; /* Adjust the desired height */
+    overflow: scroll;
+  }
+  
+  .song-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .song-list li {
+    padding: 5px;
+  }
