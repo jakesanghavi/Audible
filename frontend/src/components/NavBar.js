@@ -1,15 +1,16 @@
 import {Link} from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 const NavBar = () => {
+
     return (
         <header>
             <div className='container'>
                 <div className="hamburger-holder">
                     <input type="checkbox" className="openSidebarMenu" id="openSidebarMenu"/>
                     <label htmlFor="openSidebarMenu" className="sidebarIconToggle">
-                        <div className="spinner diagonal part-1"></div>
-                        <div className="spinner horizontal"></div>
-                        <div className="spinner diagonal part-2"></div>
+                        <FontAwesomeIcon icon={faBars} />
                     </label>
                     <div id="sidebarMenu">
                         <ul className="sidebarMenuInner">

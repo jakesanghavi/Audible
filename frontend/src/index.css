@@ -63,7 +63,7 @@ header a {
   position: fixed;
   left: 0;
   width: 250px;
-  margin-top: 54px;
+  margin-top: 24px;
   transform: translateX(-250px);
   transition: transform 250ms ease-in-out;
   background: #04A03B;
@@ -104,61 +104,22 @@ input[type=checkbox] {
   display: none;
 }
 .sidebarIconToggle {
-  transition: all 0.2s;
-  box-sizing: border-box;
-  cursor: pointer;
-  /* position: absolute; */
-  z-index: 99;
-  width: 5%;
-  /* height: 100%;
-  width: 100%;
-  top: 22px;
-  left: 15px;
-  height: 22px;
-  width: 22px; */
-}
-.spinner {
-  transition: all 0.2s;
-  box-sizing: border-box;
-  position: absolute;
-  height: 3px;
-  width: 100%;
-  background-color: #fff;
-}
-.horizontal {
-  transition: all 0.3s;
-  box-sizing: border-box;
-  position: relative;
-  float: left;
-  margin-top: 3px;
-}
-.diagonal.part-1 {
-  position: relative;
-  transition: all 0.2s;
-  box-sizing: border-box;
-  float: left;
-}
-.diagonal.part-2 {
-  transition: all 0.3s;
-  box-sizing: border-box;
-  position: relative;
-  float: left;
-  margin-top: 3px;
-}
-input[type=checkbox]:checked ~ .sidebarIconToggle > .horizontal {
-  transition: all 0.2s;
-  box-sizing: border-box;
-  opacity: 0;
-}
-input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-1 {
-  transition: all 0.3s;
-  box-sizing: border-box;
-  transform: rotate(135deg);
-  margin-top: 8px;
-}
-input[type=checkbox]:checked ~ .sidebarIconToggle > .diagonal.part-2 {
-  transition: all 0.3s;
-  box-sizing: border-box;
-  transform: rotate(-135deg);
-  margin-top: -9px;
+  display:block;
+    font-family:'helvetica neue', helvetica, arial, sans-serif;
+    font-weight:700;
+    background:#333;
+    width:42px;
+    height:42px;
+    /* line-height:42px; */
+    color:#fff;
+    /* text-align:center; */
+    font-size:2em;
+    /* line-height:1.1em; */
+    /* position:fixed; */
+    left:10px;
+    -moz-transition:all 200ms ease-in;
+    -webkit-transition:all 200ms ease-in;
+    -o-transition:all 200ms ease-in;
+    transition:all 200ms ease-in;
+    z-index:500;
 }
