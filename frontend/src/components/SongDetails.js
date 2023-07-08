@@ -16,7 +16,7 @@ const SongDetails = ({ song }) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (modalRef.current && event.target == modalRef.current) {
+      if (modalRef.current && event.target === modalRef.current) {
         closeModal();
       }
     };
@@ -31,12 +31,14 @@ const SongDetails = ({ song }) => {
   return (
     <div id="modal" ref={modalRef}>
       <div className="song-details">
-        <span className="close" onClick={closeModal}>&times;</span>
-        <h2 id="win-or-lose" className="win">Congratulations! You win!</h2>
-        <h4>{song.song_title}</h4>
-        <p><strong>Artist: </strong>{song.artist}</p>
-        <p><strong>Album: </strong>{decodeHTMLEntities(song.album_name)}</p>
-        <img src={song.album_cover} alt="album cover" />
+          <span className="close" onClick={closeModal}>&times;</span>
+          <h2 id="win-or-lose" className="win">Congratulations! You win!</h2>
+        <a id="full-song" href={song.soundcloud_link}>
+          <h4>{song.song_title}</h4>
+          <p><strong>Artist: </strong>{song.artist}</p>
+          <p><strong>Album: </strong>{decodeHTMLEntities(song.album_name)}</p>
+          <img src={song.album_cover} alt="album cover" />
+        </a>
       </div>
     </div>
   );

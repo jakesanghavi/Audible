@@ -180,6 +180,7 @@ const Player = ({ song, skip_init, onSkip }) => {
         title="player"
         allow="autoplay"
         src={song.soundcloud_link}
+        loading='eager'
       ></iframe>
     </div>
   );
