@@ -105,7 +105,7 @@ const Player = ({ song, skip_init, onSkip }) => {
   const playSong = () => {
     if (widgetRef.current) {
       // to avoid continual play once the game has begun
-      if (currentTime == 0){
+      if (currentTime === 0){
         // hit play on iframe to load player (on first play)
         widgetRef.current.play();
         // timeout to wait for audio to load

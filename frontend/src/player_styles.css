@@ -6,7 +6,13 @@
 
 .slider-container {
   display: flex;
-  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.slider-container input {
+  height: 1rem;
 }
 
 .time-label {
@@ -19,17 +25,8 @@ iframe {
 
 input[type='range'] {
   overflow: hidden;
-  width: 120px;
-  /* -webkit-appearance: none; */
+  width: 20rem;
   appearance: none;
-  background-color: white;
-}
-
-input[type='range']::-webkit-slider-runnable-track {
-  height: 5px;
-  -webkit-appearance: none;
-  color: #04A03B;
-  margin-top: -1px;
 }
 
 input[type='range']::-webkit-slider-thumb {
@@ -41,7 +38,6 @@ input[type='range']::-webkit-slider-thumb {
   box-shadow: -80px 0 0 80px #04A03B;
 }
 
-
 .player-controls {
   display: flex;
   flex-direction: row;
@@ -51,7 +47,7 @@ input[type='range']::-webkit-slider-thumb {
 .player-controls button {
   padding: 1rem;
   margin: 5%;
-  font-size: 1.4rem;
+  font-size: 1rem;
   border-radius: 25px;
   border-style: none;
   background-color: rgba(163, 180, 224, 0.744);

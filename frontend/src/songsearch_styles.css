@@ -8,12 +8,12 @@
 
 .song-search {
   width: 50%;
-  font-size: 1.4rem;
+  font-size: 1rem;
   padding: 2%;
 }
 
 .song-search input {
-  font-size: 1.4rem;
+  font-size: 1rem;
   padding: 1%;
   border-style: none;
   width: 98%;
