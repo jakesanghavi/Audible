@@ -35,49 +35,49 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
   };
 
   const filteredSongs = songs
-  .filter((song) => {
-    const titleMatch = song.song_title.toLowerCase().includes(searchQuery.toLowerCase());
-    const lengthMatch = song.artist.toLowerCase().includes(searchQuery.toLowerCase());
-    return titleMatch || lengthMatch;
-  })
-  .sort((a, b) => a.song_title.localeCompare(b.song_title));
+    .filter((song) => {
+      const titleMatch = song.song_title.toLowerCase().includes(searchQuery.toLowerCase());
+      const lengthMatch = song.artist.toLowerCase().includes(searchQuery.toLowerCase());
+      return titleMatch || lengthMatch;
+    })
+    .sort((a, b) => a.song_title.localeCompare(b.song_title));
 
   const isSongSelected = selectedItem === searchQuery;
   const searchBarClass = isSongSelected ? 'selected' : '';
 
   return (
     <div className='allSearch'>
-        <div className='song-search'>
+      <div className='song-search'>
         <input
-            type='text'
-            value={searchQuery}
-            onChange={handleSearch}
-            onKeyDown={handleKeyPress}
-            placeholder='Search for a song'
-            onClick={handleSearchClick}
-            className={searchBarClass}
-            id='searchBar'
+          type='text'
+          value={searchQuery}
+          onChange={handleSearch}
+          onKeyDown={handleKeyPress}
+          placeholder='Search for a song'
+          onClick={handleSearchClick}
+          className={searchBarClass}
+          id='searchBar'
         />
 
         {isSearchClicked && (
-            <div className='song-list-container'>
+          <div className='song-list-container'>
             <ul className='song-list'>
-                {filteredSongs.map((song, index) => (
+              {filteredSongs.map((song, index) => (
                 <li key={index} onClick={() => handleItemClick(song.song_title, song.artist)}>
-                    {song.song_title} - {song.artist}
+                  {song.song_title} - {song.artist}
                 </li>
-                ))}
+              ))}
             </ul>
-            </div>
+          </div>
         )}
 
-        </div>
-        {isIncorrectGuess && (
-            <div className='error-message'>
-                <h1>Incorrect! Try again!</h1>
-            </div>
-        )}
       </div>
+      {isIncorrectGuess && (
+        <div className='error-message'>
+          <h1>Incorrect! Try again!</h1>
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -11,7 +11,7 @@ const Player = ({ song, skip_init, onSkip }) => {
     isPlaying: false,
     sliderValue: 0,
     // skip: skip_init,
-    skips: [1,3,6,10,15]
+    skips: [1, 3, 6, 10, 15]
   };
 
   const reducer = (state, action) => {
@@ -36,7 +36,7 @@ const Player = ({ song, skip_init, onSkip }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { currentTime, duration, isPlaying, sliderValue, skips } = state;
 
-
+  // connects to API and initialize sound cloud widget
   useEffect(() => {
     if (!window.SC) {
       const script = document.createElement('script');
@@ -69,36 +69,25 @@ const Player = ({ song, skip_init, onSkip }) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // wait until iFrame is loaded to load controls
   useEffect(() => {
-      // if(widgetRef.current) {
-        const playButton = playButtonRef.current;
 
-        // Add event listener for iframe load event
-        const handleLoad = () => {
-          setIsLoaded(true);
-        };
-        document.getElementById('iFrame').addEventListener('load', handleLoad);
+    // Add event listener for iframe load event
+    const handleLoad = () => {
+      setIsLoaded(true);
+    };
+    document.getElementById('iFrame').addEventListener('load', handleLoad);
 
-        // Simulate the hover event on the play button
-        const hoverEvent = new MouseEvent('mouseover', {
-          bubbles: true,
-          cancelable: true,
-          view: window
-        });
-
-        playButton.dispatchEvent(hoverEvent);
-
-        // Clean up the event listener
-        return () => {
-          document.getElementById('iFrame').removeEventListener('load', handleLoad);
-        };
-
-      // }
+    // Clean up the event listener
+    return () => {
+      document.getElementById('iFrame').removeEventListener('load', handleLoad);
+    };
   }, []);
 
+  // updates the time slider value and keeps track of skip count
   useEffect(() => {
     if (isPlaying) {
-      if(currentTime >= skips[skip_init]) {
+      if (currentTime >= skips[skip_init]) {
         widgetRef.current.pause();
         dispatch({ type: 'SET_IS_PLAYING', payload: false });
       }
@@ -107,7 +96,7 @@ const Player = ({ song, skip_init, onSkip }) => {
           dispatch({ type: 'SET_CURRENT_TIME', payload: currentTime + 0.1 });
           dispatch({ type: 'SET_SLIDER_VALUE', payload: currentTime });
         }, 100);
-  
+
         return () => clearInterval(interval);
       }
     }
@@ -115,8 +104,18 @@ const Player = ({ song, skip_init, onSkip }) => {
 
   const playSong = () => {
     if (widgetRef.current) {
-      widgetRef.current.play();
-      dispatch({ type: 'SET_IS_PLAYING', payload: true });
+      // to avoid continual play once the game has begun
+      if (currentTime == 0){
+        // hit play on iframe to load player (on first play)
+        widgetRef.current.play();
+        // timeout to wait for audio to load
+        setTimeout(() => {
+          // once loaded, play the song
+          restartSong(); 
+          // increment bar once song is playing
+          dispatch({ type: 'SET_IS_PLAYING', payload: true }); 
+        }, 900);
+      }
     }
   };
 
@@ -148,21 +147,20 @@ const Player = ({ song, skip_init, onSkip }) => {
 
   const handleSliderChange = (event) => {
     const sliderValue = parseInt(event.target.value);
-  
+
     // Disable slider if sliderValue is greater than skips[skip_init]
     if (sliderValue > skips[skip_init]) {
       return;
     }
-  
+
     dispatch({ type: 'SET_SLIDER_VALUE', payload: sliderValue });
     const newPosition = sliderValue;
     dispatch({ type: 'SET_CURRENT_TIME', payload: newPosition });
-  
+
     if (widgetRef.current) {
       widgetRef.current.seekTo(newPosition * 1000);
     }
   };
-  
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -194,14 +192,13 @@ const Player = ({ song, skip_init, onSkip }) => {
           <option>15</option>
         </datalist>
       </div>
-      <div className='player-controls' style={{display: isLoaded ? 'block' : 'none'}}>
-        <div className="progress-bar">
-          <div className="progress" style={{ width: `${sliderValue}%` }}></div>
+      <div className="game-layout" style={{ display: isLoaded ? 'block' : 'none' }}>
+        <div className="player-controls">
+          <button onClick={playSong} ref={playButtonRef}>PLAY</button>
+          <button onClick={pauseSong}>PAUSE</button>
+          <button onClick={restartSong}>RESTART</button>
+          <button id="skip" onClick={skipUpdate}>SKIP</button>
         </div>
-        <button onClick={playSong} ref={playButtonRef}>PLAY</button>
-        <button onClick={pauseSong}>PAUSE</button>
-        <button onClick={restartSong}>RESTART</button>
-        <button id="skip" onClick={skipUpdate}>SKIP</button>
       </div>
       <iframe
         width="100%"
@@ -211,8 +208,9 @@ const Player = ({ song, skip_init, onSkip }) => {
         allow="autoplay"
         src={song.soundcloud_link}
         loading='eager'
-      ></iframe>
+      />
     </div>
+
   );
 };
 

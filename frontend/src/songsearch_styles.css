@@ -1,42 +1,56 @@
 .allSearch {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInAnimation ease 3s;
+
+}
+
+.song-search {
+  width: 50%;
+  font-size: 1.4rem;
+  padding: 2%;
+}
+
+.song-search input {
+  font-size: 1.4rem;
+  padding: 1%;
+  border-style: none;
+  width: 98%;
+}
+
+.song-list-container {
+  background-color: rgba(240, 248, 255, 0.529);
+  padding: 2%;
+  max-height: 200px;
+  overflow: auto;
+  /* width: 100%; */
+  border-radius: 0 0 25px 25px;
+}
+
+.song-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.song-list li {
+  padding: 5px;
+  white-space: nowrap;
+}
+
+.error-message {
+  text-align: center;
+  color: var(--error)
+}
+
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
   }
-  
-  .song-search {
-    background: #fff;
-    border-radius: 4px;
-    margin: 0 auto;
-    position: relative;
-    width: 500px; /* Set the desired width */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+
+  100% {
+    opacity: 1;
   }
-  
-  #searchBar {
-    width: 100%;
-  }
-  
-  .song-list-container {
-    max-height: 200px;
-    overflow: auto;
-    width: 100%;
-  }
-  
-  .song-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .song-list li {
-    padding: 5px;
-    white-space: nowrap;
-  }
-  
-  .error-message {
-    text-align: center;
-    color: var(--error)
-  }
-  
-  
+}
