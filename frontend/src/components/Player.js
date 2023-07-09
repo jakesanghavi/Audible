@@ -1,8 +1,9 @@
-import { useEffect, useRef, useReducer } from 'react';
+import { useEffect, useRef, useState, useReducer } from 'react';
 import '../player_styles.css';
 
 const Player = ({ song, skip_init, onSkip }) => {
   const widgetRef = useRef(null);
+  const playButtonRef = useRef(null);
 
   const initialState = {
     currentTime: 0,
@@ -52,11 +53,11 @@ const Player = ({ song, skip_init, onSkip }) => {
         widgetRef.current = window.SC.Widget(document.getElementById('iFrame'));
 
         widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
-          // widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
-          //   widgetRef.current.getDuration((soundDuration) => {
-          //     dispatch({ type: 'SET_DURATION', payload: soundDuration / 1000 });
-          //   });
-          // });
+          widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
+            widgetRef.current.getDuration((soundDuration) => {
+              dispatch({ type: 'SET_DURATION', payload: soundDuration / 1000 });
+            });
+          });
 
           widgetRef.current.bind(window.SC.Widget.Events.FINISH, () => {
             console.log('Track finished');
@@ -64,6 +65,35 @@ const Player = ({ song, skip_init, onSkip }) => {
         });
       }
     }
+  }, []);
+
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+      // if(widgetRef.current) {
+        const playButton = playButtonRef.current;
+
+        // Add event listener for iframe load event
+        const handleLoad = () => {
+          setIsLoaded(true);
+        };
+        document.getElementById('iFrame').addEventListener('load', handleLoad);
+
+        // Simulate the hover event on the play button
+        const hoverEvent = new MouseEvent('mouseover', {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        });
+
+        playButton.dispatchEvent(hoverEvent);
+
+        // Clean up the event listener
+        return () => {
+          document.getElementById('iFrame').removeEventListener('load', handleLoad);
+        };
+
+      // }
   }, []);
 
   useEffect(() => {
@@ -164,11 +194,11 @@ const Player = ({ song, skip_init, onSkip }) => {
           <option>15</option>
         </datalist>
       </div>
-      <div className='player-controls'>
+      <div className='player-controls' style={{display: isLoaded ? 'block' : 'none'}}>
         <div className="progress-bar">
           <div className="progress" style={{ width: `${sliderValue}%` }}></div>
         </div>
-        <button onClick={playSong}>PLAY</button>
+        <button onClick={playSong} ref={playButtonRef}>PLAY</button>
         <button onClick={pauseSong}>PAUSE</button>
         <button onClick={restartSong}>RESTART</button>
         <button id="skip" onClick={skipUpdate}>SKIP</button>
