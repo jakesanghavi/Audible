@@ -28,6 +28,10 @@ const songSchema = new Schema({
         type: String,
         required: true
     },
+    full_link: {
+        type: String,
+        required: true
+    },
 }, {timestamps: true})
 
-module.exports = mongoose.model('Song', songSchema)
+module.exports = mongoose.model(process.env.SONGS_COLLECTION, songSchema)

@@ -38,7 +38,7 @@ const SongDetails = ({ song }) => {
       <div className="song-details">
           <span className="close" onClick={closeModal}>&times;</span>
           <h2 id="win-or-lose" className="win">Congratulations! You win!</h2>
-        <a id="full-song" href={song.soundcloud_link}>
+        <a id="full-song" target="_blank" href={song.full_link}>
           <h4>{song.song_title}</h4>
           <p><strong>Artist: </strong>{song.artist}</p>
           <p><strong>Album: </strong>{decodeHTMLEntities(song.album_name)}</p>

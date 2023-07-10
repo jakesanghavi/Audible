@@ -3,8 +3,8 @@ import json
 
 # Connect to MongoDB
 client = MongoClient("mongodb+srv://<username>:<password>@jssd.tllqcsq.mongodb.net/?retryWrites=true&w=majority")
-db = client["test"]
-collection = db["songs"]
+db = client[{DB_NAME}]
+collection = db[{COLLECTION_NAME}]
 
 with open('output_test.json', 'r') as file:
     json_list = json.load(file)
