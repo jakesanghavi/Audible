@@ -77,7 +77,7 @@ const Home = () => {
       }
       // Set the number of skips back to 4
       // This may be a bandaid fix and should be bettered later.
-      setSkip(4);
+      // setSkip(4);
     }
   }, [skip]);
 
