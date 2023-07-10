@@ -7,11 +7,11 @@ const Player = ({ song, skip_init, onSkip }) => {
 
   const initialState = {
     currentTime: 0,
-    duration: 15,
+    duration: 150,
     isPlaying: false,
     sliderValue: 0,
     // skip: skip_init,
-    skips: [1, 3, 6, 10, 15]
+    skips: [10, 30, 60, 100, 150]
   };
 
   const reducer = (state, action) => {
@@ -56,11 +56,11 @@ const Player = ({ song, skip_init, onSkip }) => {
         widgetRef.current = window.SC.Widget(document.getElementById('iFrame'));
 
         widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
-          widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
-            widgetRef.current.getDuration((soundDuration) => {
-              dispatch({ type: 'SET_DURATION', payload: soundDuration / 1000 });
-            });
-          });
+          // widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
+          //   widgetRef.current.getDuration((soundDuration) => {
+          //     dispatch({ type: 'SET_DURATION', payload: soundDuration / 1000 });
+          //   });
+          // });
 
           widgetRef.current.bind(window.SC.Widget.Events.FINISH, () => {
             console.log('Track finished');
@@ -92,12 +92,13 @@ const Player = ({ song, skip_init, onSkip }) => {
     if (isPlaying) {
       if (currentTime >= skips[skip_init]) {
         widgetRef.current.pause();
+        playPauseRef.current.innerHTML = "PLAY"
         dispatch({ type: 'SET_IS_PLAYING', payload: false });
       }
       else {
         const interval = setInterval(() => {
-          dispatch({ type: 'SET_CURRENT_TIME', payload: currentTime + 0.1 });
-          dispatch({ type: 'SET_SLIDER_VALUE', payload: currentTime });
+          dispatch({ type: 'SET_CURRENT_TIME', payload: currentTime + 1 });
+          dispatch({ type: 'SET_SLIDER_VALUE', payload: currentTime + 1 });
         }, 100);
 
         return () => clearInterval(interval);
@@ -124,18 +125,20 @@ const Player = ({ song, skip_init, onSkip }) => {
             dispatch({ type: 'SET_IS_PLAYING', payload: true });
           }, 900);
         }
+        // If you are at the max time and press play, restart the song
+        else if (currentTime >= skips[skip_init]){
+          restartSong()
+        }
         else {
           widgetRef.current.play();
           dispatch({ type: 'SET_IS_PLAYING', payload: true });
         }
       }
       else {
-        if (widgetRef.current) {
           // If you pause the song, change the play/pause button text
           playPauseRef.current.innerHTML = "PLAY"
           widgetRef.current.pause();
           dispatch({ type: 'SET_IS_PLAYING', payload: false });
-        }
       }
     }
   };
@@ -162,25 +165,23 @@ const Player = ({ song, skip_init, onSkip }) => {
   };
 
   const handleSliderChange = (event) => {
-    const sliderValue = parseInt(event.target.value);
-
-    // Disable slider if sliderValue is greater than skips[skip_init]
-    if (sliderValue > skips[skip_init]) {
-      return;
-    }
-
-    dispatch({ type: 'SET_SLIDER_VALUE', payload: sliderValue });
-    const newPosition = sliderValue;
-    dispatch({ type: 'SET_CURRENT_TIME', payload: newPosition });
-
     if (widgetRef.current) {
-      widgetRef.current.seekTo(newPosition * 1000);
+      const sliderValue = parseInt(event.target.value);
+
+      // Disable slider if sliderValue is greater than skips[skip_init]
+      if (sliderValue > skips[skip_init]) {
+        return;
+      }
+
+      dispatch({ type: 'SET_SLIDER_VALUE', payload: sliderValue });
+      dispatch({ type: 'SET_CURRENT_TIME', payload: sliderValue });
+      widgetRef.current.seekTo(sliderValue * 100);
     }
   };
 
   const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
+    const minutes = Math.floor(time / 600);
+    const seconds = Math.floor((time % 600)/10);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
@@ -191,8 +192,8 @@ const Player = ({ song, skip_init, onSkip }) => {
         <input
           type="range"
           min="0"
-          max="15"
-          step="0.1"
+          max="150"
+          step="1"
           value={sliderValue}
           onChange={handleSliderChange}
           className="song-slider"
@@ -201,16 +202,15 @@ const Player = ({ song, skip_init, onSkip }) => {
         <div className="time-label duration-label">{formatTime(duration)}</div>
         <datalist id="ticks">
           <option>0</option>
-          <option>1</option>
-          <option>3</option>
-          <option>6</option>
           <option>10</option>
-          <option>15</option>
+          <option>30</option>
+          <option>60</option>
+          <option>100</option>
+          <option>150</option>
         </datalist>
       </div>
       <div className="game-layout" style={{ display: isLoaded ? 'block' : 'none' }}>
         <div className="player-controls">
-          <button onClick={restartSong}>RESTART</button>
           <button onClick={playPauseSong} ref={playPauseRef}>PLAY</button>
           <button id="skip" onClick={skipUpdate}>SKIP</button>
         </div>
