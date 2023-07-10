@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../songsearch_styles.css';
 
 const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
@@ -6,6 +6,39 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
   const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
   const [isIncorrectGuess, setIsIncorrectGuess] = useState(false);
+  const [fadeIn, setFadeIn] = useState(true);
+  const [fadeOut, setFadeOut] = useState(true);
+
+
+  const map = {};
+
+  songs.forEach((obj) => {
+    const key = (obj.song_title + ' - ' + obj.artist).toLowerCase();
+    map[key] = 1;
+  });
+
+  // Animate the "Incorrect Guess" text to fade in and out
+  // This doesn't work well right now
+  useEffect(() => {
+    if (isIncorrectGuess) {
+      setFadeIn(true);
+      const fadeOutTimer = setTimeout(() => {
+        setFadeOut(true);
+        setIsIncorrectGuess(false);
+      }, 1000);
+
+      
+      return () => {
+        clearTimeout(fadeOutTimer);
+      };
+    }
+  }, [isIncorrectGuess]);
+
+  const decodeHTMLEntities = (text) => {
+    const parser = new DOMParser();
+    const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
+    return decodedString;
+  };
 
   // When the user searches a song, handle it
   const handleSearch = (event) => {
@@ -25,13 +58,14 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
 
   // When the user presses enter inside of the search bar, handle their guess
   const handleKeyPress = (event) => {
+    if (map[searchQuery.toLowerCase()] === undefined) {
+      return;
+    }
     if (event.key === 'Enter') {
       if (searchQuery.toLowerCase() === (song.song_title + ' - ' + song.artist).toLowerCase()) {
-        console.log('Guess is correct!');
         setIsIncorrectGuess(false);
         onCorrectGuess();
       } else {
-        console.log('Guess is incorrect!');
         setIsIncorrectGuess(true);
         onIncorrectGuess();
       }
@@ -70,16 +104,16 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
             <ul className='song-list'>
               {filteredSongs.map((song, index) => (
                 <li key={index} onClick={() => handleItemClick(song.song_title, song.artist)}>
-                  {song.song_title} - {song.artist}
+                  {decodeHTMLEntities(song.song_title)} - {decodeHTMLEntities(song.artist)}
                 </li>
               ))}
             </ul>
           </div>
         )}
-
       </div>
+
       {isIncorrectGuess && (
-        <div className='error-message'>
+        <div className={`error-message ${fadeIn ? 'fade-in' : ''} ${fadeOut ? 'fade-out' : ''}`}>
           <h1>Incorrect! Try again!</h1>
         </div>
       )}
