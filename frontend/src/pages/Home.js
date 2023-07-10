@@ -37,28 +37,49 @@ const Home = () => {
     fetchAll();
   }, []);
 
-  // If the player guesses wrong, update their # skips used accordingly.
-  const handleIncorrectGuess = () => {
-    setSkip((prevSkip) => prevSkip >= 4 ? 4: prevSkip + 1);
-    // If the player has used up all of their skips and gets it wrong again,
-    // they lose!
-    if (skip >= 4) {
-        const txt = document.getElementById("win-or-lose");
-        txt.className = "lose";
-        txt.innerHTML = "You lose. Better luck next time!"
-        const modal = document.getElementById("modal");
-        modal.style.display = "block";
+  // If the player guesses wrong, update their # skips used accordingly. If they pressed Give up, make them lose
+  const handleIncorrectGuess = (x) => {
+    // Overset the skips to know you have lost, if the give up button was pressed.
+    if (x === 'Give up') {
+      setSkip(5);
+    } else {
+      setSkip((prevSkip) => prevSkip + 1);
     }
   };
 
   // If the player guesses right, they win!
   const handleCorrectGuess = () => {
+    //Show the modal with the win text
     const txt = document.getElementById("win-or-lose");
     txt.className = "win";
     txt.innerHTML = "Congratulations! You win!"
     const modal = document.getElementById("modal");
     modal.style.display = "block";
   }
+
+  useEffect(() => {
+    // If you have lost...
+    if (skip >= 5) {
+      // Show the modal with the lose text
+      const txt = document.getElementById("win-or-lose");
+      txt.className = "lose";
+      txt.innerHTML = "You lose. Better luck next time!"
+      const modal = document.getElementById("modal");
+      modal.style.display = "block";
+
+      // Disable the search bar and make it display 'Game Over!'
+      document.getElementById("searchBar").disabled = true;
+      document.getElementById("searchBar").value='Game Over!';
+
+      // Hide the dropdown song list
+      if (document.getElementById("song-list-container") !== null) {
+        document.getElementById("song-list-container").style.display='none';
+      }
+      // Set the number of skips back to 4
+      // This may be a bandaid fix and should be bettered later.
+      setSkip(4);
+    }
+  }, [skip]);
 
   return (
     <div className='Home'>

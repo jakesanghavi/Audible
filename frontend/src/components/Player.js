@@ -4,6 +4,13 @@ import '../player_styles.css';
 const Player = ({ song, skip_init, onSkip }) => {
   const widgetRef = useRef(null);
   const playPauseRef = useRef(null);
+  const giveUpRef = useRef(null);
+  const skipRef = useRef(null);
+
+  // Make sure not to over-index the skips array
+  if (skip_init > 4) {
+    skip_init = 4
+  }
 
   const initialState = {
     currentTime: 0,
@@ -106,6 +113,7 @@ const Player = ({ song, skip_init, onSkip }) => {
     }
   }, [isPlaying, currentTime, skip_init, skips]);
 
+  // Play and pause the song as needed
   const playPauseSong = () => {
     if (widgetRef.current) {
       if (!isPlaying) {
@@ -143,6 +151,7 @@ const Player = ({ song, skip_init, onSkip }) => {
     }
   };
 
+  // Restart the song, making it play immediately from the beginning
   const restartSong = () => {
     if (widgetRef.current) {
       widgetRef.current.seekTo(0);
@@ -155,14 +164,32 @@ const Player = ({ song, skip_init, onSkip }) => {
     }
   };
 
+  // Update the number of skips you have used, and restart the song
   const skipUpdate = () => {
     if (widgetRef.current) {
-      // dispatch({ type: 'SET_SKIP_VALUE', payload: skip_init + 1 });
-      // skip_init = skip_init + 1
       onSkip()
-      restartSong()
+
+      // Disable the skip button if the user has no more skips.
+      // For some reason this is out of sync, hence the >= 3 and not >= 4
+      if (skip_init >= 3) {
+        skipRef.current.disabled = true;
+      }
+      else {
+        restartSong()
+      }
     }
   };
+
+  // Give up!
+  const giveUp = () => {
+    if (widgetRef.current) {
+      skip_init = 4
+      // Pass 'Give up' to the Home component so it knows to make you lose
+      onSkip('Give up')
+      giveUpRef.current.disabled = true;
+      skipRef.current.disabled = true;
+    }
+  }
 
   const handleSliderChange = (event) => {
     if (widgetRef.current) {
@@ -211,8 +238,9 @@ const Player = ({ song, skip_init, onSkip }) => {
       </div>
       <div className="game-layout" style={{ display: isLoaded ? 'block' : 'none' }}>
         <div className="player-controls">
+          <button onClick={giveUp} ref={giveUpRef}>GIVE UP</button>
           <button onClick={playPauseSong} ref={playPauseRef}>PLAY</button>
-          <button id="skip" onClick={skipUpdate}>SKIP</button>
+          <button id="skip" onClick={skipUpdate} ref={skipRef}>SKIP</button>
         </div>
       </div>
       <iframe

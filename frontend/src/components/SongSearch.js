@@ -10,8 +10,8 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
   const [fadeOut, setFadeOut] = useState(true);
 
 
+  // Create a hashmap of all songs/artists in the DB
   const map = {};
-
   songs.forEach((obj) => {
     const key = (obj.song_title + ' - ' + obj.artist).toLowerCase();
     map[key] = 1;
@@ -34,6 +34,7 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
     }
   }, [isIncorrectGuess]);
 
+  // Some strings have HTML characters. This converts them to English.
   const decodeHTMLEntities = (text) => {
     const parser = new DOMParser();
     const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
@@ -58,9 +59,12 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
 
   // When the user presses enter inside of the search bar, handle their guess
   const handleKeyPress = (event) => {
+    // Disallow the user from searching songs that are not in the DB
     if (map[searchQuery.toLowerCase()] === undefined) {
       return;
     }
+
+    // Once the user puts in a valid choice, check if they guessed correctly.
     if (event.key === 'Enter') {
       if (searchQuery.toLowerCase() === (song.song_title + ' - ' + song.artist).toLowerCase()) {
         setIsIncorrectGuess(false);
@@ -100,7 +104,7 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
         />
 
         {isSearchClicked && (
-          <div className='song-list-container'>
+          <div className='song-list-container' id='song-list-container'>
             <ul className='song-list'>
               {filteredSongs.map((song, index) => (
                 <li key={index} onClick={() => handleItemClick(song.song_title, song.artist)}>

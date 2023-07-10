@@ -60,6 +60,14 @@ input[type='range']::-webkit-slider-thumb {
   background-color: rgb(145, 163, 208);
 }
 
+/* Change the buttons to be grayed out when they are unusable. */
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
 @keyframes fadeInAnimation {
   0% {
     opacity: 0;
