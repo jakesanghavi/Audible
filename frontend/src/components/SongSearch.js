@@ -7,19 +7,23 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
   const [selectedItem, setSelectedItem] = useState('');
   const [isIncorrectGuess, setIsIncorrectGuess] = useState(false);
 
+  // When the user searches a song, handle it
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
   };
 
+  // When the user clicks on the search bar, load the song names below.
   const handleSearchClick = () => {
     setIsSearchClicked(true);
   };
 
+  // When the user clicks on a song in the list, handle it
   const handleItemClick = (title, artist) => {
     setSelectedItem(title + ' - ' + artist);
     setSearchQuery(title + ' - ' + artist);
   };
 
+  // When the user presses enter inside of the search bar, handle their guess
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       if (searchQuery.toLowerCase() === (song.song_title + ' - ' + song.artist).toLowerCase()) {
@@ -34,6 +38,8 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
     }
   };
 
+  // Filter for only songs which match a substring of the query, in either the song name
+  // or the artist name
   const filteredSongs = songs
     .filter((song) => {
       const titleMatch = song.song_title.toLowerCase().includes(searchQuery.toLowerCase());

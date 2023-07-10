@@ -8,6 +8,7 @@ const Home = () => {
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
 
+  // GET one random song from the database
   useEffect(() => {
     const fetchRand = async () => {
       const response = await fetch('http://localhost:4000/api/songs/random/random');
@@ -21,6 +22,8 @@ const Home = () => {
     fetchRand();
   }, []);
 
+
+  // GET all songs from the database
   useEffect(() => {
     const fetchAll = async () => {
       const response = await fetch('http://localhost:4000/api/songs/');
@@ -34,8 +37,11 @@ const Home = () => {
     fetchAll();
   }, []);
 
+  // If the player guesses wrong, update their # skips used accordingly.
   const handleIncorrectGuess = () => {
     setSkip((prevSkip) => prevSkip >= 4 ? 4: prevSkip + 1);
+    // If the player has used up all of their skips and gets it wrong again,
+    // they lose!
     if (skip >= 4) {
         const txt = document.getElementById("win-or-lose");
         txt.className = "lose";
@@ -45,6 +51,7 @@ const Home = () => {
     }
   };
 
+  // If the player guesses right, they win!
   const handleCorrectGuess = () => {
     const txt = document.getElementById("win-or-lose");
     txt.className = "win";

@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
+// This is the defined structure that our DB collection has.
 const songSchema = new Schema({
     song_title: {
         type: String,

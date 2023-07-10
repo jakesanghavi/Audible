@@ -3,7 +3,7 @@ import '../player_styles.css';
 
 const Player = ({ song, skip_init, onSkip }) => {
   const widgetRef = useRef(null);
-  const playButtonRef = useRef(null);
+  const playPauseRef = useRef(null);
 
   const initialState = {
     currentTime: 0,
@@ -36,8 +36,9 @@ const Player = ({ song, skip_init, onSkip }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { currentTime, duration, isPlaying, sliderValue, skips } = state;
 
-  // connects to API and initialize sound cloud widget
+  // Connects to API and initializes the SoundCloud widget
   useEffect(() => {
+    // If the SoundCloud API script hasn't been added, add it to the HTML.
     if (!window.SC) {
       const script = document.createElement('script');
       script.src = 'https://w.soundcloud.com/player/api.js';
@@ -48,8 +49,10 @@ const Player = ({ song, skip_init, onSkip }) => {
       initializeWidget();
     }
 
+    // Initialize the SoundCloud widget.
     function initializeWidget() {
       if (!widgetRef.current) {
+        // Set the widgetRef to point to the IFrame.
         widgetRef.current = window.SC.Widget(document.getElementById('iFrame'));
 
         widgetRef.current.bind(window.SC.Widget.Events.READY, () => {
@@ -69,7 +72,7 @@ const Player = ({ song, skip_init, onSkip }) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // wait until iFrame is loaded to load controls
+  // Wait until iFrame is loaded to load controls
   useEffect(() => {
 
     // Add event listener for iframe load event
@@ -84,7 +87,7 @@ const Player = ({ song, skip_init, onSkip }) => {
     };
   }, []);
 
-  // updates the time slider value and keeps track of skip count
+  // Updates the time slider value and keeps track of skip count
   useEffect(() => {
     if (isPlaying) {
       if (currentTime >= skips[skip_init]) {
@@ -102,27 +105,38 @@ const Player = ({ song, skip_init, onSkip }) => {
     }
   }, [isPlaying, currentTime, skip_init, skips]);
 
-  const playSong = () => {
+  const playPauseSong = () => {
     if (widgetRef.current) {
-      // to avoid continual play once the game has begun
-      if (currentTime === 0){
-        // hit play on iframe to load player (on first play)
-        widgetRef.current.play();
-        // timeout to wait for audio to load
-        setTimeout(() => {
-          // once loaded, play the song
-          restartSong(); 
-          // increment bar once song is playing
-          dispatch({ type: 'SET_IS_PLAYING', payload: true }); 
-        }, 900);
+      if (!isPlaying) {
+        // If you play the song, change the play/pause button text
+        playPauseRef.current.innerHTML = "PAUSE"
+        // to avoid continual play once the game has begun
+        if (currentTime === 0) {
+          // hit play on iframe to load player (on first play).
+          // Then pause it immediately after to prevent double audio playing.
+          widgetRef.current.play();
+          widgetRef.current.pause();
+          // timeout to wait for audio to load
+          setTimeout(() => {
+            // once loaded, play the song
+            restartSong();
+            // increment bar once song is playing
+            dispatch({ type: 'SET_IS_PLAYING', payload: true });
+          }, 900);
+        }
+        else {
+          widgetRef.current.play();
+          dispatch({ type: 'SET_IS_PLAYING', payload: true });
+        }
       }
-    }
-  };
-
-  const pauseSong = () => {
-    if (widgetRef.current) {
-      widgetRef.current.pause();
-      dispatch({ type: 'SET_IS_PLAYING', payload: false });
+      else {
+        if (widgetRef.current) {
+          // If you pause the song, change the play/pause button text
+          playPauseRef.current.innerHTML = "PLAY"
+          widgetRef.current.pause();
+          dispatch({ type: 'SET_IS_PLAYING', payload: false });
+        }
+      }
     }
   };
 
@@ -130,6 +144,8 @@ const Player = ({ song, skip_init, onSkip }) => {
     if (widgetRef.current) {
       widgetRef.current.seekTo(0);
       widgetRef.current.play();
+      // If you restart the song, change the play/pause button text
+      playPauseRef.current.innerHTML = "PAUSE"
       dispatch({ type: 'SET_IS_PLAYING', payload: true });
       dispatch({ type: 'SET_CURRENT_TIME', payload: 0 });
       dispatch({ type: 'SET_SLIDER_VALUE', payload: 0 });
@@ -194,9 +210,8 @@ const Player = ({ song, skip_init, onSkip }) => {
       </div>
       <div className="game-layout" style={{ display: isLoaded ? 'block' : 'none' }}>
         <div className="player-controls">
-          <button onClick={playSong} ref={playButtonRef}>PLAY</button>
-          <button onClick={pauseSong}>PAUSE</button>
           <button onClick={restartSong}>RESTART</button>
+          <button onClick={playPauseSong} ref={playPauseRef}>PLAY</button>
           <button id="skip" onClick={skipUpdate}>SKIP</button>
         </div>
       </div>
