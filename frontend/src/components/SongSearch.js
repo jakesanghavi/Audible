@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import '../songsearch_styles.css';
+import '../component_styles/songsearch_styles.css';
 
 const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess }) => {
   const [searchQuery, setSearchQuery] = useState('');

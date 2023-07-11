@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import '../songDetails_styles.css';
+import '../component_styles/songDetails_styles.css';
 
 const SongDetails = ({ song }) => {
   const modalRef = useRef(null);

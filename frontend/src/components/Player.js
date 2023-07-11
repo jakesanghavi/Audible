@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useReducer } from 'react';
-import '../player_styles.css';
+import '../component_styles/player_styles.css';
 
 const Player = ({ song, skip_init, onSkip }) => {
   const widgetRef = useRef(null);

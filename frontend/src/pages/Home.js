@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import SongDetails from '../components/SongDetails';
 import SongSearch from '../components/SongSearch';
 import Player from '../components/Player';
+import Guesses from '../components/Guesses';
 
 const Home = () => {
   const [song, setSong] = useState(null);
@@ -94,6 +95,7 @@ const Home = () => {
           />
         )}
         {songs && <SongDetails song={song} />}
+        <Guesses/>
       </div>
     </div>
   );

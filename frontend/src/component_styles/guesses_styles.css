@@ -1,0 +1,27 @@
+.guess-container {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    width: 50%;
+    margin: 0 auto;
+    /* align-items: stretch; */
+    /* grid-template-columns: 1fr auto; */
+    /* grid-template-areas: "sidebar content"; */
+}
+
+.guess-content {
+    background-color: lightgray;
+    padding: 10px;
+    list-style: none;
+    text-align: center;
+    margin: 0;
+    /* grid-area: content; */
+}
+
+.left-column {
+    background-color: lightgray;
+    padding: 10px;
+    list-style: none;
+    text-align: left;
+    margin: 0;
+    /* grid-area: sidebar; */
+}
