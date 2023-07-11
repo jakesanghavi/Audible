@@ -37,7 +37,7 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
   };
 
   // When the user presses enter inside of the search bar, handle their guess
-  const handleKeyPress = (event) => {
+  const handleKeyPress = async(event) => {
     // Disallow the user from searching songs that are not in the DB
     if (map[searchQuery.toLowerCase()] === undefined) {
       return;
@@ -49,13 +49,14 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
       if (searchQuery.toLowerCase() === (song.song_title + ' - ' + song.artist).toLowerCase()) {
         onCorrectGuess(searchQuery);
       } else if (regex.exec(searchQuery.toLowerCase())[1] === song.artist.toLowerCase()) {
-        onIncorrectSearch(searchQuery, 'y')
-        onIncorrectGuess()
+        onIncorrectGuess();
+        await onIncorrectSearch(searchQuery, 'y')
       }
       else {
-        onIncorrectSearch(searchQuery, 'r')
         onIncorrectGuess();
+        await onIncorrectSearch(searchQuery, 'r')
       }
+      setSearchQuery('');
     }
   };
 

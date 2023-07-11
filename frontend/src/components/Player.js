@@ -172,12 +172,14 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
 
       // Disable the skip button if the user has no more skips.
       // For some reason this is out of sync, hence the >= 3 and not >= 4
-      if (skip_init >= 3) {
-        skipRef.current.disabled = true;
-      }
-      else {
-        restartSong()
-      }
+      // This doesn't work now that SongSearch is async, so this is moved to Home.js
+      // if (skip_init >= 3) {
+      //   skipRef.current.disabled = true;
+      // }
+      // else {
+      //   restartSong()
+      // }
+      restartSong()
     }
   };
 
@@ -187,8 +189,9 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
       skip_init = 4
       // Pass 'Give up' to the Home component so it knows to make you lose
       onSkip('Give up')
-      giveUpRef.current.disabled = true;
-      skipRef.current.disabled = true;
+      // These are also handled in Home.js now for consistency
+      // giveUpRef.current.disabled = true;
+      // skipRef.current.disabled = true;
     }
   }
 
@@ -239,7 +242,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
       </div>
       <div className="game-layout" style={{ display: isLoaded ? 'block' : 'none' }}>
         <div className="player-controls">
-          <button onClick={giveUp} ref={giveUpRef}>GIVE UP</button>
+          <button id="giveup" onClick={giveUp} ref={giveUpRef}>GIVE UP</button>
           <button onClick={playPauseSong} ref={playPauseRef}>PLAY</button>
           <button id="skip" onClick={skipUpdate} ref={skipRef}>SKIP</button>
         </div>

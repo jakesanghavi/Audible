@@ -95,9 +95,17 @@ const Home = () => {
     txt.innerHTML = "Congratulations! You win!"
     const modal = document.getElementById("modal");
     modal.style.display = "block";
+
+    // Disable the buttons for skip and give up if the game is over
+    document.getElementById('skip').disabled = 'true';
+    document.getElementById('giveup').disabled = 'true';
   }
 
   useEffect(() => {
+    // If you're out of skips, disable the skip button
+    if (skip >= 4) {
+      document.getElementById('skip').disabled = 'true';
+    }
     // If you have lost...
     if (skip >= 5) {
       // Show the modal with the lose text
@@ -107,9 +115,11 @@ const Home = () => {
       const modal = document.getElementById("modal");
       modal.style.display = "block";
 
-      // Disable the search bar and make it display 'Game Over!'
-      document.getElementById("searchBar").disabled = true;
-      document.getElementById("searchBar").value='Game Over!';
+      // Disable the buttons for skip and give up if the game is over
+      document.getElementById('giveup').disabled = 'true';
+
+      // Hide the search bar
+      document.getElementById('allSearch').style.display='none';
 
       // Hide the dropdown song list
       if (document.getElementById("song-list-container") !== null) {
