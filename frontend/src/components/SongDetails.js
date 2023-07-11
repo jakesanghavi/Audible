@@ -15,6 +15,8 @@ const SongDetails = ({ song }) => {
   // Closes the modal.
   const closeModal = () => {
     modalRef.current.style.display = 'none';
+    //Show the song details below after closing the modal
+    document.getElementById('bottom-songs').style.display = 'flex';
   };
 
   useEffect(() => {
@@ -39,7 +41,7 @@ const SongDetails = ({ song }) => {
           <span className="close" onClick={closeModal}>&times;</span>
           <h2 id="win-or-lose" className="win">Congratulations! You win!</h2>
         <a id="full-song" target="_blank" rel='noreferrer' href={song.full_link}>
-          <h4>{song.song_title}</h4>
+          <h4>{decodeHTMLEntities(song.song_title)}</h4>
           <p><strong>Artist: </strong>{decodeHTMLEntities(song.artist)}</p>
           <p><strong>Album: </strong>{decodeHTMLEntities(song.album_name)}</p>
           <img src={song.album_cover} alt="album cover" />

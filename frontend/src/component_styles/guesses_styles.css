@@ -25,3 +25,15 @@
     margin: 0;
     /* grid-area: sidebar; */
 }
+
+.yellow {
+    color: yellow;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}

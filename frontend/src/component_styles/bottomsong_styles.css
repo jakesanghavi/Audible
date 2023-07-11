@@ -1,0 +1,60 @@
+#bottom-songs {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    /* Add this line to vertically align the items */
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+
+a:visited {
+    text-decoration: none;
+}
+
+
+a:hover {
+    text-decoration: none;
+}
+
+
+a:active {
+    text-decoration: none;
+}
+
+img {
+    height: 20rem;
+    vertical-align: middle;
+    /* Add this line to vertically align the image */
+}
+
+.bottomsong-details {
+    display: flex;
+    /* Add this line to create a flex container */
+    flex-direction: column;
+    /* Add this line to stack the <li> items vertically */
+    align-items: flex-start;
+    /* Add this line to align the <li> items to the left */
+}
+
+.bottomsong-details ul {
+    margin: 0;
+    padding: 0;
+}
+
+.bottomsong-details li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+h3 {
+    font-weight: normal;
+}

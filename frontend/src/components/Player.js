@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useReducer } from 'react';
 import '../component_styles/player_styles.css';
 
-const Player = ({ song, skip_init, onSkip }) => {
+const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
   const widgetRef = useRef(null);
   const playPauseRef = useRef(null);
   const giveUpRef = useRef(null);
@@ -167,6 +167,7 @@ const Player = ({ song, skip_init, onSkip }) => {
   // Update the number of skips you have used, and restart the song
   const skipUpdate = () => {
     if (widgetRef.current) {
+      onSkipSearch('Skip')
       onSkip()
 
       // Disable the skip button if the user has no more skips.

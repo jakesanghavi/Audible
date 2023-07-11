@@ -3,6 +3,7 @@ import SongDetails from '../components/SongDetails';
 import SongSearch from '../components/SongSearch';
 import Player from '../components/Player';
 import Guesses from '../components/Guesses';
+import BottomSong from '../components/BottomSong';
 
 const Home = () => {
   const [song, setSong] = useState(null);
@@ -42,14 +43,52 @@ const Home = () => {
   const handleIncorrectGuess = (x) => {
     // Overset the skips to know you have lost, if the give up button was pressed.
     if (x === 'Give up') {
+      // Remove the search bar when they lose
+      document.getElementById('allSearch').style.display='none';
+
+      // Show the point where they gave up
+      const num = (skip + 1)*2
+      const listEl = document.querySelector(".guess-container li:nth-of-type(" + num + ")");
+      listEl.innerHTML = 'Gave up!';
+      listEl.classList.add('red')
       setSkip(5);
     } else {
       setSkip((prevSkip) => prevSkip + 1);
     }
   };
 
+  // Use to style the guess items on an incorrect search.
+  // x is their guess, and y is a color indicating if the got the artist correct (yellow)
+  // or incorrect (red)
+  const handleIncorrectSearch = (x,y) => {
+    // Get the list item that corresponds to how many skips/guesses they have had
+    const num = (skip + 1)*2
+    const listEl = document.querySelector(".guess-container li:nth-of-type(" + num + ")");
+    if (x === 'Skip') {
+      listEl.innerHTML = 'Skipped';
+    }
+    else {
+      listEl.innerHTML = x;
+      if (y === 'y') {
+        listEl.classList.add('yellow')
+      }
+      else {
+        listEl.classList.add('red')
+      }
+    }
+  };
+
   // If the player guesses right, they win!
-  const handleCorrectGuess = () => {
+  const handleCorrectGuess = (x) => {
+    // Style their guess to green
+    const num = (skip + 1)*2
+    const listEl = document.querySelector(".guess-container li:nth-of-type(" + num + ")");
+    listEl.innerHTML = x;
+    listEl.classList.add('green');
+
+    // Hide the search bar
+    document.getElementById('allSearch').style.display='none';
+
     //Show the modal with the win text
     const txt = document.getElementById("win-or-lose");
     txt.className = "win";
@@ -85,17 +124,19 @@ const Home = () => {
   return (
     <div className='Home'>
       <div className='songs'>
-      {song && <Player song={song} skip_init={skip} onSkip={handleIncorrectGuess}/>}
+      {song && <Player song={song} skip_init={skip} onSkip={handleIncorrectGuess} onSkipSearch={handleIncorrectSearch}/>}
         {songs && (
           <SongSearch
             song={song}
             songs={songs}
             onIncorrectGuess={handleIncorrectGuess}
             onCorrectGuess={handleCorrectGuess}
+            onIncorrectSearch={handleIncorrectSearch}
           />
         )}
         {songs && <SongDetails song={song} />}
         <Guesses/>
+        {song && <BottomSong song={song} />}
       </div>
     </div>
   );

@@ -44,39 +44,3 @@
   padding: 5px;
   white-space: nowrap;
 }
-
-.error-message {
-  text-align: center;
-  color: var(--error);
-  opacity: 1;
-  animation-duration: 3s;
-  animation-fill-mode: forwards;
-}
-
-
-.error-message.fade-in {
-  animation-name: fadeInAnimation;
-}
-
-.error-message.fade-out {
-  animation-name: fadeOutAnimation;
-}
-@keyframes fadeInAnimation {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeOutAnimation {
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-}
