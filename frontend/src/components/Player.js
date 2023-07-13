@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, useReducer } from 'react';
+import { useEffect, useRef, useReducer } from 'react';
 import '../component_styles/player_styles.css';
 
-const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
+const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }) => {
   const widgetRef = useRef(null);
   const playPauseRef = useRef(null);
   const giveUpRef = useRef(null);
@@ -77,8 +77,6 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
     }
   }, []);
 
-  const [isLoaded, setIsLoaded] = useState(false);
-
   // Wait until iFrame is loaded to load controls
   useEffect(() => {
 
@@ -92,7 +90,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
     return () => {
       document.getElementById('iFrame').removeEventListener('load', handleLoad);
     };
-  }, []);
+  }, [setIsLoaded]);
 
   // Updates the time slider value and keeps track of skip count
   useEffect(() => {
@@ -134,7 +132,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
           }, 900);
         }
         // If you are at the max time and press play, restart the song
-        else if (currentTime >= skips[skip_init]){
+        else if (currentTime >= skips[skip_init]) {
           restartSong()
         }
         else {
@@ -143,10 +141,10 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
         }
       }
       else {
-          // If you pause the song, change the play/pause button text
-          playPauseRef.current.innerHTML = "PLAY"
-          widgetRef.current.pause();
-          dispatch({ type: 'SET_IS_PLAYING', payload: false });
+        // If you pause the song, change the play/pause button text
+        playPauseRef.current.innerHTML = "PLAY"
+        widgetRef.current.pause();
+        dispatch({ type: 'SET_IS_PLAYING', payload: false });
       }
     }
   };
@@ -212,7 +210,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 600);
-    const seconds = Math.floor((time % 600)/10);
+    const seconds = Math.floor((time % 600) / 10);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
@@ -240,12 +238,15 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch }) => {
           <option>150</option>
         </datalist>
       </div>
-      <div className="game-layout" style={{ display: isLoaded ? 'block' : 'none' }}>
+      <div className="game-layout" >
+        {isLoaded ? 
         <div className="player-controls">
-          <button id="giveup" onClick={giveUp} ref={giveUpRef}>GIVE UP</button>
           <button onClick={playPauseSong} ref={playPauseRef}>PLAY</button>
           <button id="skip" onClick={skipUpdate} ref={skipRef}>SKIP</button>
+          <button id="giveup" onClick={giveUp} ref={giveUpRef}>GIVE UP :(</button>
+
         </div>
+        : null}
       </div>
       <iframe
         width="100%"

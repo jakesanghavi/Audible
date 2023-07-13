@@ -30,14 +30,21 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
     setIsSearchClicked(true);
   };
 
+  // When the user clicks out of the search bar, get rid of song names
+  const handleUnfocus = () => {
+    setIsSearchClicked(false);
+  }
+
   // When the user clicks on a song in the list, handle it
   const handleItemClick = (title, artist) => {
     setSelectedItem(title + ' - ' + artist);
     setSearchQuery(title + ' - ' + artist);
+    // remove remaining border for song list 
+    handleUnfocus();
   };
 
   // When the user presses enter inside of the search bar, handle their guess
-  const handleKeyPress = async(event) => {
+  const handleKeyPress = async (event) => {
     // Disallow the user from searching songs that are not in the DB
     if (map[searchQuery.toLowerCase()] === undefined) {
       return;
@@ -75,7 +82,7 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
 
   return (
     <div className='allSearch' id='allSearch'>
-      <div className='song-search'>
+      <div className='song-search' onMouseLeave={handleUnfocus}>
         <input
           type='text'
           value={searchQuery}
@@ -88,15 +95,18 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
         />
 
         {isSearchClicked && (
-          <div className='song-list-container' id='song-list-container'>
-            <ul className='song-list'>
-              {filteredSongs.map((song, index) => (
-                <li key={index} onClick={() => handleItemClick(song.song_title, song.artist)}>
-                  {decodeHTMLEntities(song.song_title)} - {decodeHTMLEntities(song.artist)}
-                </li>
-              ))}
-            </ul>
-          </div>
+          // if a song has been entered into bar, don't render the list container div
+          <>{filteredSongs.length === 0 ? null :
+            <div className='song-list-container' id='song-list-container'>
+              <ul className='song-list'>
+                {filteredSongs.map((song, index) => (
+                  <li key={index} onClick={() => handleItemClick(song.song_title, song.artist)}>
+                    {decodeHTMLEntities(song.song_title)} - {decodeHTMLEntities(song.artist)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          }</>
         )}
       </div>
     </div>

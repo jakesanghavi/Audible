@@ -9,6 +9,8 @@ const Home = () => {
   const [song, setSong] = useState(null);
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+
 
   // GET one random song from the database
   useEffect(() => {
@@ -44,10 +46,10 @@ const Home = () => {
     // Overset the skips to know you have lost, if the give up button was pressed.
     if (x === 'Give up') {
       // Remove the search bar when they lose
-      document.getElementById('allSearch').style.display='none';
+      document.getElementById('allSearch').style.display = 'none';
 
       // Show the point where they gave up
-      const num = (skip + 1)*2
+      const num = (skip + 1) * 2
       const listEl = document.querySelector(".guess-container li:nth-of-type(" + num + ")");
       listEl.innerHTML = 'Gave up!';
       listEl.classList.add('red')
@@ -60,9 +62,9 @@ const Home = () => {
   // Use to style the guess items on an incorrect search.
   // x is their guess, and y is a color indicating if the got the artist correct (yellow)
   // or incorrect (red)
-  const handleIncorrectSearch = (x,y) => {
+  const handleIncorrectSearch = (x, y) => {
     // Get the list item that corresponds to how many skips/guesses they have had
-    const num = (skip + 1)*2
+    const num = (skip + 1) * 2
     const listEl = document.querySelector(".guess-container li:nth-of-type(" + num + ")");
     if (x === 'Skip') {
       listEl.innerHTML = 'Skipped';
@@ -81,13 +83,13 @@ const Home = () => {
   // If the player guesses right, they win!
   const handleCorrectGuess = (x) => {
     // Style their guess to green
-    const num = (skip + 1)*2
+    const num = (skip + 1) * 2
     const listEl = document.querySelector(".guess-container li:nth-of-type(" + num + ")");
     listEl.innerHTML = x;
     listEl.classList.add('green');
 
     // Hide the search bar
-    document.getElementById('allSearch').style.display='none';
+    document.getElementById('allSearch').style.display = 'none';
 
     //Show the modal with the win text
     const txt = document.getElementById("win-or-lose");
@@ -119,11 +121,11 @@ const Home = () => {
       document.getElementById('giveup').disabled = 'true';
 
       // Hide the search bar
-      document.getElementById('allSearch').style.display='none';
+      document.getElementById('allSearch').style.display = 'none';
 
       // Hide the dropdown song list
       if (document.getElementById("song-list-container") !== null) {
-        document.getElementById("song-list-container").style.display='none';
+        document.getElementById("song-list-container").style.display = 'none';
       }
       // Set the number of skips back to 4
       // This may be a bandaid fix and should be bettered later.
@@ -132,21 +134,31 @@ const Home = () => {
   }, [skip]);
 
   return (
-    <div className='Home'>
-      <div className='songs'>
-      {song && <Player song={song} skip_init={skip} onSkip={handleIncorrectGuess} onSkipSearch={handleIncorrectSearch}/>}
-        {songs && (
-          <SongSearch
+    <div className='Home' style={{borderRadius: '30px', backgroundColor:'#E0DBE7 ', padding: '8rem 0', height:'60vh'}}>
+      <div className='songs' style={{display: 'flex', flexDirection:'column', justifyContent: 'center'}}>
+        {/* only load the player when there are songs */}
+        {song &&
+          <Player
             song={song}
-            songs={songs}
-            onIncorrectGuess={handleIncorrectGuess}
-            onCorrectGuess={handleCorrectGuess}
-            onIncorrectSearch={handleIncorrectSearch}
-          />
-        )}
-        {songs && <SongDetails song={song} />}
-        <Guesses/>
-        {song && <BottomSong song={song} />}
+            skip_init={skip}
+            onSkip={handleIncorrectGuess}
+            onSkipSearch={handleIncorrectSearch}
+            isLoaded={isLoaded}
+            setIsLoaded={setIsLoaded} />}
+        {/* only load the search bar and guesses when there are songs & player is loaded */}
+        {songs && isLoaded && (
+          <>
+            <SongSearch
+              song={song}
+              songs={songs}
+              onIncorrectGuess={handleIncorrectGuess}
+              onCorrectGuess={handleCorrectGuess}
+              onIncorrectSearch={handleIncorrectSearch}
+            />
+            <SongDetails song={song} />
+            <Guesses />
+            <BottomSong song={song} />
+          </>)}
       </div>
     </div>
   );
