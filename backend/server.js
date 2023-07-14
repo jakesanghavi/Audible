@@ -17,7 +17,7 @@ app.use((request, response, next) => {
 })
 
 app.use(cors({
-    origin: 'https://musicle-official.netlify.app/',
+    origin: 'https://musicle-official.netlify.app',
     optionsSuccessStatus: 200
 }))
 
