@@ -22,7 +22,7 @@ app.use(cors({
 }))
 
 // routes
-app.use('/api/songs', songRoutes)
+app.use('/', songRoutes)
 
 // connect to database
 mongoose.connect(process.env.MONGO_URI)

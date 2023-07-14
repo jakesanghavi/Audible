@@ -1,6 +1,12 @@
 const Song = require('../models/song_model.js')
 const mongoose = require('mongoose')
 
+// GET the homepage
+const getHome = async (request, response) => {
+  console.log("hello!")
+  return response.send("Backend landing page");
+}
+
 // GET all songs
 const getSongs = async (request, response) => {
   const songs = await Song.find({}).sort({ createdAt: -1 })
@@ -84,6 +90,7 @@ const updateSong = async (request, response) => {
 }
 
 module.exports = {
+  getHome,
   getSongs,
   getRandom,
   getSong,

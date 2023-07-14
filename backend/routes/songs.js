@@ -1,6 +1,7 @@
 const express = require('express')
 
 const {
+    getHome,
     getSongs,
     getRandom,
     getSong,
@@ -11,21 +12,24 @@ const {
 
 const router = express.Router()
 
+// GET the homepage (prevent crashing)
+router.get('/', getHome)
+
 // GET all songs
-router.get('/', getSongs)
+router.get('/api/songs/', getSongs)
 
 // GET one random song
-router.get('/random/random/', getRandom)
+router.get('/api/songs/random/random/', getRandom)
 
 //GET single song
-router.get('/:id', getSong)
+router.get('/api/songs/:id', getSong)
 
 //POST a new song (?)
-router.post('/', postSong)
+// router.post('/', postSong)
 
 //DELETE a song (?)
-router.delete('/:id', deleteSong)
+// router.delete('/:id', deleteSong)
 //UPDATE a song (?)
-router.patch('/:id', updateSong)
+// router.patch('/:id', updateSong)
 
 module.exports = router
