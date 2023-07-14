@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 
 // GET the homepage
 const getHome = async (request, response) => {
-  console.log("hello!")
   return response.send("Backend landing page");
 }
 
