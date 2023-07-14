@@ -15,6 +15,8 @@ const Home = () => {
   // GET one random song from the database
   useEffect(() => {
     const fetchRand = async () => {
+      //dev
+      //const response = await fetch('http://localhost:3000/api/songs/random/random');
       const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
       const json = await response.json();
 
@@ -30,6 +32,8 @@ const Home = () => {
   // GET all songs from the database
   useEffect(() => {
     const fetchAll = async () => {
+      //dev
+      //const response = await fetch('http://localhost:3000/api/songs/');
       const response = await fetch('https://musicle-official.onrender.com/api/songs/');
       const json = await response.json();
 
