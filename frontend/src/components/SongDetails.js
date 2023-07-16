@@ -39,7 +39,7 @@ const SongDetails = ({ song }) => {
     <div id="song-details-modal" ref={modalRef}>
       <div className="song-details">
           <span className="close" onClick={closeModal}>&times;</span>
-          <h2 id="win-or-lose" className="win">Congratulations! You win!</h2>
+          <h2 id="win-or-lose" className="win">Congratulations!<br/>You win!</h2>
         <a id="full-song" target="_blank" rel='noreferrer' href={song.full_link}>
           <h4>{decodeHTMLEntities(song.song_title)}</h4>
           <p><strong>Artist: </strong>{decodeHTMLEntities(song.artist)}</p>

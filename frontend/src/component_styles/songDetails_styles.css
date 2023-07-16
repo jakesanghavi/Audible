@@ -56,7 +56,7 @@
   font-size: 0.9em;
   color: #555;
 }
-.song-details span {
+/* .song-details span {
   position: absolute;
   top: 20px;
   right: 20px;
@@ -65,7 +65,7 @@
   padding: 6px;
   border-radius: 50%;
   color: #333;
-}
+} */
 
 a:link { text-decoration: none; }
 

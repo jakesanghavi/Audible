@@ -118,7 +118,7 @@ const Home = () => {
       // Show the modal with the lose text
       const txt = document.getElementById("win-or-lose");
       txt.className = "lose";
-      txt.innerHTML = "You lose. Better luck next time!"
+      txt.innerHTML = "You lose.<br/>Maybe next time!"
       const modal = document.getElementById("song-details-modal");
       modal.style.display = "block";
 
