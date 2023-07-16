@@ -16,10 +16,15 @@ function App() {
     }
 
   }, [newDate, date]);
+
+  const openLoginModal = () => {
+    document.getElementById('sign-in-modal').style.display='block';
+  }
+
   return (
     <div className="App" style={{backgroundColor: '#ECE5F0', height: '100vh'}}>
       <BrowserRouter>
-        <NavBar/>
+        <NavBar openLoginModal={openLoginModal}/>
         <div className='pages'>
           <Routes>
             <Route

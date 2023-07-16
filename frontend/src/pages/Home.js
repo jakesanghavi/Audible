@@ -4,6 +4,7 @@ import SongSearch from '../components/SongSearch';
 import Player from '../components/Player';
 import Guesses from '../components/Guesses';
 import BottomSong from '../components/BottomSong';
+import Login from '../components/Login';
 
 const Home = () => {
   const [song, setSong] = useState(null);
@@ -16,7 +17,7 @@ const Home = () => {
   useEffect(() => {
     const fetchRand = async () => {
       //dev
-      //const response = await fetch('http://localhost:3000/api/songs/random/random');
+      // const response = await fetch('http://localhost:3008/api/songs/random/random');
       const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
       const json = await response.json();
 
@@ -33,7 +34,7 @@ const Home = () => {
   useEffect(() => {
     const fetchAll = async () => {
       //dev
-      //const response = await fetch('http://localhost:3000/api/songs/');
+      // const response = await fetch('http://localhost:3008/api/songs/');
       const response = await fetch('https://musicle-official.onrender.com/api/songs/');
       const json = await response.json();
 
@@ -99,7 +100,7 @@ const Home = () => {
     const txt = document.getElementById("win-or-lose");
     txt.className = "win";
     txt.innerHTML = "Congratulations! You win!"
-    const modal = document.getElementById("modal");
+    const modal = document.getElementById("song-details-modal");
     modal.style.display = "block";
 
     // Disable the buttons for skip and give up if the game is over
@@ -118,7 +119,7 @@ const Home = () => {
       const txt = document.getElementById("win-or-lose");
       txt.className = "lose";
       txt.innerHTML = "You lose. Better luck next time!"
-      const modal = document.getElementById("modal");
+      const modal = document.getElementById("song-details-modal");
       modal.style.display = "block";
 
       // Disable the buttons for skip and give up if the game is over
@@ -139,6 +140,8 @@ const Home = () => {
 
   return (
     <div className='Home' style={{borderRadius: '30px', backgroundColor:'#E0DBE7 ', padding: '8rem 0', height:'60vh'}}>
+      {/* <NavBar/> */}
+      <Login/>
       <div className='songs' style={{display: 'flex', flexDirection:'column', justifyContent: 'center'}}>
         {/* only load the player when there are songs */}
         {song &&

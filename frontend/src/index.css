@@ -36,8 +36,23 @@ header .container {
 }
 
 .blank-space {
-  flex: 50;
+  flex: 45;
   padding: 0 10px;
+}
+
+.sign-in-text {
+  flex: 5;
+  padding: 0 10px;
+  text-align: center;
+  color: white;
+}
+
+.sign-in-text:hover {
+  cursor: pointer;
+}
+
+#sign-in-modal {
+  display: none;
 }
 
 header a {

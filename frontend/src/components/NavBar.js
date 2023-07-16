@@ -2,7 +2,11 @@ import {Link} from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
-const NavBar = () => {
+const NavBar = (openLoginModal) => {
+
+    const loginModalDummy = () => {
+        openLoginModal.openLoginModal();
+    }
 
     return (
         <header>
@@ -28,6 +32,9 @@ const NavBar = () => {
                     </Link>
                 </div>
                 <div className="blank-space">
+                </div>
+                <div className="sign-in-text" id="sign-in-text" onClick={loginModalDummy}>
+                    <h2>Sign In</h2>
                 </div>
             </div>
         </header>

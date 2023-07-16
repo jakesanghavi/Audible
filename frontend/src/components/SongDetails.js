@@ -36,7 +36,7 @@ const SongDetails = ({ song }) => {
   }, []);
 
   return (
-    <div id="modal" ref={modalRef}>
+    <div id="song-details-modal" ref={modalRef}>
       <div className="song-details">
           <span className="close" onClick={closeModal}>&times;</span>
           <h2 id="win-or-lose" className="win">Congratulations! You win!</h2>
