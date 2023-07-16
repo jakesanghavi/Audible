@@ -44,19 +44,19 @@ const Login = () => {
             <input type="radio" name="slide" id="login" defaultChecked={isLoginSelected} />
             <input type="radio" name="slide" id="signup" defaultChecked={!isLoginSelected} />
             <label htmlFor="login" className="slide login" onClick={loginSelect}>Login</label>
-            <label htmlFor="signup" className="slide signup" onClick={signUpSelect}>Register</label>
+            <label htmlFor="signup" className="slide signup" onClick={signUpSelect}>Sign Up</label>
             <div className="slider-tab"></div>
           </div>
           <div className="form-inner">
             <form action="#" className="login">
               <div className="field">
-                <input type="text" placeholder="Username" required />
+                <input type="text" placeholder="Email Address" required />
               </div>
               <div className="field">
                 <input type="password" placeholder="Password" required />
               </div>
               <div className="pass-link">
-                <a href="#">Forgot password?</a>
+                <a href="/">Forgot password?</a>
               </div>
               <div className="field btn">
                 <div className="btn-layer"></div>
@@ -65,7 +65,7 @@ const Login = () => {
             </form>
             <form action="#" className="signup">
               <div className="field">
-                <input type="text" placeholder="Username" required />
+                <input type="text" placeholder="Email Address" required />
               </div>
               <div className="field">
                 <input type="password" placeholder="Password" required />
@@ -75,7 +75,7 @@ const Login = () => {
               </div>
               <div className="field btn">
                 <div className="btn-layer"></div>
-                <input type="submit" value="Signup" />
+                <input type="submit" value="Sign Up" />
               </div>
             </form>
           </div>
