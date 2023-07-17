@@ -129,6 +129,18 @@
     width: 50%;
     transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
   }
+
+  .form-container .form-inner .pass-link{
+    width: 100%;
+  }
+
+  .form-container .form-inner .welcome {
+    padding-top: 20px;
+    width: 100%;
+    color: #73c771;
+    font-size: 25px;
+  }
+
   .form-inner div .field{
     height: 50px;
     width: 100%;

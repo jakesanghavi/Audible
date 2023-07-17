@@ -6,9 +6,10 @@ const Login = () => {
   const [isLoginSelected, setIsLoginSelected] = useState(true);
   const loginForm = document.querySelector("div.login");
   const signUpEmail = useRef(null);
+  const signUpUsername = useRef(null);
   const firstPassword = useRef(null);
   const confirmPassword = useRef(null);
-  const loginEmail = useRef(null);
+  const loginUsername = useRef(null);
   const loginPassword = useRef(null);
 
   const signUpSelect = () => {
@@ -21,12 +22,12 @@ const Login = () => {
     loginForm.style.marginLeft = "0%";
   };
 
-  const checkLogin= async() => {
-    const email_address = loginEmail.current.value;
+  const checkLogin = async () => {
+    const username = loginUsername.current.value;
     const password = loginPassword.current.value;
 
-    if (email_address === '' | !email_address | password === '' | !password) {
-      if (email_address === '' | !email_address) {
+    if (username === '' | !username | password === '' | !password) {
+      if (username === '' | !username) {
         console.log("Please input your email address.")
       }
       if (password === '' | !password) {
@@ -37,15 +38,14 @@ const Login = () => {
 
     try {
       //dev
-      const response = await fetch('http://localhost:3008/api/users/' + email_address);
+      const response = await fetch('http://localhost:3008/api/users/username/' + username);
       // const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
-      console.log(response)
       if (response.status === 399) {
         console.log("User does not exist!")
       }
       else {
         // dev
-        const resp = await fetch('http://localhost:3008/api/users/' + email_address);
+        const resp = await fetch('http://localhost:3008/api/users/username/' + username);
         const respJson = await resp.json();
         if (respJson.password !== password) {
           console.log("Password is incorrect.")
@@ -61,14 +61,18 @@ const Login = () => {
 
   }
 
-  const checkSignup = async() => {
+  const checkSignup = async () => {
     const email_address = signUpEmail.current.value;
+    const username = signUpUsername.current.value;
     const password = firstPassword.current.value;
     const passwordConfirm = confirmPassword.current.value;
 
-    if (email_address === '' | !email_address | password === '' | !password | passwordConfirm === '' | !passwordConfirm) {
+    if (email_address === '' | !email_address | password === '' | !password | passwordConfirm === '' | !passwordConfirm | username === '' | !username) {
       if (email_address === '' | !email_address) {
         console.log("Please input your email address.")
+      }
+      if (username === '' | !username) {
+        console.log("Please input your username.")
       }
       if (password === '' | !password) {
         console.log("Please input your password.")
@@ -86,22 +90,31 @@ const Login = () => {
 
     try {
       //dev
-      const response = await fetch('http://localhost:3008/api/users/' + email_address);
+      const response = await fetch('http://localhost:3008/api/users/email/' + email_address);
       // const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
-      console.log(response)
       if (response.status === 200) {
         console.log("Email Address already in use!")
+        return;
       }
+
+      //dev
+      const response2 = await fetch('http://localhost:3008/api/users/username/' + username);
+      // const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
+      if (response2.status === 200) {
+        console.log("Username already in use!")
+        return;
+      }
+
       else {
         // dev
         fetch('http://localhost:3008/api/users/' + email_address, {
-        //fetch('https://musicle-official.onrender.com/api/users' + email_address, {
+          //fetch('https://musicle-official.onrender.com/api/users' + email_address, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ "email_address": email_address, "password": password })
+          body: JSON.stringify({ "email_address": email_address, "username": username, password: password })
         });
       }
     }
@@ -142,14 +155,19 @@ const Login = () => {
           </div>
           <div className="form-inner">
             <div className="login">
-              <div className="field">
-                <input type="text" id="loginEmail" placeholder="Email Address" required ref={loginEmail}/>
+              <div className="welcome">
+                <span>
+                  Welcome back to Musicle!
+                </span>
               </div>
               <div className="field">
-                <input type="password" id="loginPassword" placeholder="Password" required ref={loginPassword}/>
+                <input type="text" id="loginEmail" placeholder="Username" required ref={loginUsername} />
+              </div>
+              <div className="field">
+                <input type="password" id="loginPassword" placeholder="Password" required ref={loginPassword} />
               </div>
               <div className="pass-link">
-                <a href="/">Forgot password?</a>
+                <a href="/">Forgot username/password?</a>
               </div>
               <div className="field btn">
                 <div className="btn-layer"></div>
@@ -159,6 +177,9 @@ const Login = () => {
             <div className="signup">
               <div className="field">
                 <input type="text" id="signUpEmail" placeholder="Email Address" required ref={signUpEmail} />
+              </div>
+              <div className="field">
+                <input type="text" id="signUpUsername" placeholder="Username" required ref={signUpUsername} />
               </div>
               <div className="field">
                 <input type="password" id="signUpPassword" placeholder="Password" required ref={firstPassword} />

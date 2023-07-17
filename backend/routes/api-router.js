@@ -11,7 +11,8 @@ const {
 } = require('../controllers/songsController')
 
 const {
-    getUser,
+    getUserByUsername,
+    getUserByEmail,
     postUser
 } = require('../controllers/usersController')
 
@@ -37,8 +38,11 @@ router.get('/api/songs/:id', getSong)
 //UPDATE a song (?)
 // router.patch('/:id', updateSong)
 
-// GET a specific user
-router.get('/api/users/:id', getUser);
+// GET a specific user by email
+router.get('/api/users/email/:id', getUserByEmail);
+
+// GET a specific user by email
+router.get('/api/users/username/:id', getUserByUsername);
 
 // POST a user to the DB
 router.post('/api/users/:id', postUser)
