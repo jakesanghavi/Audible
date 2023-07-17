@@ -10,6 +10,11 @@ const {
     updateSong
 } = require('../controllers/songsController')
 
+const {
+    getUser,
+    postUser
+} = require('../controllers/usersController')
+
 const router = express.Router()
 
 // GET the homepage (prevent crashing)
@@ -31,5 +36,11 @@ router.get('/api/songs/:id', getSong)
 // router.delete('/:id', deleteSong)
 //UPDATE a song (?)
 // router.patch('/:id', updateSong)
+
+// GET a specific user
+router.get('/api/users/:id', getUser);
+
+// POST a user to the DB
+router.post('/api/users/:id', postUser)
 
 module.exports = router

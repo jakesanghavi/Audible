@@ -3,7 +3,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 const app = express()
-const songRoutes = require('./routes/songs')
+const songRoutes = require('./routes/api-router')
 const cors = require('cors');
 
 // middleware

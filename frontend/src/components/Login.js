@@ -4,6 +4,10 @@ import '../component_styles/login_styles.css';
 const Login = () => {
   const modalRef = useRef(null);
   const [isLoginSelected, setIsLoginSelected] = useState(true);
+  const loginForm = document.querySelector("div.login");
+  const signUpEmail = useRef(null);
+  const firstPassword = useRef(null);
+  const confirmPassword = useRef(null);
 
   const signUpSelect = () => {
     setIsLoginSelected(false);
@@ -15,7 +19,42 @@ const Login = () => {
     loginForm.style.marginLeft = "0%";
   };
 
-  const loginForm = document.querySelector("form.login");
+  const checkUserExists = async () => {
+    const email_address = signUpEmail.current.value;
+    const password = firstPassword.current.value;
+    const passwordConfirm = confirmPassword.current.value;
+
+    if (password !== passwordConfirm) {
+      console.log("Passwords must match!")
+      return;
+    }
+
+    console.log(email_address);
+
+    //dev
+    try {
+      const response = await fetch('http://localhost:3008/api/users/' + email_address);
+      // const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
+      if (response.status == 200) {
+        console.log("Email Address already in use!")
+      }
+      else {
+        // dev
+        fetch('http://localhost:3008/api/users/' + email_address, {
+        //fetch('https://musicle-official.onrender.com/api/users' + email_address, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ "email_address": email_address, "password": password })
+        });
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
 
   const closeModal = () => {
     modalRef.current.style.display = 'none';
@@ -48,7 +87,7 @@ const Login = () => {
             <div className="slider-tab"></div>
           </div>
           <div className="form-inner">
-            <form action="#" className="login">
+            <div className="login">
               <div className="field">
                 <input type="text" placeholder="Email Address" required />
               </div>
@@ -60,24 +99,25 @@ const Login = () => {
               </div>
               <div className="field btn">
                 <div className="btn-layer"></div>
-                <input type="submit" value="Login" />
+                <input style={{ width: "100%" }} type="button" value="Login" />
               </div>
-            </form>
-            <form action="#" className="signup">
+            </div>
+            <div className="signup">
               <div className="field">
-                <input type="text" placeholder="Email Address" required />
-              </div>
-              <div className="field">
-                <input type="password" placeholder="Password" required />
+                <input type="text" id="signUpUserName" placeholder="Email Address" required ref={signUpEmail} />
               </div>
               <div className="field">
-                <input type="password" placeholder="Confirm password" required />
+                <input type="password" id="signUpPassword" placeholder="Password" required ref={firstPassword} />
+              </div>
+              <div className="field">
+                <input type="password" id="signUpPasswordConfirm"
+                  placeholder="Confirm password" required ref={confirmPassword} />
               </div>
               <div className="field btn">
                 <div className="btn-layer"></div>
-                <input type="submit" value="Sign Up" />
+                <input type="button" style={{ width: "100%" }} value="Sign Up" onClick={checkUserExists} />
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
