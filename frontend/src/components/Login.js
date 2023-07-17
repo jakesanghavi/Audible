@@ -29,12 +29,11 @@ const Login = () => {
       return;
     }
 
-    console.log(email_address);
-
     //dev
     try {
       const response = await fetch('http://localhost:3008/api/users/' + email_address);
       // const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
+      console.log(response)
       if (response.status == 200) {
         console.log("Email Address already in use!")
       }

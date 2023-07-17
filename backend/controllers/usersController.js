@@ -3,10 +3,10 @@ const mongoose = require('mongoose')
 
 // GET a specific user
 const getUser = async (request, response) => {
-    const { email } = request.params
+    const { id } = request.params
 
     try {
-      const userData = await User.findOne({ email_address: email }).exec();
+      const userData = await User.findOne({ email_address: id });
       if (!userData) {
         return response.status(399).json({ "error": "User does not exist" })
       }
