@@ -7,7 +7,7 @@
   --error: #e7195a;
 }
 body {
-  background: #f1f1f1;
+  background: #ECE5F0;
   margin: 0;
   font-family: "Poppins";
 }
@@ -20,6 +20,7 @@ header .container {
   /* padding: 10px 20px; */
   display: flex;
   align-items: center;
+  justify-content: center;
   /* justify-content: space-between; */
   /* justify-content: space-between;  */
 }
@@ -136,5 +137,5 @@ header a {
     -webkit-transition:all 200ms ease-in;
     -o-transition:all 200ms ease-in;
     transition:all 200ms ease-in;
-    z-index:500;
+    position: relative;
 }

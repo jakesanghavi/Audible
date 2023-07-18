@@ -1,8 +1,16 @@
 #bottom-songs {
     display: none;
-    justify-content: center;
-    align-items: center;
+    /* justify-content: center; */
+    /* align-items: center; */
     /* Add this line to vertically align the items */
+}
+
+.bottom-songs-details {
+    display: flex;
+    flex-direction: column;
+    /* vertical-align: middle; */
+    /* align-items: center; */
+    /* height: fit-content; */
 }
 
 a {
@@ -29,32 +37,29 @@ a:active {
     text-decoration: none;
 }
 
-img {
-    height: 20rem;
-    vertical-align: middle;
-    /* Add this line to vertically align the image */
+#albumArt {
+    height: 15rem;
 }
 
-.bottomsong-details {
-    display: flex;
-    /* Add this line to create a flex container */
-    flex-direction: column;
-    /* Add this line to stack the <li> items vertically */
-    align-items: flex-start;
-    /* Add this line to align the <li> items to the left */
-}
-
-.bottomsong-details ul {
-    margin: 0;
-    padding: 0;
-}
-
-.bottomsong-details li {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+#bottomSong-title {
+    padding-top: 0;
+    margin-top: 0;
 }
 
 h3 {
     font-weight: normal;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.grid-container {
+    margin-top: 3%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+}
+
+#albumCoverLink {
+    margin-right: 2%;
 }

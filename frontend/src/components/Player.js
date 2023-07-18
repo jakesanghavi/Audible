@@ -240,7 +240,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
       </div>
       <div className="game-layout" >
         {isLoaded ? 
-        <div className="player-controls">
+        <div className="player-controls" id='player-controls'>
           <button onClick={playPauseSong} ref={playPauseRef}>PLAY</button>
           <button id="skip" onClick={skipUpdate} ref={skipRef}>SKIP</button>
           <button id="giveup" onClick={giveUp} ref={giveUpRef}>GIVE UP :(</button>
