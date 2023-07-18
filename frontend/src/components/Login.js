@@ -11,6 +11,10 @@ const Login = () => {
   const confirmPassword = useRef(null);
   const loginUsername = useRef(null);
   const loginPassword = useRef(null);
+  //dev
+  // const route = 'http://localhost:3008'
+  //prod
+  const route = 'https://musicle-official.onrender.com'
 
   const signUpSelect = () => {
     setIsLoginSelected(false);
@@ -37,28 +41,26 @@ const Login = () => {
     }
 
     try {
-      //dev
-      const response = await fetch('http://localhost:3008/api/users/username/' + username);
-      // const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
+      const response = await fetch(route + '/api/users/username/' + username);
       if (response.status === 399) {
         console.log("User does not exist!")
       }
       else {
         // dev
-        const resp = await fetch('http://localhost:3008/api/users/username/' + username);
+        const resp = await fetch(route + '/api/users/username/' + username);
         const respJson = await resp.json();
         if (respJson.password !== password) {
           console.log("Password is incorrect.")
         }
         else {
           console.log("Logged in!")
+          closeModal();
         }
       }
     }
     catch (error) {
       console.log(error);
     }
-
   }
 
   const checkSignup = async () => {
@@ -83,32 +85,38 @@ const Login = () => {
       return;
     }
 
-    if (password !== passwordConfirm) {
-      console.log("Passwords must match!")
-      return;
-    }
 
     try {
-      //dev
-      const response = await fetch('http://localhost:3008/api/users/email/' + email_address);
-      // const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
+      const response = await fetch(route + '/api/users/email/' + email_address);
       if (response.status === 200) {
         console.log("Email Address already in use!")
         return;
       }
 
-      //dev
-      const response2 = await fetch('http://localhost:3008/api/users/username/' + username);
-      // const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
+      const response2 = await fetch(route + '/api/users/username/' + username);
       if (response2.status === 200) {
         console.log("Username already in use!")
         return;
       }
 
       else {
+        if (password !== passwordConfirm) {
+          console.log("Passwords must match!")
+          return;
+        }
+
+        if (password.length < 8) {
+          console.log("Password must contain at least 8 characters!")
+          return;
+        }
+
+        const regex = /^[a-zA-Z0-9!#$^*]+$/;
+        if (!regex.test(password)) {
+          console.log("Password can only contain letters, numbers, !, #, $, ^, and *.")
+          return;
+        }
         // dev
-        fetch('http://localhost:3008/api/users/' + email_address, {
-          //fetch('https://musicle-official.onrender.com/api/users' + email_address, {
+        fetch(route + '/api/users/' + email_address, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -116,10 +124,33 @@ const Login = () => {
           },
           body: JSON.stringify({ "email_address": email_address, "username": username, password: password })
         });
+        console.log("Signed up successfully!")
+        closeModal();
       }
     }
     catch (error) {
       console.log(error);
+    }
+  }
+
+  const showLoginPassword = () => {
+    if (loginPassword.current.type === "password") {
+      loginPassword.current.type = "text";
+    } else {
+      loginPassword.current.type = "password";
+    }
+  }
+
+  const showSignUpPassword = () => {
+    if (firstPassword.current.type === "password") {
+      firstPassword.current.type = "text";
+    } else {
+      firstPassword.current.type = "password";
+    }
+    if (confirmPassword.current.type === "password") {
+      confirmPassword.current.type = "text";
+    } else {
+      confirmPassword.current.type = "password";
     }
   }
 
@@ -166,6 +197,9 @@ const Login = () => {
               <div className="field">
                 <input type="password" id="loginPassword" placeholder="Password" required ref={loginPassword} />
               </div>
+              <div className="showPassword">
+                <input type="checkbox" onClick={showLoginPassword} /> Show password
+              </div>
               <div className="pass-link">
                 <a href="/">Forgot username/password?</a>
               </div>
@@ -187,6 +221,9 @@ const Login = () => {
               <div className="field">
                 <input type="password" id="signUpPasswordConfirm"
                   placeholder="Confirm password" required ref={confirmPassword} />
+              </div>
+              <div className="showPassword">
+                <input type="checkbox" onClick={showSignUpPassword} /> Show password
               </div>
               <div className="field btn">
                 <div className="btn-layer"></div>
