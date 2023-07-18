@@ -30,11 +30,11 @@ const Login = () => {
     const username = loginUsername.current.value;
     const password = loginPassword.current.value;
 
-    if (username === '' | !username | password === '' | !password) {
-      if (username === '' | !username) {
+    if (username === '' || !username || password === '' || !password) {
+      if (username === '' || !username) {
         console.log("Please input your email address.")
       }
-      if (password === '' | !password) {
+      if (password === '' || !password) {
         console.log("Please input your password.")
       }
       return;
@@ -69,18 +69,27 @@ const Login = () => {
     const password = firstPassword.current.value;
     const passwordConfirm = confirmPassword.current.value;
 
-    if (email_address === '' | !email_address | password === '' | !password | passwordConfirm === '' | !passwordConfirm | username === '' | !username) {
+    const emailRegex = /^[a-zA-Z0-9!#$%&*+\-/=?^_{|}~]+@[a-zA-Z0-9!#$%&*+\-/=?^_{|}~]+\.[a-zA-Z0-9!#$%&*+\-/=?^_{|}~]{2,}$/;
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+    if (email_address === '' || !email_address || password === ''|| !password || passwordConfirm === '' || 
+    !passwordConfirm || username === '' || !username || !emailRegex.test(email_address) || !usernameRegex.test(username)) {
       if (email_address === '' | !email_address) {
         console.log("Please input your email address.")
       }
-      if (username === '' | !username) {
+      if (username === '' || !username) {
         console.log("Please input your username.")
       }
-      if (password === '' | !password) {
+      if (password === '' || !password) {
         console.log("Please input your password.")
       }
-      if (passwordConfirm === '' | !passwordConfirm) {
+      if (passwordConfirm === '' || !passwordConfirm) {
         console.log("Please confirm password.")
+      }
+      if (!emailRegex.test(email_address)) {
+        console.log("Please input a valid email address.")
+      }
+      if (!usernameRegex.test(username)) {
+        console.log("Username may only include letters and numbers.")
       }
       return;
     }
@@ -110,8 +119,8 @@ const Login = () => {
           return;
         }
 
-        const regex = /^[a-zA-Z0-9!#$^*]+$/;
-        if (!regex.test(password)) {
+        const passwordRegex = /^[a-zA-Z0-9!#$^*]+$/;
+        if (!passwordRegex.test(password)) {
           console.log("Password can only contain letters, numbers, !, #, $, ^, and *.")
           return;
         }
