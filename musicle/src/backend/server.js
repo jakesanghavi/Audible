@@ -18,8 +18,8 @@ app.use((request, response, next) => {
 
 app.use(cors({
     //dev
-    // origin: 'http://localhost:3000',
-    origin: 'https://musicle-official.netlify.app',
+    origin: 'http://localhost:3000',
+    // origin: 'https://musicle-official.netlify.app',
     optionsSuccessStatus: 200
 }))
 

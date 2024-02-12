@@ -6,9 +6,19 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
   const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
 
+  // get title without artist information 
+  function parseTitle(songTitle){
+    // split title based on "- " (present with artist)
+    let arr = songTitle.split("- ");
+
+    // return parsed title
+    return arr[arr.length - 1];
+  }
+
   // Create a hashmap of all songs/artists in the DB
   const map = {};
   songs.forEach((obj) => {
+    // console.log(obj)
     const key = (obj.song_title + ' - ' + obj.artist).toLowerCase();
     map[key] = 1;
   });
