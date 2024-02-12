@@ -6,9 +6,19 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
   const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
 
+  // get title without artist information 
+  function parseTitle(songTitle){
+    // split title based on "- " (present with artist)
+    let arr = songTitle.split("- ");
+
+    // return parsed title
+    return arr[arr.length - 1];
+  }
+
   // Create a hashmap of all songs/artists in the DB
   const map = {};
   songs.forEach((obj) => {
+    // console.log(obj)
     const key = (obj.song_title + ' - ' + obj.artist).toLowerCase();
     map[key] = 1;
   });
@@ -100,8 +110,8 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
             <div className='song-list-container' id='song-list-container'>
               <ul className='song-list'>
                 {filteredSongs.map((song, index) => (
-                  <li key={index} onClick={() => handleItemClick(song.song_title, song.artist)}>
-                    {decodeHTMLEntities(song.song_title)} - {decodeHTMLEntities(song.artist)}
+                  <li key={index} onClick={() => handleItemClick(parseTitle(song.song_title), song.artist)}>
+                    {decodeHTMLEntities(parseTitle(song.song_title))} - {decodeHTMLEntities(song.artist)}
                   </li>
                 ))}
               </ul>
