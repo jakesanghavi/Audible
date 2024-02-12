@@ -110,8 +110,8 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
             <div className='song-list-container' id='song-list-container'>
               <ul className='song-list'>
                 {filteredSongs.map((song, index) => (
-                  <li key={index} onClick={() => handleItemClick(parseTitle(song.song_title), song.artist)}>
-                    {decodeHTMLEntities(parseTitle(song.song_title))} - {decodeHTMLEntities(song.artist)}
+                  <li key={index} onClick={() => handleItemClick(song.song_title, song.artist)}>
+                    {decodeHTMLEntities(song.song_title)} - {decodeHTMLEntities(song.artist)}
                   </li>
                 ))}
               </ul>
