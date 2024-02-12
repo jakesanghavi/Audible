@@ -34,8 +34,8 @@ const Home = () => {
   useEffect(() => {
     const fetchAll = async () => {
       //dev
-      const response = await fetch('http://localhost:3008/api/songs/');
-    //   const response = await fetch('https://musicle-official.onrender.com/api/songs/');
+    //   const response = await fetch('http://localhost:3008/api/songs/');
+      const response = await fetch('https://musicle-official.onrender.com/api/songs/');
       const json = await response.json();
 
       if (response.ok) {
