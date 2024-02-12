@@ -1,5 +1,6 @@
 import '../component_styles/guesses_styles.css';
 
+// Guess container
 const Guesses = ({ song }) => {
     return (
         <div className="guess-container">

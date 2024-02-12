@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import '../component_styles/songDetails_styles.css';
 
+// Pop-up with song info (game over)
 const SongDetails = ({ song }) => {
   const modalRef = useRef(null);
 

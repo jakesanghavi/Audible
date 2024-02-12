@@ -1,6 +1,7 @@
 import { useEffect, useRef, useReducer } from 'react';
 import '../component_styles/player_styles.css';
 
+// Song Player (Bar and Buttons)
 const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }) => {
   const widgetRef = useRef(null);
   const playPauseRef = useRef(null);

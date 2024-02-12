@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import SongDetails from '../components/SongDetails';
-import SongSearch from '../components/SongSearch';
-import Player from '../components/Player';
-import Guesses from '../components/Guesses';
-import BottomSong from '../components/BottomSong';
-import Login from '../components/Login';
+import SongDetails from './SongDetails';
+import SongSearch from './SongSearch';
+import Player from './Player';
+import Guesses from './Guesses';
+import BottomSong from './BottomSong';
+import Login from './Login';
+import '../component_styles/home.css';
+import { ALL_SONGS, RANDOM_SONG } from '../constants';
 
+// Parent Component for the Home Page
 const Home = () => {
   const [song, setSong] = useState(null);
   const [songs, setSongs] = useState(null);
@@ -16,9 +19,7 @@ const Home = () => {
   // GET one random song from the database
   useEffect(() => {
     const fetchRand = async () => {
-      //dev
-    //   const response = await fetch('http://localhost:3008/api/songs/random/random');
-      const response = await fetch('https://musicle-official.onrender.com/api/songs/random/random');
+      const response = await fetch(RANDOM_SONG);
       const json = await response.json();
 
       if (response.ok) {
@@ -33,9 +34,7 @@ const Home = () => {
   // GET all songs from the database
   useEffect(() => {
     const fetchAll = async () => {
-      //dev
-    //   const response = await fetch('http://localhost:3008/api/songs/');
-      const response = await fetch('https://musicle-official.onrender.com/api/songs/');
+      const response = await fetch(ALL_SONGS);
       const json = await response.json();
 
       if (response.ok) {
@@ -139,10 +138,11 @@ const Home = () => {
   }, [skip]);
 
   return (
-    <div className='Home' style={{borderRadius: '30px', backgroundColor:'#E0DBE7 ', padding: '8rem 0', height:'60vh'}}>
+    <div>
       {/* <NavBar/> */}
+      {/* Login Pop-up */}
       <Login/>
-      <div className='songs' style={{display: 'flex', flexDirection:'column', justifyContent: 'center'}}>
+      <div className='main'>
         {/* only load the player when there are songs */}
         {song &&
           <Player

@@ -1,5 +1,6 @@
 import '../component_styles/bottomsong_styles.css';
 
+// Song at bottom (game over)
 const BottomSong = ({ song }) => {
     // Some song names have HTML special characters. This decodes them.
     const decodeHTMLEntities = (text) => {

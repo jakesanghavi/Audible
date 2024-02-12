@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { ROUTE } from '../constants';
 import '../component_styles/login_styles.css';
 
+// Login button 
 const Login = () => {
   const modalRef = useRef(null);
   const [isLoginSelected, setIsLoginSelected] = useState(true);
@@ -11,10 +13,7 @@ const Login = () => {
   const confirmPassword = useRef(null);
   const loginUsername = useRef(null);
   const loginPassword = useRef(null);
-  //dev
-//   const route = 'http://localhost:3008'
-  //prod
-  const route = 'https://musicle-official.onrender.com'
+  const route = ROUTE;
 
   const signUpSelect = () => {
     setIsLoginSelected(false);

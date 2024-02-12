@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const app = express()
 const songRoutes = require('./routes/api-router')
 const cors = require('cors');
+const constants = require('../constants');
 
 // middleware
 
@@ -17,9 +18,7 @@ app.use((request, response, next) => {
 })
 
 app.use(cors({
-    //dev
-    // origin: 'http://localhost:3000',
-    origin: 'https://musicle-official.netlify.app',
+    origin: constants.ORIGIN,
     optionsSuccessStatus: 200
 }))
 

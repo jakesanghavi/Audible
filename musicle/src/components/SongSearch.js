@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import '../component_styles/songsearch_styles.css';
 
+// Search Bar and List of Filtered Songs
 const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrectSearch }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchClicked, setIsSearchClicked] = useState(false);
