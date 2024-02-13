@@ -27,7 +27,7 @@ function App() {
   }
 
   return (
-    <div className="App" style={{ backgroundColor: '#ECE5F0', height: '100vh' }}>
+    <div className="App" id="app" style={{ backgroundColor: '#ECE5F0', height: '100vh' }}>
       <BrowserRouter>
         <NavBar openLoginModal={openLoginModal} openHelpModal={openHelpModal} />
         <div className='pages'>

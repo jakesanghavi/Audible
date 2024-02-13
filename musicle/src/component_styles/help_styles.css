@@ -18,6 +18,7 @@
   margin: auto auto;
   width: 45%;
   height: 50%;
+  min-height: fit-content;
   background-color:  #333;
   color: white;
   padding: 3%;
