@@ -21,10 +21,15 @@ function App() {
     document.getElementById('sign-in-modal').style.display = 'block';
   }
 
+  const openHelpModal = () => {
+    console.log("?")
+    document.getElementById('helpModal').style.display = 'block';
+  }
+
   return (
     <div className="App" style={{ backgroundColor: '#ECE5F0', height: '100vh' }}>
       <BrowserRouter>
-        <NavBar openLoginModal={openLoginModal} />
+        <NavBar openLoginModal={openLoginModal} openHelpModal={openHelpModal} />
         <div className='pages'>
           <Routes>
             <Route

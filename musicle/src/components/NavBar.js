@@ -1,12 +1,17 @@
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import '../component_styles/navbar_styles.css'
 
 // Other game modes
-const NavBar = (openLoginModal) => {
+const NavBar = ({ openLoginModal, openHelpModal }) => {
 
-  const loginModalDummy = () => {
-    openLoginModal.openLoginModal();
+  const loginModal = () => {
+    openLoginModal();
+  }
+
+  const helpModal = () => {
+    openHelpModal();
   }
 
   const disableButtons = () => {
@@ -44,7 +49,11 @@ const NavBar = (openLoginModal) => {
         </div>
         <div className="blank-space">
         </div>
-        <div className="sign-in-text" id="sign-in-text" onClick={loginModalDummy}>
+
+        <div id="help-button" className="headerText" onClick={helpModal}>
+          <h2><FontAwesomeIcon icon={faQuestionCircle} /></h2>
+        </div>
+        <div id="signInButton" className="headerText" onClick={loginModal}>
           <h2>Sign In</h2>
         </div>
       </div>

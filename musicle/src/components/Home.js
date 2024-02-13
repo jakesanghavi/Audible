@@ -5,6 +5,7 @@ import Player from './Player';
 import GuessBoard from './GuessBoard';
 import BottomSong from './BottomSong';
 import Login from './Login';
+import Help from './Help'
 import '../component_styles/home.css';
 import { ALL_SONGS, RANDOM_SONG } from '../constants';
 
@@ -170,6 +171,8 @@ const Home = () => {
     <div>
       {/* Login Pop-up */}
       <Login />
+      {/* Help Page Pop-up */}
+      <Help/>
       <div className='main'>
         {/* only load the player when a random song is picked */}
         {song &&
