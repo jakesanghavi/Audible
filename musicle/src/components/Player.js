@@ -23,6 +23,8 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
     skips: [10, 30, 60, 100, 150]
   };
 
+  const skipCount = ["+2s", "+3s", "+4s", "+5s"];
+
   /**
    * Updates the state based on user action
    * @param {current state} state 
@@ -176,6 +178,9 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
       onSkipSearch('Skip')
       onSkip()
       restartSong()
+      console.log(skip_init)
+      console.log(skip_init)
+      document.getElementById("skip").innerHTML = skip_init < 3 ? "SKIP " + `${skipCount[skip_init + 1]}` : "SKIP"
     }
   };
 
@@ -219,13 +224,15 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
         <div className="time-label current-time-label">{formatTime(currentTime)}</div>
         <div id="bar-container">
           <table id="table" style={{ width: '100%' }}>
-            <tr>
-              <th style={{ width: '7%' }}></th>
-              <th style={{ width: '12%' }}></th>
-              <th style={{ width: '19%' }}></th>
-              <th style={{ width: '24%' }}></th>
-              <th style={{ width: '32%' }}>x</th>
-            </tr>
+            <tbody>
+              <tr>
+                <th style={{ width: '7%' }}></th>
+                <th style={{ width: '12%' }}></th>
+                <th style={{ width: '19%' }}></th>
+                <th style={{ width: '24%' }}></th>
+                <th style={{ width: '32%' }}>x</th>
+              </tr>
+            </tbody>
           </table>
 
           <input
@@ -250,7 +257,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
         {isLoaded ?
           <div className="player-controls" id='player-controls'>
             <button onClick={playPauseSong} ref={playPauseRef}>PLAY</button>
-            <button id="skip" onClick={skipUpdate} ref={skipRef}>SKIP</button>
+            <button id="skip" onClick={skipUpdate} ref={skipRef}>SKIP +2s</button>
             <button id="giveup" onClick={giveUp} ref={giveUpRef}>GIVE UP :(</button>
 
           </div>

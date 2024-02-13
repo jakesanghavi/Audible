@@ -23,11 +23,38 @@ iframe {
   display: none;
 }
 
+#bar-container {
+  z-index: 2;
+  position:relative;
+}
+
+#slider {
+  z-index: 10;
+  height: 100%;
+  background-color: #66666600;
+}
+
+#table {
+  position: absolute;
+  z-index: -1;
+  border-collapse: collapse;
+  color:#00000000;
+  height: 100%;
+  border: 1px solid #ab99ba;
+  background-color: white;
+}
+
+#table th {
+  border-left: 2px solid #ab99ba;
+  border-right: 2px solid #ab99ba;
+}
+
 input[type='range'] {
   overflow: hidden;
   width: 20rem;
   appearance: none;
-  background-color: #fffdf8;
+  background-color: rgb(131, 119, 90)9;
+  z-index: 10;
 }
 
 input[type='range']::-webkit-slider-thumb {
@@ -36,7 +63,7 @@ input[type='range']::-webkit-slider-thumb {
   height: 0.01px;
   cursor: ew-resize;
   /* background: #434343; */
-  box-shadow: -200px 0 0 200px #04A03B;
+  box-shadow: -200px 0 0 200px #04a01e;
 }
 
 .player-controls {
