@@ -217,26 +217,34 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
       {/* Music Slider */}
       <div className='slider-container'>
         <div className="time-label current-time-label">{formatTime(currentTime)}</div>
-        <input
-          type="range"
-          min="0"
-          max="150"
-          step="1"
-          value={sliderValue}
-          onChange={handleSliderChange}
-          className="song-slider"
-          list="ticks"
-        />
+        <div id="bar-container">
+          <table id="table" style={{ width: '100%' }}>
+            <tr>
+              <th style={{ width: '7%' }}></th>
+              <th style={{ width: '12%' }}></th>
+              <th style={{ width: '19%' }}></th>
+              <th style={{ width: '24%' }}></th>
+              <th style={{ width: '32%' }}>x</th>
+            </tr>
+          </table>
+
+          <input
+            id="slider"
+            type="range"
+            min="0"
+            max="150"
+            step="1"
+            value={sliderValue}
+            onChange={handleSliderChange}
+            className="song-slider"
+            list="ticks"
+          />
+        </div>
         <div className="time-label duration-label">{formatTime(duration)}</div>
-        <datalist id="ticks">
-          <option>0</option>
-          <option>10</option>
-          <option>30</option>
-          <option>60</option>
-          <option>100</option>
-          <option>150</option>
-        </datalist>
+
       </div>
+
+
       {/* Control Buttons */}
       <div className="game-layout" >
         {isLoaded ?
