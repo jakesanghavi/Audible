@@ -4,17 +4,20 @@ import '../component_styles/songsearch_styles.css';
 // Search Bar and List of Filtered Songs
 const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrectSearch }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchClicked, setIsSearchClicked] = useState(false);
+  const [isListShown, setIsListShown] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
 
-  // get title without artist information 
-//   function parseTitle(songTitle){
-//     // split title based on "- " (present with artist)
-//     let arr = songTitle.split("- ");
+  const isSongSelected = selectedItem === searchQuery;      // if a song was selected
+  const searchBarClass = isSongSelected ? 'selected' : '';  // style for if song was selected
 
-//     // return parsed title
-//     return arr[arr.length - 1];
-//   }
+  // get title without artist information 
+  //   function parseTitle(songTitle){
+  //     // split title based on "- " (present with artist)
+  //     let arr = songTitle.split("- ");
+
+  //     // return parsed title
+  //     return arr[arr.length - 1];
+  //   }
 
   // Create a hashmap of all songs/artists in the DB
   const map = {};
@@ -31,38 +34,51 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
     return decodedString;
   };
 
-  // When the user searches a song, handle it
+  // Filter songs that match substring of query (in song or artist name)
+  const filteredSongs = songs
+    .filter((song) => {
+      const titleMatch = song.song_title.toLowerCase().includes(searchQuery.toLowerCase());
+      const lengthMatch = song.artist.toLowerCase().includes(searchQuery.toLowerCase());
+      return titleMatch || lengthMatch;
+    })
+    .sort((a, b) => a.song_title.localeCompare(b.song_title));
+
+  // When the user searches a song, update input field
   const handleSearch = (event) => {
+    // make sure list is showing 
+    setIsListShown(true);
+    // update search query
     setSearchQuery(event.target.value);
   };
 
-  // When the user clicks on the search bar, load the song names below.
-  const handleSearchClick = () => {
-    setIsSearchClicked(true);
-  };
-
-  // When the user clicks out of the search bar, get rid of song names
-  const handleUnfocus = () => {
-    setIsSearchClicked(false);
+  // When user clicks the search bar (method avoids re-render crash)
+  const handleSearchClicked = () => {
+    setIsListShown(true);
   }
 
-  // When the user clicks on a song in the list, handle it
+  // When the user clicks on a song in the list, set item as selected
   const handleItemClick = (title, artist) => {
+    // select the song
     setSelectedItem(title + ' - ' + artist);
+    // display song in search
     setSearchQuery(title + ' - ' + artist);
-    // remove remaining border for song list 
-    handleUnfocus();
+    // re-focus on input (for easy submit)
+    document.getElementById("searchBar").focus();
+
+    // hide the song list
+    setIsListShown(false);
   };
 
-  // When the user presses enter inside of the search bar, handle their guess
+  // When user presses a key (in search bar)
   const handleKeyPress = async (event) => {
-    // Disallow the user from searching songs that are not in the DB
-    if (map[searchQuery.toLowerCase()] === undefined) {
-      return;
-    }
 
-    // Once the user puts in a valid choice, check if they guessed correctly.
+    // if they are submitting
     if (event.key === 'Enter') {
+      // Disallow the user from searching songs that are not in the DB
+      if (map[searchQuery.toLowerCase()] === undefined) {
+        return;
+      }
+
       const regex = /.* - (.*)$/;
       if (searchQuery.toLowerCase() === (song.song_title + ' - ' + song.artist).toLowerCase()) {
         onCorrectGuess(searchQuery);
@@ -78,34 +94,23 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
     }
   };
 
-  // Filter for only songs which match a substring of the query, in either the song name
-  // or the artist name
-  const filteredSongs = songs
-    .filter((song) => {
-      const titleMatch = song.song_title.toLowerCase().includes(searchQuery.toLowerCase());
-      const lengthMatch = song.artist.toLowerCase().includes(searchQuery.toLowerCase());
-      return titleMatch || lengthMatch;
-    })
-    .sort((a, b) => a.song_title.localeCompare(b.song_title));
-
-  const isSongSelected = selectedItem === searchQuery;
-  const searchBarClass = isSongSelected ? 'selected' : '';
-
   return (
     <div className='allSearch' id='allSearch'>
-      <div className='song-search' onMouseLeave={handleUnfocus}>
+      <div className='song-search'>
+        {/* Search Bar */}
         <input
           type='text'
           value={searchQuery}
           onChange={handleSearch}
           onKeyDown={handleKeyPress}
           placeholder='Search for a song'
-          onClick={handleSearchClick}
+          onClick={handleSearchClicked}
           className={searchBarClass}
           id='searchBar'
         />
 
-        {isSearchClicked && (
+        {/* Song List (shown when searching) */}
+        {isListShown && (
           // if a song has been entered into bar, don't render the list container div
           <>{filteredSongs.length === 0 ? null :
             <div className='song-list-container' id='song-list-container'>

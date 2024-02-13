@@ -100,7 +100,6 @@ const Home = () => {
     }
   }
 
-
   /**
    * Handle a correct guess from the player -- win scenario
    * @param {The user's guess} x 

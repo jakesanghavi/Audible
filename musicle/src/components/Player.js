@@ -13,6 +13,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
     skip_init = 4
   }
 
+  // set the initial state for the player (start song at 0:00)
   const initialState = {
     currentTime: 0,
     duration: 150,
@@ -22,6 +23,12 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
     skips: [10, 30, 60, 100, 150]
   };
 
+  /**
+   * Updates the state based on user action
+   * @param {current state} state 
+   * @param {input from user} action 
+   * @returns 
+   */
   const reducer = (state, action) => {
     switch (action.type) {
       case 'SET_CURRENT_TIME':
@@ -168,16 +175,6 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
     if (widgetRef.current) {
       onSkipSearch('Skip')
       onSkip()
-
-      // Disable the skip button if the user has no more skips.
-      // For some reason this is out of sync, hence the >= 3 and not >= 4
-      // This doesn't work now that SongSearch is async, so this is moved to Home.js
-      // if (skip_init >= 3) {
-      //   skipRef.current.disabled = true;
-      // }
-      // else {
-      //   restartSong()
-      // }
       restartSong()
     }
   };
@@ -217,6 +214,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
 
   return (
     <div className='player'>
+      {/* Music Slider */}
       <div className='slider-container'>
         <div className="time-label current-time-label">{formatTime(currentTime)}</div>
         <input
@@ -239,6 +237,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
           <option>150</option>
         </datalist>
       </div>
+      {/* Control Buttons */}
       <div className="game-layout" >
         {isLoaded ? 
         <div className="player-controls" id='player-controls'>
@@ -249,6 +248,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
         </div>
         : null}
       </div>
+      {/* Hidden iframe (music) */}
       <iframe
         width="100%"
         height="200"
