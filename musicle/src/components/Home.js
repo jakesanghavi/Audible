@@ -2,21 +2,29 @@ import { useState, useEffect } from 'react';
 import SongDetails from './SongDetails';
 import SongSearch from './SongSearch';
 import Player from './Player';
-import Guesses from './Guesses';
+import GuessBoard from './GuessBoard';
 import BottomSong from './BottomSong';
 import Login from './Login';
 import '../component_styles/home.css';
 import { ALL_SONGS, RANDOM_SONG } from '../constants';
 
-// Parent Component for the Home Page
+// Parent Component for the Main Page
 const Home = () => {
   const [song, setSong] = useState(null);
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  /**
+   * Returns the element of the current guess
+   */
+  const getGuessElement = () => {
+    const num = (skip + 1) * 2
+    return document.querySelector(".guess-container li:nth-of-type(" + num + ")");
+  }
 
-  // GET one random song from the database
+
+  // GET one random song from the database (to guess)
   useEffect(() => {
     const fetchRand = async () => {
       const response = await fetch(RANDOM_SONG);
@@ -31,7 +39,7 @@ const Home = () => {
   }, []);
 
 
-  // GET all songs from the database
+  // GET all songs from the database (for list)
   useEffect(() => {
     const fetchAll = async () => {
       const response = await fetch(ALL_SONGS);
@@ -45,37 +53,42 @@ const Home = () => {
     fetchAll();
   }, []);
 
-  // If the player guesses wrong, update their # skips used accordingly. If they pressed Give up, make them lose
   /**
-   * 
+   * Handles an incorrect guess from the user from either
+   * An incorrect guess OR clicking give up 
+   * @param {An enter click from the user} x 
    */
   const handleIncorrectGuess = (x) => {
-    // Overset the skips to know you have lost, if the give up button was pressed.
+    // if Give up was pressed, user lost:
     if (x === 'Give up') {
       // Remove the search bar when they lose
       document.getElementById('allSearch').style.display = 'none';
 
-      // Show the point where they gave up
-      const num = (skip + 1) * 2
-      const listEl = document.querySelector(".guess-container li:nth-of-type(" + num + ")");
+      // Show the point where they gave up on guess board
+      const listEl = getGuessElement();
       listEl.innerHTML = 'Gave up!';
       listEl.classList.add('red')
+      // set skip count to 5
       setSkip(5);
     } else {
+      // otherwise, increment skip
       setSkip((prevSkip) => prevSkip + 1);
     }
   };
 
-  // Use to style the guess items on an incorrect search.
-  // x is their guess, and y is a color indicating if the got the artist correct (yellow)
-  // or incorrect (red)
+  /**
+   * Handles incorrect search by adjusting guess board
+   * @param {The user's input} x 
+   * @param {The color to indicate whether the artist was correct or not} y 
+   */
   const handleIncorrectSearch = (x, y) => {
-    // Get the list item that corresponds to how many skips/guesses they have had
-    const num = (skip + 1) * 2
-    const listEl = document.querySelector(".guess-container li:nth-of-type(" + num + ")");
+    // Determine which guess the search corresponds to 
+    let listEl = getGuessElement();
+    // if the user skipped
     if (x === 'Skip') {
       listEl.innerHTML = 'Skipped';
     }
+    // if the user guessed -- determine artist guess
     else {
       listEl.innerHTML = x;
       if (y === 'y') {
@@ -85,13 +98,19 @@ const Home = () => {
         listEl.classList.add('red')
       }
     }
-  };
+  }
 
-  // If the player guesses right, they win!
+
+  /**
+   * Handle a correct guess from the player -- win scenario
+   * @param {The user's guess} x 
+   */
   const handleCorrectGuess = (x) => {
-    // Style their guess to green
-    const num = (skip + 1) * 2
-    const listEl = document.querySelector(".guess-container li:nth-of-type(" + num + ")");
+  
+    // Determine which guess their search corresponds to
+    let listEl = getGuessElement();
+
+    // Make the guess green
     listEl.innerHTML = x;
     listEl.classList.add('green');
 
@@ -110,6 +129,7 @@ const Home = () => {
     document.getElementById('giveup').disabled = 'true';
   }
 
+  // Controls the skip button (and toggles a loss when needed)
   useEffect(() => {
     // If you're out of skips, disable the skip button
     if (skip >= 4) {
@@ -142,11 +162,10 @@ const Home = () => {
 
   return (
     <div>
-      {/* <NavBar/> */}
       {/* Login Pop-up */}
       <Login/>
       <div className='main'>
-        {/* only load the player when there are songs */}
+        {/* only load the player when a random song is picked */}
         {song &&
           <Player
             song={song}
@@ -165,8 +184,11 @@ const Home = () => {
               onCorrectGuess={handleCorrectGuess}
               onIncorrectSearch={handleIncorrectSearch}
             />
+            {/* Game over popup */}
             <SongDetails song={song} />
-            <Guesses />
+            {/* Guess board */}
+            <GuessBoard />
+            {/* Game over bottom  */}
             <BottomSong song={song} />
           </>)}
       </div>

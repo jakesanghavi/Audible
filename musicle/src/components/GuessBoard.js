@@ -1,7 +1,7 @@
-import '../component_styles/guesses_styles.css';
+import '../component_styles/guessboard_styles.css';
 
 // Guess container
-const Guesses = ({ song }) => {
+const GuessBoard = ({ song }) => {
     return (
         <div className="guess-container">
             <li className="left-column">Guess 1:</li>
@@ -18,4 +18,4 @@ const Guesses = ({ song }) => {
     )
 }
 
-export default Guesses
+export default GuessBoard
