@@ -23,6 +23,13 @@ const Home = () => {
     return document.querySelector(".guess-container li:nth-of-type(" + num + ")");
   }
 
+  // Decodes song names with HTML special characters
+  const decodeHTMLEntities = (text) => {
+    const parser = new DOMParser();
+    const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
+    return decodedString;
+  };
+
 
   // GET one random song from the database (to guess)
   useEffect(() => {
@@ -105,7 +112,7 @@ const Home = () => {
    * @param {The user's guess} x 
    */
   const handleCorrectGuess = (x) => {
-  
+
     // Determine which guess their search corresponds to
     let listEl = getGuessElement();
 
@@ -162,7 +169,7 @@ const Home = () => {
   return (
     <div>
       {/* Login Pop-up */}
-      <Login/>
+      <Login />
       <div className='main'>
         {/* only load the player when a random song is picked */}
         {song &&
@@ -182,13 +189,18 @@ const Home = () => {
               onIncorrectGuess={handleIncorrectGuess}
               onCorrectGuess={handleCorrectGuess}
               onIncorrectSearch={handleIncorrectSearch}
+              decodeHTMLEntities={decodeHTMLEntities}
             />
             {/* Game over popup */}
-            <SongDetails song={song} />
+            <SongDetails 
+              song={song} 
+              decodeHTMLEntities={decodeHTMLEntities} />
             {/* Guess board */}
             <GuessBoard />
             {/* Game over bottom  */}
-            <BottomSong song={song} />
+            <BottomSong 
+              song={song} 
+              decodeHTMLEntities={decodeHTMLEntities} />
           </>)}
       </div>
     </div>

@@ -1,7 +1,7 @@
 import '../component_styles/guessboard_styles.css';
 
 // Guess container
-const GuessBoard = ({ song }) => {
+const GuessBoard = () => {
     return (
         <div className="guess-container">
             <li className="left-column">Guess 1:</li>

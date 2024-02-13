@@ -1,14 +1,7 @@
 import '../component_styles/bottomsong_styles.css';
 
 // Song at bottom (game over)
-const BottomSong = ({ song }) => {
-    // Some song names have HTML special characters. This decodes them.
-    const decodeHTMLEntities = (text) => {
-        const parser = new DOMParser();
-        const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
-        return decodedString;
-    };
-
+const BottomSong = ({ song, decodeHTMLEntities }) => {
     return (
         <div className="grid-container" id='bottom-songs'>
             <a target="_blank" rel='noreferrer' href={song.full_link} id="albumCoverLink">

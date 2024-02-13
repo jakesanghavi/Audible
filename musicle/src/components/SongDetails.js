@@ -2,16 +2,15 @@ import { useEffect, useRef } from 'react';
 import '../component_styles/songDetails_styles.css';
 
 // Pop-up with song info (game over)
-const SongDetails = ({ song }) => {
+const SongDetails = ({ song, decodeHTMLEntities }) => {
   const modalRef = useRef(null);
 
-  // Some song names have HTML special characters. This decodes them.
-  const decodeHTMLEntities = (text) => {
-    const parser = new DOMParser();
-    const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
-    return decodedString;
-  };
-
+  // // Some song names have HTML special characters. This decodes them.
+  // const decodeHTMLEntities = (text) => {
+  //   const parser = new DOMParser();
+  //   const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
+  //   return decodedString;
+  // };
 
   // Closes the modal.
   const closeModal = () => {
@@ -20,6 +19,7 @@ const SongDetails = ({ song }) => {
     document.getElementById('bottom-songs').style.display = 'flex';
   };
 
+  // Closes the modal if the user clicks outside of it
   useEffect(() => {
     // If the user clicks outside of the modal when it is up, close it.
     const handleClickOutside = (event) => {
@@ -30,17 +30,18 @@ const SongDetails = ({ song }) => {
 
     document.addEventListener('click', handleClickOutside);
 
-    // Clean up the event listener when it's not needed.
+    // Remove up the event listener when it's not needed.
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
 
+
   return (
     <div id="song-details-modal" ref={modalRef}>
       <div className="song-details">
-          <span className="close" onClick={closeModal}>&times;</span>
-          <h2 id="win-or-lose" className="win">Congratulations!<br/>You win!</h2>
+        <span className="close" onClick={closeModal}>&times;</span>
+        <h2 id="win-or-lose" className="win">Congratulations!<br />You win!</h2>
         <a id="full-song" target="_blank" rel='noreferrer' href={song.full_link}>
           <h4>{decodeHTMLEntities(song.song_title)}</h4>
           <p><strong>Artist: </strong>{decodeHTMLEntities(song.artist)}</p>

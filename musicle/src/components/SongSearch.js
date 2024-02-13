@@ -2,7 +2,7 @@ import { useState } from 'react';
 import '../component_styles/songsearch_styles.css';
 
 // Search Bar and List of Filtered Songs
-const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrectSearch }) => {
+const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrectSearch, decodeHTMLEntities }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isListShown, setIsListShown] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
@@ -27,12 +27,12 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
     map[key] = 1;
   });
 
-  // Some strings have HTML characters. This converts them to English.
-  const decodeHTMLEntities = (text) => {
-    const parser = new DOMParser();
-    const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
-    return decodedString;
-  };
+  // // Some strings have HTML characters. This converts them to English.
+  // const decodeHTMLEntities = (text) => {
+  //   const parser = new DOMParser();
+  //   const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
+  //   return decodedString;
+  // };
 
   // Filter songs that match substring of query (in song or artist name)
   const filteredSongs = songs
