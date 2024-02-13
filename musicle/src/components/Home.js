@@ -46,6 +46,9 @@ const Home = () => {
   }, []);
 
   // If the player guesses wrong, update their # skips used accordingly. If they pressed Give up, make them lose
+  /**
+   * 
+   */
   const handleIncorrectGuess = (x) => {
     // Overset the skips to know you have lost, if the give up button was pressed.
     if (x === 'Give up') {
