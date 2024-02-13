@@ -123,7 +123,7 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
           onKeyDown={handleKeyPress}
           placeholder='Search for a song'
           onClick={handleSearchClicked}
-          className='searchBarClass'
+          className={searchBarClass}
           ref={searchRef}
           id='searchBar'
         />
