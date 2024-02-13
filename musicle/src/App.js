@@ -1,4 +1,4 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import Home from './components/Home'
 import NavBar from './components/NavBar'
@@ -6,11 +6,11 @@ import NavBar from './components/NavBar'
 function App() {
   const [date, setDate] = useState(new Date().toDateString());
   const [newDate, setNewDate] = useState(true);
-  
+
   // on load, compare today's date with the date stored in the DB
   useEffect(() => {
     // if the current date is not the same as the stored date
-    if (new Date().toDateString() !== date){
+    if (new Date().toDateString() !== date) {
       setDate(new Date().toDateString());
       setNewDate(true);     // maybe pass in a boolean to route, but will need to load for the first time in a day (may have to store the day's song in DB)
     }
@@ -18,18 +18,18 @@ function App() {
   }, [newDate, date]);
 
   const openLoginModal = () => {
-    document.getElementById('sign-in-modal').style.display='block';
+    document.getElementById('sign-in-modal').style.display = 'block';
   }
 
   return (
-    <div className="App" style={{backgroundColor: '#ECE5F0', height: '100vh'}}>
+    <div className="App" style={{ backgroundColor: '#ECE5F0', height: '100vh' }}>
       <BrowserRouter>
-        <NavBar openLoginModal={openLoginModal}/>
+        <NavBar openLoginModal={openLoginModal} />
         <div className='pages'>
           <Routes>
             <Route
-            path="/"
-            element={<Home isNewDay={newDate}/>}
+              path="/"
+              element={<Home isNewDay={newDate} />}
             />
           </Routes>
         </div>

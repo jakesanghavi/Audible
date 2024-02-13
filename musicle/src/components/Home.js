@@ -192,14 +192,14 @@ const Home = () => {
               decodeHTMLEntities={decodeHTMLEntities}
             />
             {/* Game over popup */}
-            <SongDetails 
-              song={song} 
+            <SongDetails
+              song={song}
               decodeHTMLEntities={decodeHTMLEntities} />
             {/* Guess board */}
             <GuessBoard />
             {/* Game over bottom  */}
-            <BottomSong 
-              song={song} 
+            <BottomSong
+              song={song}
               decodeHTMLEntities={decodeHTMLEntities} />
           </>)}
       </div>

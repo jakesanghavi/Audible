@@ -70,8 +70,8 @@ const Login = () => {
 
     const emailRegex = /^[a-zA-Z0-9!#$%&*+\-/=?^_{|}~]+@[a-zA-Z0-9!#$%&*+\-/=?^_{|}~]+\.[a-zA-Z0-9!#$%&*+\-/=?^_{|}~]{2,}$/;
     const usernameRegex = /^[a-zA-Z0-9]+$/;
-    if (email_address === '' || !email_address || password === ''|| !password || passwordConfirm === '' || 
-    !passwordConfirm || username === '' || !username || !emailRegex.test(email_address) || !usernameRegex.test(username)) {
+    if (email_address === '' || !email_address || password === '' || !password || passwordConfirm === '' ||
+      !passwordConfirm || username === '' || !username || !emailRegex.test(email_address) || !usernameRegex.test(username)) {
       if (email_address === '' | !email_address) {
         console.log("Please input your email address.")
       }
