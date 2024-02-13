@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect} from 'react';
 import '../component_styles/songsearch_styles.css';
 
 // Search Bar and List of Filtered Songs
@@ -9,6 +9,7 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
 
   const isSongSelected = selectedItem === searchQuery;      // if a song was selected
   const searchBarClass = isSongSelected ? 'selected' : '';  // style for if song was selected
+  const searchRef = useRef(null);
 
   // get title without artist information 
   //   function parseTitle(songTitle){
@@ -94,6 +95,23 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
     }
   };
 
+  // Closes the song list if the user clicks outside of it
+  useEffect(() => {
+    // If the user clicks outside of the list, close it
+    const handleClickOutside = (event) => {
+      if (searchRef.current && event.target !== searchRef.current) {
+        setIsListShown(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    // Remove up the event listener when it's not needed.
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className='allSearch' id='allSearch'>
       <div className='song-search'>
@@ -105,7 +123,8 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
           onKeyDown={handleKeyPress}
           placeholder='Search for a song'
           onClick={handleSearchClicked}
-          className={searchBarClass}
+          className='searchBarClass'
+          ref={searchRef}
           id='searchBar'
         />
 
