@@ -24,4 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # constants
-musicle/src/constants.js
+/musicle/src/constants.js
