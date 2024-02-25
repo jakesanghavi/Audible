@@ -180,7 +180,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
       restartSong()
       console.log(skip_init)
       console.log(skip_init)
-      document.getElementById("skip").innerHTML = skip_init < 3 ? "SKIP " + `${skipCount[skip_init + 1]}` : "SKIP"
+      document.getElementById("skip").innerHTML = skip_init < 3 ? "SKIP " + skipCount[skip_init + 1] : "SKIP";
     }
   };
 
