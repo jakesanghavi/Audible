@@ -22,7 +22,6 @@ function App() {
   }
 
   const openHelpModal = () => {
-    console.log("?")
     document.getElementById('helpModal').style.display = 'block';
   }
 

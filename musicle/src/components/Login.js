@@ -180,6 +180,24 @@ const Login = () => {
     };
   }, []);
 
+  useEffect(() => {
+    /* global google */
+    google.accounts.id.initialize({
+        client_id: "294943120027-n845en83pcg77mf00c2nm2ce44t8ra10.apps.googleusercontent.com",
+        callback: handleLoginResponse
+    });
+
+    google.accounts.id.renderButton(
+        document.getElementById('signInDiv'),
+        { theme: 'outline', size: 'large', ux_mode: 'popup'}
+    )
+  }, []);
+
+  function handleLoginResponse(response) {
+    console.log(response.credential)
+  }
+
+
   return (
     <div id="sign-in-modal" ref={modalRef}>
       <div className="sign-in">
@@ -239,6 +257,8 @@ const Login = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div id='signInDiv'>
         </div>
       </div>
     </div>
