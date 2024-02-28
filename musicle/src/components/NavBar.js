@@ -2,9 +2,14 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import '../component_styles/navbar_styles.css'
+import { ROUTE } from '../constants';
+import { useEffect, useRef, useState } from 'react';
+import { jwtDecode } from "jwt-decode";
 
 // Other game modes
 const NavBar = ({ openLoginModal, openHelpModal }) => {
+
+  const route = ROUTE;
 
   const loginModal = () => {
     openLoginModal();
@@ -21,6 +26,40 @@ const NavBar = ({ openLoginModal, openHelpModal }) => {
     }
     else {
       buttons.style.pointerEvents = 'none';
+    }
+  }
+
+  useEffect(() => {
+    /* global google */
+    google.accounts.id.initialize({
+        client_id: "294943120027-n845en83pcg77mf00c2nm2ce44t8ra10.apps.googleusercontent.com",
+        callback: handleLoginResponse
+    });
+
+    google.accounts.id.renderButton(
+        document.getElementById('signInDiv'),
+        { theme: 'outline', size: 'large', ux_mode: 'popup'}
+    )
+  }, []);
+
+  async function handleLoginResponse(response) {
+    var userToken = jwtDecode(response.credential)
+    var email = userToken.email
+    try {
+      const response = await fetch(route + '/api/users/email/' + email);
+      if (response.status === 404) {
+        console.log("User does not exist!")
+      }
+      else {
+        // dev
+        const resp = await fetch(route + '/api/users/email/' + email);
+        console.log(resp.status)
+        const respJson = await resp.json();
+        console.log(respJson)
+      }
+    }
+    catch (error) {
+      console.log(error);
     }
   }
 
@@ -53,8 +92,7 @@ const NavBar = ({ openLoginModal, openHelpModal }) => {
         <div id="help-button" className="headerText" onClick={helpModal}>
           <h2><FontAwesomeIcon icon={faQuestionCircle} /></h2>
         </div>
-        <div id="signInButton" className="headerText" onClick={loginModal}>
-          <h2>Sign In</h2>
+        <div id='signInDiv'>
         </div>
       </div>
     </header>

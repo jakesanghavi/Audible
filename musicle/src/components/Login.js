@@ -10,46 +10,7 @@ const Login = () => {
   const signUpUsername = useRef(null);
   const firstPassword = useRef(null);
   const confirmPassword = useRef(null);
-  const loginUsername = useRef(null);
-  const loginPassword = useRef(null);
   const route = ROUTE;
-
-  const checkLogin = async () => {
-    const username = loginUsername.current.value;
-    const password = loginPassword.current.value;
-
-    if (username === '' || !username || password === '' || !password) {
-      if (username === '' || !username) {
-        console.log("Please input your email address.")
-      }
-      if (password === '' || !password) {
-        console.log("Please input your password.")
-      }
-      return;
-    }
-
-    try {
-      const response = await fetch(route + '/api/users/username/' + username);
-      if (response.status === 399) {
-        console.log("User does not exist!")
-      }
-      else {
-        // dev
-        const resp = await fetch(route + '/api/users/username/' + username);
-        const respJson = await resp.json();
-        if (respJson.password !== password) {
-          console.log("Password is incorrect.")
-        }
-        else {
-          console.log("Logged in!")
-          closeModal();
-        }
-      }
-    }
-    catch (error) {
-      console.log(error);
-    }
-  }
 
   const checkSignup = async () => {
     const email_address = signUpEmail.current.value;
@@ -187,49 +148,6 @@ const Login = () => {
     <div id="sign-in-modal" ref={modalRef}>
       <div className="sign-in">
         <span className="close" onClick={closeModal}>&times;</span>
-        <div className="form-container">
-          <div className="form-inner">
-            <div className="login">
-              <div className="welcome">
-                <span>
-                  Welcome back to Musicle!
-                </span>
-              </div>
-              <div className="field">
-                <input type="text" id="loginEmail" placeholder="Username" required ref={loginUsername} />
-              </div>
-              <div className="field">
-                <input type="password" id="loginPassword" placeholder="Password" required ref={loginPassword} />
-              </div>
-              <div className="pass-link">
-                <a href="/">Forgot username/password?</a>
-              </div>
-              <div className="field btn">
-                <div className="btn-layer"></div>
-                <input style={{ width: "100%" }} type="button" value="Login" onClick={checkLogin} />
-              </div>
-            </div>
-            <div className="signup">
-              <div className="field">
-                <input type="text" id="signUpEmail" placeholder="Email Address" required ref={signUpEmail} />
-              </div>
-              <div className="field">
-                <input type="text" id="signUpUsername" placeholder="Username" required ref={signUpUsername} />
-              </div>
-              <div className="field">
-                <input type="password" id="signUpPassword" placeholder="Password" required ref={firstPassword} />
-              </div>
-              <div className="field">
-                <input type="password" id="signUpPasswordConfirm"
-                  placeholder="Confirm password" required ref={confirmPassword} />
-              </div>
-              <div className="field btn">
-                <div className="btn-layer"></div>
-                <input type="button" style={{ width: "100%" }} value="Sign Up" onClick={checkSignup} />
-              </div>
-            </div>
-          </div>
-        </div>
         <div id='signInDiv'>
         </div>
       </div>
