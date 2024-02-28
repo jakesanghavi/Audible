@@ -8,7 +8,7 @@ const getUserByEmail = async (request, response) => {
     try {
       const userData = await User.findOne({ email_address: id });
       if (!userData) {
-        return response.status(399).json({ "error": "User does not exist" })
+        return response.status(404).json({ "error": "User does not exist" })
       }
       return response.status(200).json(userData)
     }
@@ -24,7 +24,7 @@ const getUserByUsername = async (request, response) => {
   try {
     const userData = await User.findOne({ email_address: id });
     if (!userData) {
-      return response.status(399).json({ "error": "User does not exist" })
+      return response.status(404).json({ "error": "User does not exist" })
     }
     return response.status(200).json(userData)
   }

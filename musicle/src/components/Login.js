@@ -6,8 +6,6 @@ import { jwtDecode } from "jwt-decode";
 // Login button 
 const Login = () => {
   const modalRef = useRef(null);
-  const [isLoginSelected, setIsLoginSelected] = useState(true);
-  const loginForm = document.querySelector("div.login");
   const signUpEmail = useRef(null);
   const signUpUsername = useRef(null);
   const firstPassword = useRef(null);
@@ -15,16 +13,6 @@ const Login = () => {
   const loginUsername = useRef(null);
   const loginPassword = useRef(null);
   const route = ROUTE;
-
-  const signUpSelect = () => {
-    setIsLoginSelected(false);
-    loginForm.style.marginLeft = "-50%";
-  };
-
-  const loginSelect = () => {
-    setIsLoginSelected(true);
-    loginForm.style.marginLeft = "0%";
-  };
 
   const checkLogin = async () => {
     const username = loginUsername.current.value;
@@ -142,27 +130,6 @@ const Login = () => {
     }
   }
 
-  const showLoginPassword = () => {
-    if (loginPassword.current.type === "password") {
-      loginPassword.current.type = "text";
-    } else {
-      loginPassword.current.type = "password";
-    }
-  }
-
-  const showSignUpPassword = () => {
-    if (firstPassword.current.type === "password") {
-      firstPassword.current.type = "text";
-    } else {
-      firstPassword.current.type = "password";
-    }
-    if (confirmPassword.current.type === "password") {
-      confirmPassword.current.type = "text";
-    } else {
-      confirmPassword.current.type = "password";
-    }
-  }
-
   const closeModal = () => {
     modalRef.current.style.display = 'none';
   };
@@ -194,9 +161,25 @@ const Login = () => {
     )
   }, []);
 
-  function handleLoginResponse(response) {
+  async function handleLoginResponse(response) {
     var userToken = jwtDecode(response.credential)
-    console.log(userToken)
+    var email = userToken.email
+    try {
+      const response = await fetch(route + '/api/users/email/' + email);
+      if (response.status === 404) {
+        console.log("User does not exist!")
+      }
+      else {
+        // dev
+        const resp = await fetch(route + '/api/users/email/' + email);
+        console.log(resp.status)
+        const respJson = await resp.json();
+        console.log(respJson)
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
   }
 
 
@@ -205,13 +188,6 @@ const Login = () => {
       <div className="sign-in">
         <span className="close" onClick={closeModal}>&times;</span>
         <div className="form-container">
-          <div className="slide-controls">
-            <input type="radio" name="slide" id="login" defaultChecked={isLoginSelected} />
-            <input type="radio" name="slide" id="signup" defaultChecked={!isLoginSelected} />
-            <label htmlFor="login" className="slide login" onClick={loginSelect}>Login</label>
-            <label htmlFor="signup" className="slide signup" onClick={signUpSelect}>Sign Up</label>
-            <div className="slider-tab"></div>
-          </div>
           <div className="form-inner">
             <div className="login">
               <div className="welcome">
@@ -224,9 +200,6 @@ const Login = () => {
               </div>
               <div className="field">
                 <input type="password" id="loginPassword" placeholder="Password" required ref={loginPassword} />
-              </div>
-              <div className="showPassword">
-                <input type="checkbox" onClick={showLoginPassword} /> Show password
               </div>
               <div className="pass-link">
                 <a href="/">Forgot username/password?</a>
@@ -249,9 +222,6 @@ const Login = () => {
               <div className="field">
                 <input type="password" id="signUpPasswordConfirm"
                   placeholder="Confirm password" required ref={confirmPassword} />
-              </div>
-              <div className="showPassword">
-                <input type="checkbox" onClick={showSignUpPassword} /> Show password
               </div>
               <div className="field btn">
                 <div className="btn-layer"></div>
