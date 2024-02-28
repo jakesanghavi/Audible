@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ROUTE } from '../constants';
 import '../component_styles/login_styles.css';
+import { jwtDecode } from "jwt-decode";
 
 // Login button 
 const Login = () => {
@@ -194,7 +195,8 @@ const Login = () => {
   }, []);
 
   function handleLoginResponse(response) {
-    console.log(response.credential)
+    var userToken = jwtDecode(response.credential)
+    console.log(userToken)
   }
 
 
