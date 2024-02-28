@@ -2,13 +2,18 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import '../component_styles/navbar_styles.css'
+import { ROUTE } from '../constants';
+import { useEffect, useCallback } from 'react';
+import { jwtDecode } from "jwt-decode";
 
 // Other game modes
 const NavBar = ({ openLoginModal, openHelpModal }) => {
 
-  const loginModal = () => {
-    openLoginModal();
-  }
+  const route = ROUTE;
+
+  const loginModal = useCallback(email => {
+    openLoginModal(email);
+  }, [openLoginModal]);
 
   const helpModal = () => {
     openHelpModal();
@@ -23,6 +28,39 @@ const NavBar = ({ openLoginModal, openHelpModal }) => {
       buttons.style.pointerEvents = 'none';
     }
   }
+
+  const handleLoginResponse = useCallback(async (response) => {
+    try {
+      var userToken = jwtDecode(response.credential);
+      var email = userToken.email;
+
+      const userCheckResponse = await fetch(route + '/api/users/email/' + email);
+
+      if (userCheckResponse.status !== 200) {
+        console.log("User does not exist!");
+        loginModal(email);
+      } else {
+        const userDataResponse = await fetch(route + '/api/users/email/' + email);
+        const respJson = await userDataResponse.json();
+        console.log(respJson);
+        // Additional code for handling existing user data if needed
+      }
+    } catch (error) {
+    }
+  }, [loginModal, route]);
+
+  useEffect(() => {
+    /* global google */
+    google.accounts.id.initialize({
+        client_id: "294943120027-n845en83pcg77mf00c2nm2ce44t8ra10.apps.googleusercontent.com",
+        callback: handleLoginResponse
+    });
+
+    google.accounts.id.renderButton(
+        document.getElementById('signInDiv'),
+        { theme: 'outline', size: 'large', ux_mode: 'popup'}
+    )
+  }, [handleLoginResponse]);
 
   return (
     <header>
@@ -53,8 +91,7 @@ const NavBar = ({ openLoginModal, openHelpModal }) => {
         <div id="help-button" className="headerText" onClick={helpModal}>
           <h2><FontAwesomeIcon icon={faQuestionCircle} /></h2>
         </div>
-        <div id="signInButton" className="headerText" onClick={loginModal}>
-          <h2>Sign In</h2>
+        <div id='signInDiv'>
         </div>
       </div>
     </header>

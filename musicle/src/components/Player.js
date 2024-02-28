@@ -8,6 +8,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
   const giveUpRef = useRef(null);
   const skipRef = useRef(null);
 
+
   // Make sure not to over-index the skips array
   if (skip_init > 4) {
     skip_init = 4

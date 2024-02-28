@@ -17,8 +17,9 @@ function App() {
 
   }, [newDate, date]);
 
-  const openLoginModal = () => {
+  const openLoginModal = (email) => {
     document.getElementById('sign-in-modal').style.display = 'block';
+    document.getElementById('signUpEmail').value = email;
   }
 
   const openHelpModal = () => {
