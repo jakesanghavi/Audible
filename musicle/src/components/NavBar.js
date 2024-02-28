@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import '../component_styles/navbar_styles.css'
 import { ROUTE } from '../constants';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useCallback } from 'react';
 import { jwtDecode } from "jwt-decode";
 
 // Other game modes
@@ -11,9 +11,9 @@ const NavBar = ({ openLoginModal, openHelpModal }) => {
 
   const route = ROUTE;
 
-  const loginModal = () => {
-    openLoginModal();
-  }
+  const loginModal = useCallback(email => {
+    openLoginModal(email);
+  }, [openLoginModal]);
 
   const helpModal = () => {
     openHelpModal();
@@ -29,6 +29,26 @@ const NavBar = ({ openLoginModal, openHelpModal }) => {
     }
   }
 
+  const handleLoginResponse = useCallback(async (response) => {
+    try {
+      var userToken = jwtDecode(response.credential);
+      var email = userToken.email;
+
+      const userCheckResponse = await fetch(route + '/api/users/email/' + email);
+
+      if (userCheckResponse.status !== 200) {
+        console.log("User does not exist!");
+        loginModal(email);
+      } else {
+        const userDataResponse = await fetch(route + '/api/users/email/' + email);
+        const respJson = await userDataResponse.json();
+        console.log(respJson);
+        // Additional code for handling existing user data if needed
+      }
+    } catch (error) {
+    }
+  }, [loginModal, route]);
+
   useEffect(() => {
     /* global google */
     google.accounts.id.initialize({
@@ -40,28 +60,7 @@ const NavBar = ({ openLoginModal, openHelpModal }) => {
         document.getElementById('signInDiv'),
         { theme: 'outline', size: 'large', ux_mode: 'popup'}
     )
-  }, []);
-
-  async function handleLoginResponse(response) {
-    var userToken = jwtDecode(response.credential)
-    var email = userToken.email
-    try {
-      const response = await fetch(route + '/api/users/email/' + email);
-      if (response.status === 404) {
-        console.log("User does not exist!")
-      }
-      else {
-        // dev
-        const resp = await fetch(route + '/api/users/email/' + email);
-        console.log(resp.status)
-        const respJson = await resp.json();
-        console.log(respJson)
-      }
-    }
-    catch (error) {
-      console.log(error);
-    }
-  }
+  }, [handleLoginResponse]);
 
   return (
     <header>

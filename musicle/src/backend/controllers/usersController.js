@@ -8,7 +8,8 @@ const getUserByEmail = async (request, response) => {
     try {
       const userData = await User.findOne({ email_address: id });
       if (!userData) {
-        return response.status(404).json({ "error": "User does not exist" })
+        // Returning 201 instead of the proper 404 prevents errors from coming up in the console.
+        return response.status(201).json({ "error": "User does not exist" })
       }
       return response.status(200).json(userData)
     }
@@ -22,9 +23,10 @@ const getUserByUsername = async (request, response) => {
   const { id } = request.params
 
   try {
-    const userData = await User.findOne({ email_address: id });
+    const userData = await User.findOne({ username: id });
     if (!userData) {
-      return response.status(404).json({ "error": "User does not exist" })
+      // Returning 201 instead of the proper 404 prevents errors from coming up in the console.
+      return response.status(201).json({ "error": "User does not exist" })
     }
     return response.status(200).json(userData)
   }
