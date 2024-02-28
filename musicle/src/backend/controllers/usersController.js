@@ -37,11 +37,11 @@ const getUserByUsername = async (request, response) => {
 
 // POST a user
 const postUser = async (request, response) => {
-    const { email_address, username, password } = request.body
+    const { email_address, username } = request.body
   
     // add song to database
     try {
-      const user = await User.create({ email_address, username, password })
+      const user = await User.create({ email_address, username })
       response.status(200).json(user)
     }
     catch (error) {
