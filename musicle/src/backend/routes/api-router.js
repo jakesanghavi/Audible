@@ -16,6 +16,12 @@ const {
     postUser
 } = require('../controllers/usersController')
 
+const {
+    getCookieUser,
+    postCookieUser,
+    updateCookieUser
+} = require('../controllers/cookieUsersController')
+
 const router = express.Router()
 
 // GET the homepage (prevent crashing)
@@ -46,5 +52,14 @@ router.get('/api/users/username/:id', getUserByUsername);
 
 // POST a user to the DB
 router.post('/api/users/:id', postUser)
+
+// GET a specific user by cookie ID
+router.get('/api/users/userID/:id', getCookieUser);
+
+// POST a cookie user to the DB
+router.post('/api/users/userID/post/:id', postCookieUser)
+
+// PATCH a cookie user in the DB
+router.post('/api/users/userID/patch/:id', updateCookieUser)
 
 module.exports = router

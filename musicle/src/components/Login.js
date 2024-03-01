@@ -3,7 +3,7 @@ import { ROUTE } from '../constants';
 import '../component_styles/login_styles.css';
 
 // Login button 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
   const modalRef = useRef(null);
   const signUpEmail = useRef(null);
   const signUpUsername = useRef(null);
@@ -53,6 +53,7 @@ const Login = () => {
           body: JSON.stringify({ "email_address": email_address, "username": username })
         });
         console.log("Signed up successfully!")
+        onLoginSuccess(email_address, username);
         closeModal();
       }
     }

@@ -7,7 +7,7 @@ import { useEffect, useCallback } from 'react';
 import { jwtDecode } from "jwt-decode";
 
 // Other game modes
-const NavBar = ({ openLoginModal, openHelpModal }) => {
+const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLogout, onLoginSuccess }) => {
 
   const route = ROUTE;
 
@@ -42,25 +42,26 @@ const NavBar = ({ openLoginModal, openHelpModal }) => {
       } else {
         const userDataResponse = await fetch(route + '/api/users/email/' + email);
         const respJson = await userDataResponse.json();
-        console.log(respJson);
-        // Additional code for handling existing user data if needed
+        onLoginSuccess(respJson.email_address, respJson.username);
       }
     } catch (error) {
     }
-  }, [loginModal, route]);
+  }, [loginModal, route, onLoginSuccess]);
 
   useEffect(() => {
     /* global google */
-    google.accounts.id.initialize({
+    if (loggedInUser === null) {
+      google.accounts.id.initialize({
         client_id: "294943120027-n845en83pcg77mf00c2nm2ce44t8ra10.apps.googleusercontent.com",
         callback: handleLoginResponse
-    });
+      });
 
-    google.accounts.id.renderButton(
-        document.getElementById('signInDiv'),
-        { theme: 'outline', size: 'large', ux_mode: 'popup'}
-    )
-  }, [handleLoginResponse]);
+      google.accounts.id.renderButton(
+          document.getElementById('googleSignInButton'),
+          { theme: 'outline', size: 'large', ux_mode: 'popup'}
+      )
+    }
+  }, [handleLoginResponse, loggedInUser]);
 
   return (
     <header>
@@ -91,7 +92,15 @@ const NavBar = ({ openLoginModal, openHelpModal }) => {
         <div id="help-button" className="headerText" onClick={helpModal}>
           <h2><FontAwesomeIcon icon={faQuestionCircle} /></h2>
         </div>
-        <div id='signInDiv'>
+        <div id="signInDiv">
+          {loggedInUser === null ? (
+            // Render Google Sign-In button when loggedInUser is null
+            // Add any additional styling or classes as needed
+            <div id="googleSignInButton"></div>
+          ) : (
+            // Render "Profile" button when loggedInUser is not null
+            <button>Profile</button>
+          )}
         </div>
       </div>
     </header>

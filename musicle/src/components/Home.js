@@ -10,7 +10,7 @@ import '../component_styles/home.css';
 import { ALL_SONGS, RANDOM_SONG } from '../constants';
 
 // Parent Component for the Main Page
-const Home = () => {
+const Home = ({ loggedInUser, onLoginSuccess }) => {
   const [song, setSong] = useState(null);
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
@@ -170,7 +170,7 @@ const Home = () => {
   return (
     <div>
       {/* Login Pop-up */}
-      <Login />
+      <Login onLoginSuccess={onLoginSuccess} />
       {/* Help Page Pop-up */}
       <Help/>
       <div className='main'>
