@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import Home from './components/Home'
 import Profile from './components/Profile'
 import NavBar from './components/NavBar'
@@ -16,7 +16,7 @@ function App() {
   };
 
   // Function to get or generate user ID
-  const getUserID = () => {
+  const getUserID = useCallback(() => {
     let userID = localStorage.getItem('userID');
 
     // If the user ID is not found in localStorage, generate a new one
@@ -26,7 +26,7 @@ function App() {
     }
 
     return userID;
-  };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +41,13 @@ function App() {
             const user = await fetch(ROUTE + '/api/users/email/' + data.email_address);
             const user_resp = await user.json()
             setLoggedInUser(user_resp.email_address, user_resp.username);
+
+            // If they are on "stay signed-in mode", remove the google oAuth component when site loads
+            const element = document.getElementById('signInDiv').firstChild.firstChild
+            if (element) {
+              console.log('a')
+              element.remove()
+            }
           }
         }
         else {
@@ -73,7 +80,7 @@ function App() {
     };
 
     fetchData(); // Call the asynchronous function
-  }); // Empty dependency array to run once when the component mounts
+  }, [getUserID]); // Empty dependency array to run once when the component mounts
 
   // on load, compare today's date with the date stored in the DB
   useEffect(() => {
@@ -96,6 +103,12 @@ function App() {
   }
 
   const handleLoginSuccess = async(email, username) => {
+    // When they log in, remove the google oAuth component when site loads
+    const element = document.getElementById('signInDiv').firstChild.firstChild
+    if (element) {
+      element.remove()
+    }
+
     const userID = getUserID()
     // Update the loggedInUser state
     setLoggedInUser({ email, username });
@@ -107,6 +120,7 @@ function App() {
       },
       body: JSON.stringify({ "userID": userID, "email_address": email  })
     });
+
   };
 
   const handleLogout = async() => {
@@ -114,7 +128,6 @@ function App() {
     setLoggedInUser(null);
 
     const uid = getUserID()
-    console.log(uid)
     // If the user logs out, remove their cookie user from the collection
     await fetch(ROUTE + '/api/users/userID/del/' + uid, {
       method: 'POST',
@@ -126,6 +139,27 @@ function App() {
     });
 
     localStorage.removeItem('userID');
+    const userID = getUserID()
+
+    // Immediately after logout, make a new temp user for the browser user
+    fetch(ROUTE + '/api/users/userID/post/' + userID, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ "userID": userID, "email_address": null  })
+    });
+
+    // Post the temp user with username of their cookie ID
+    fetch(ROUTE + '/api/users/' + userID, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({"email_address": null,  "username": userID })
+    });
   };
 
   return (
