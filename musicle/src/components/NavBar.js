@@ -7,7 +7,7 @@ import { useEffect, useCallback } from 'react';
 import { jwtDecode } from "jwt-decode";
 
 // Other game modes
-const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLogout, onLoginSuccess }) => {
+const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLogout, onLoginSuccess, uid }) => {
 
   const route = ROUTE;
 
@@ -40,13 +40,23 @@ const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLogout, onLogin
         console.log("User does not exist!");
         loginModal(email);
       } else {
+        const userID = uid()
         const userDataResponse = await fetch(route + '/api/users/email/' + email);
         const respJson = await userDataResponse.json();
+        fetch(route + '/api/users/patchcookie/' + userID, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ "email_address": respJson.email_address, "username": respJson.username, "uid": userID })
+        });
+        console.log("Signed up successfully!")
         onLoginSuccess(respJson.email_address, respJson.username);
       }
     } catch (error) {
     }
-  }, [loginModal, route, onLoginSuccess]);
+  }, [loginModal, route, onLoginSuccess, uid]);
 
   useEffect(() => {
     /* global google */

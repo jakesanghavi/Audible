@@ -43,14 +43,6 @@ const updateCookieUser = async (request, response) => {
     { new: true } // This option returns the updated document
   );
 
-  if (!user) {
-    console.log(request.body.userID)
-    console.log(uid)
-  }
-  else {
-    console.log(user)
-  }
-
   response.status(200).json(user)
 }
 

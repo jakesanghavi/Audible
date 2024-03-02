@@ -44,6 +44,7 @@ function App() {
         }
         else {
           setLoggedInUser(null);
+          // Create a temporary cookie user for the new browser window user
           fetch(ROUTE + '/api/users/userID/post/' + userID, {
             method: 'POST',
             headers: {
@@ -51,6 +52,16 @@ function App() {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({ "userID": userID, "email_address": null  })
+          });
+
+          // Post the temp user with username of their cookie ID
+          fetch(ROUTE + '/api/users/' + userID, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"email_address": null,  "username": userID })
           });
           console.log("Signed up successfully!")
         }
@@ -103,12 +114,12 @@ function App() {
   return (
     <div className="App" id="app" style={{ backgroundColor: '#ECE5F0', height: '100vh' }}>
       <BrowserRouter>
-        <NavBar openLoginModal={openLoginModal} openHelpModal={openHelpModal} loggedInUser={loggedInUser} onLogout={handleLogout} onLoginSuccess={handleLoginSuccess} />
+        <NavBar openLoginModal={openLoginModal} openHelpModal={openHelpModal} loggedInUser={loggedInUser} onLogout={handleLogout} onLoginSuccess={handleLoginSuccess} uid={getUserID} />
         <div className='pages'>
           <Routes>
             <Route
               path="/"
-              element={<Home isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} />}
+              element={<Home isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
             />
           </Routes>
         </div>

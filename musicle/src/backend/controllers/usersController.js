@@ -49,8 +49,37 @@ const postUser = async (request, response) => {
     }
   }
 
+// PATCH a user
+const updateUser = async (request, response) => {
+  const uid = request.body.uid
+  const email = request.body.email_address
+  const newUsername = request.body.username
+
+  // Check if a user with these credentials already exists
+  const existingUser = await User.findOne({ email_address: email });
+
+  // If so, delete the temp user we made with the cookie ID. We can just reference their existing account
+  if (existingUser) {
+    // If a user exists, delete it
+    const user = await User.findOneAndDelete({ username: uid });
+    response.status(200).json(user)
+  }
+  // If a user with their credentials doesn't exists yet, edit their temp credentials to their new ones
+  else {
+    const user = await User.findOneAndUpdate(
+      { username: uid },
+      { $set: {  email_address: email, username: newUsername } },
+      { new: true } // This option returns the updated document
+    );
+    
+  }
+
+  console.log(request.body)
+}
+
 module.exports = {
     getUserByUsername,
     getUserByEmail,
-    postUser
+    postUser,
+    updateUser
 }

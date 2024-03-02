@@ -3,7 +3,7 @@ import { ROUTE } from '../constants';
 import '../component_styles/login_styles.css';
 
 // Login button 
-const Login = ({ onLoginSuccess }) => {
+const Login = ({ onLoginSuccess, uid }) => {
   const modalRef = useRef(null);
   const signUpEmail = useRef(null);
   const signUpUsername = useRef(null);
@@ -43,14 +43,16 @@ const Login = ({ onLoginSuccess }) => {
       }
 
       else {
+        const userID = uid()
+        console.log(userID)
         // dev
-        fetch(route + '/api/users/' + email_address, {
+        fetch(route + '/api/users/patchcookie/' + userID, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ "email_address": email_address, "username": username })
+          body: JSON.stringify({ "email_address": email_address, "username": username, "uid": userID })
         });
         console.log("Signed up successfully!")
         onLoginSuccess(email_address, username);
