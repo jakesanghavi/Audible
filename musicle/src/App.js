@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import Home from './components/Home'
+import Profile from './components/Profile'
 import NavBar from './components/NavBar'
 import { ROUTE } from './constants';
 
@@ -64,6 +65,7 @@ function App() {
             body: JSON.stringify({"email_address": null,  "username": userID })
           });
           console.log("Signed up successfully!")
+          console.log(userID)
         }
       } catch (error) {
         console.error('An error occurred while fetching user data:', error);
@@ -84,6 +86,7 @@ function App() {
   }, [newDate, date]);
 
   const openLoginModal = (email) => {
+    console.log(email)
     document.getElementById('sign-in-modal').style.display = 'block';
     document.getElementById('signUpEmail').value = email;
   }
@@ -106,20 +109,38 @@ function App() {
     });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async() => {
     // Clear the loggedInUser state
     setLoggedInUser(null);
+
+    const uid = getUserID()
+    console.log(uid)
+    // If the user logs out, remove their cookie user from the collection
+    await fetch(ROUTE + '/api/users/userID/del/' + uid, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ "userID": uid})
+    });
+
+    localStorage.removeItem('userID');
   };
 
   return (
     <div className="App" id="app" style={{ backgroundColor: '#ECE5F0', height: '100vh' }}>
       <BrowserRouter>
-        <NavBar openLoginModal={openLoginModal} openHelpModal={openHelpModal} loggedInUser={loggedInUser} onLogout={handleLogout} onLoginSuccess={handleLoginSuccess} uid={getUserID} />
+        <NavBar openLoginModal={openLoginModal} openHelpModal={openHelpModal} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />
         <div className='pages'>
           <Routes>
             <Route
               path="/"
               element={<Home isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
+            />
+            <Route
+              path='/profile'
+              element={<Profile onLogout={handleLogout} />}
             />
           </Routes>
         </div>

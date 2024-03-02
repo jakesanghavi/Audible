@@ -37,15 +37,20 @@ const getUserByUsername = async (request, response) => {
 
 // POST a user
 const postUser = async (request, response) => {
-    const { email_address, username } = request.body
-  
-    // add song to database
-    try {
-      const user = await User.create({ email_address, username })
-      response.status(200).json(user)
-    }
-    catch (error) {
-      response.status(400).json({ error: error.message })
+    const email_address = request.body.email_address
+    const username = request.body.username
+
+    const existingUser = await User.findOne({ username: username });
+
+    if (!existingUser) {
+      // add a user to database if one with that username doesn't exist
+      try {
+        const user = await User.create({ email_address, username })
+        response.status(200).json(user)
+      }
+      catch (error) {
+        response.status(400).json({ error: error.message })
+      }
     }
   }
 
@@ -73,8 +78,6 @@ const updateUser = async (request, response) => {
     );
     
   }
-
-  console.log(request.body)
 }
 
 module.exports = {

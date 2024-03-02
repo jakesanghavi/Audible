@@ -95,11 +95,22 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
     const handleLoad = () => {
       setIsLoaded(true);
     };
-    document.getElementById('iFrame').addEventListener('load', handleLoad);
 
+    const obj = document.getElementById('iFrame');
+    
+    // Conditionally add the event listener. Fixes issues with changing pages.
+    if (obj) {
+      obj.addEventListener('load', handleLoad);
+
+    }
     // Clean up the event listener
     return () => {
-      document.getElementById('iFrame').removeEventListener('load', handleLoad);
+      const obj2 = document.getElementById('iFrame');
+
+      // Conditionally add the event listener. Fixes issues with changing pages.
+      if (obj2) {
+        obj2.removeEventListener('load', handleLoad);
+      }
     };
   }, [setIsLoaded]);
 
@@ -179,8 +190,6 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
       onSkipSearch('Skip')
       onSkip()
       restartSong()
-      console.log(skip_init)
-      console.log(skip_init)
       document.getElementById("skip").innerHTML = skip_init < 3 ? "SKIP " + skipCount[skip_init + 1] : "SKIP";
     }
   };

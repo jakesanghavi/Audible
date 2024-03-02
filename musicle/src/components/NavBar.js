@@ -7,7 +7,7 @@ import { useEffect, useCallback } from 'react';
 import { jwtDecode } from "jwt-decode";
 
 // Other game modes
-const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLogout, onLoginSuccess, uid }) => {
+const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLoginSuccess, uid }) => {
 
   const route = ROUTE;
 
@@ -109,7 +109,13 @@ const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLogout, onLogin
             <div id="googleSignInButton"></div>
           ) : (
             // Render "Profile" button when loggedInUser is not null
-            <button>Profile</button>
+            <div>
+              <Link to="/profile">
+                <h1>
+                  Profile
+                </h1>
+              </Link>
+            </div>
           )}
         </div>
       </div>

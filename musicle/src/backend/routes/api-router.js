@@ -20,7 +20,8 @@ const {
 const {
     getCookieUser,
     postCookieUser,
-    updateCookieUser
+    updateCookieUser,
+    deleteCookieUser
 } = require('../controllers/cookieUsersController')
 
 const router = express.Router()
@@ -65,5 +66,8 @@ router.post('/api/users/userID/post/:id', postCookieUser)
 
 // PATCH a cookie user in the DB
 router.post('/api/users/userID/patch/:id', updateCookieUser)
+
+// DELETE a cookie user in the DB
+router.post('/api/users/userID/del/:id', deleteCookieUser)
 
 module.exports = router
