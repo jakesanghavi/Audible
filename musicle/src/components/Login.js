@@ -3,17 +3,19 @@ import { ROUTE } from '../constants';
 import '../component_styles/login_styles.css';
 
 // Login button 
-const Login = () => {
+const Login = ({ onLoginSuccess, uid }) => {
   const modalRef = useRef(null);
   const signUpEmail = useRef(null);
   const signUpUsername = useRef(null);
   const route = ROUTE;
 
+  // When the user tries to sign up, make sure that their email/username are valid and unique.
   const checkSignup = async () => {
     // In the future, we should pass email_address from navbar into login. This prevents unforseen tampering.
     const email_address = signUpEmail.current.value;
     const username = signUpUsername.current.value;
 
+    // In the future, we should change this regex so it doesn't coincide with auto-generated cookie usernames
     const usernameRegex = /^[a-zA-Z0-9]*$/;
     if (email_address === '' || !email_address || username === '' || !username || !usernameRegex.test(username) ) {
       if (email_address === '' | !email_address) {
@@ -30,29 +32,36 @@ const Login = () => {
 
 
     try {
+      // Check if the user's email is already registered
       const response = await fetch(route + '/api/users/email/' + email_address);
       if (response.status === 200) {
         console.log("Email Address already in use!")
         return;
       }
 
+      // Check if the user's username already exists
       const response2 = await fetch(route + '/api/users/username/' + username);
       if (response2.status === 200) {
         console.log("Username already in use!")
         return;
       }
 
+      // If the email and username are new and valid ...
       else {
-        // dev
-        fetch(route + '/api/users/' + email_address, {
+        // Get the user's userID
+        const userID = uid()
+        // Add their email to their cookie user
+        fetch(route + '/api/users/patchcookie/' + userID, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ "email_address": email_address, "username": username })
+          body: JSON.stringify({ "email_address": email_address, "username": username, "uid": userID })
         });
-        console.log("Signed up successfully!")
+
+        // Log in the user and close the login modal
+        onLoginSuccess(email_address, username);
         closeModal();
       }
     }
@@ -64,6 +73,7 @@ const Login = () => {
     modalRef.current.style.display = 'none';
   };
 
+  // If the user clicks outside of the modal, close the modal
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && event.target === modalRef.current) {
