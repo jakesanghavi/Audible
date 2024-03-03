@@ -172,7 +172,7 @@ const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
       {/* Login Pop-up */}
       <Login onLoginSuccess={onLoginSuccess} uid={uid} />
       {/* Help Page Pop-up */}
-      <Help/>
+      <Help />
       <div className='main'>
         {/* only load the player when a random song is picked */}
         {song &&

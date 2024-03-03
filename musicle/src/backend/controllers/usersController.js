@@ -3,19 +3,19 @@ const mongoose = require('mongoose')
 
 // GET a specific user
 const getUserByEmail = async (request, response) => {
-    const { id } = request.params
+  const { id } = request.params
 
-    try {
-      const userData = await User.findOne({ email_address: id });
-      if (!userData) {
-        // Returning 201 instead of the proper 404 prevents errors from coming up in the console.
-        return response.status(201).json({ "error": "User does not exist" })
-      }
-      return response.status(200).json(userData)
+  try {
+    const userData = await User.findOne({ email_address: id });
+    if (!userData) {
+      // Returning 201 instead of the proper 404 prevents errors from coming up in the console.
+      return response.status(201).json({ "error": "User does not exist" })
     }
-    catch (error) {
-      return response.status(400).json({ error: error.message })
-    }
+    return response.status(200).json(userData)
+  }
+  catch (error) {
+    return response.status(400).json({ error: error.message })
+  }
 }
 
 // GET a specific user
@@ -37,22 +37,22 @@ const getUserByUsername = async (request, response) => {
 
 // POST a user
 const postUser = async (request, response) => {
-    const email_address = request.body.email_address
-    const username = request.body.username
+  const email_address = request.body.email_address
+  const username = request.body.username
 
-    const existingUser = await User.findOne({ username: username });
+  const existingUser = await User.findOne({ username: username });
 
-    if (!existingUser) {
-      // add a user to database if one with that username doesn't exist
-      try {
-        const user = await User.create({ email_address, username })
-        response.status(200).json(user)
-      }
-      catch (error) {
-        response.status(400).json({ error: error.message })
-      }
+  if (!existingUser) {
+    // add a user to database if one with that username doesn't exist
+    try {
+      const user = await User.create({ email_address, username })
+      response.status(200).json(user)
+    }
+    catch (error) {
+      response.status(400).json({ error: error.message })
     }
   }
+}
 
 // PATCH a user
 const updateUser = async (request, response) => {
@@ -73,16 +73,16 @@ const updateUser = async (request, response) => {
   else {
     const user = await User.findOneAndUpdate(
       { username: uid },
-      { $set: {  email_address: email, username: newUsername } },
+      { $set: { email_address: email, username: newUsername } },
       { new: true } // This option returns the updated document
     );
-    
+
   }
 }
 
 module.exports = {
-    getUserByUsername,
-    getUserByEmail,
-    postUser,
-    updateUser
+  getUserByUsername,
+  getUserByEmail,
+  postUser,
+  updateUser
 }

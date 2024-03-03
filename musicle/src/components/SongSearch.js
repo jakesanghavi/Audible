@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect} from 'react';
+import { useState, useRef, useEffect } from 'react';
 import '../component_styles/songsearch_styles.css';
 
 // Search Bar and List of Filtered Songs

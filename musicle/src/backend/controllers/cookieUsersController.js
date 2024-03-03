@@ -3,19 +3,19 @@ const mongoose = require('mongoose')
 
 // GET a specific user
 const getCookieUser = async (request, response) => {
-    const { id } = request.params
+  const { id } = request.params
 
-    try {
-      const userData = await cookieUser.findOne({ userID: id });
-      if (!userData) {
-        // Returning 201 instead of the proper 404 prevents errors from coming up in the console.
-        return response.status(201).json({ "error": "User does not exist" })
-      }
-      return response.status(200).json(userData)
+  try {
+    const userData = await cookieUser.findOne({ userID: id });
+    if (!userData) {
+      // Returning 201 instead of the proper 404 prevents errors from coming up in the console.
+      return response.status(201).json({ "error": "User does not exist" })
     }
-    catch (error) {
-      return response.status(400).json({ error: error.message })
-    }
+    return response.status(200).json(userData)
+  }
+  catch (error) {
+    return response.status(400).json({ error: error.message })
+  }
 }
 
 // POST a user
@@ -71,8 +71,8 @@ const deleteCookieUser = async (request, response) => {
 }
 
 module.exports = {
-    getCookieUser,
-    postCookieUser,
-    updateCookieUser,
-    deleteCookieUser
+  getCookieUser,
+  postCookieUser,
+  updateCookieUser,
+  deleteCookieUser
 }

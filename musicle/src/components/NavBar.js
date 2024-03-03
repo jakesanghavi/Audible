@@ -6,19 +6,24 @@ import { ROUTE } from '../constants';
 import { useEffect, useCallback } from 'react';
 import { jwtDecode } from "jwt-decode";
 
-// Other game modes
+// Navbar is available on every page. Contains Google OAuth, game info, and menu icon
 const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLoginSuccess, uid }) => {
 
+  // Set the route to the API
   const route = ROUTE;
 
+  // Opens the modal for a user to log in.
+  // Currently this only opens for new users to sign up
   const loginModal = useCallback(email => {
     openLoginModal(email);
   }, [openLoginModal]);
 
+  // Opens the help/game info modal
   const helpModal = () => {
     openHelpModal();
   }
 
+  // Function to disable the player buttons when the player opens the menu
   const disableButtons = () => {
     const buttons = document.getElementById('player-controls');
     if (buttons.style.pointerEvents === 'none') {
@@ -29,17 +34,25 @@ const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLoginSuccess, u
     }
   }
 
+  // Called the user tries to sign in with google
   const handleLoginResponse = useCallback(async (response) => {
     try {
+      // Get the user's google credentials. We only use their email
       var userToken = jwtDecode(response.credential);
       var email = userToken.email;
 
+      // Check if the user is already registered
       const userCheckResponse = await fetch(route + '/api/users/email/' + email);
 
+      // If the user doesn't exist yet, prompt them to create an account
       if (userCheckResponse.status !== 200) {
-        console.log("User does not exist!");
         loginModal(email);
-      } else {
+      } 
+      // If the user does exist, this means that they have an account but haven't logged in
+      // on this browser before. So, get their current userID (cookie ID) with the uid() function
+      // That was passed from App.js. Then, get their user info from the API using their email.
+      // Finally, replace the cookie user email from null to their email, and log in the user.
+      else {
         const userID = uid()
         const userDataResponse = await fetch(route + '/api/users/email/' + email);
         const respJson = await userDataResponse.json();
@@ -51,13 +64,15 @@ const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLoginSuccess, u
           },
           body: JSON.stringify({ "email_address": respJson.email_address, "username": respJson.username, "uid": userID })
         });
-        console.log("Signed up successfully!")
+
+        // After fixing the database, log in the user.
         onLoginSuccess(respJson.email_address, respJson.username);
       }
     } catch (error) {
     }
   }, [loginModal, route, onLoginSuccess, uid]);
 
+  // If there is no logged in user (as passed from App.js), show the sign-in with Google
   useEffect(() => {
     /* global google */
     if (loggedInUser === null) {

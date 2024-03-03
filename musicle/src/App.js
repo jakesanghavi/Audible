@@ -28,51 +28,54 @@ function App() {
     return userID;
   }, []);
 
+  // Run this only when the component mounts, or the userID changes
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // get the userID for th user
         const userID = getUserID();
 
+        // Check if this browser has been used before on the site
         const response = await fetch(ROUTE + '/api/users/userID/' + userID);
 
+        // If the browser has been used before...
         if (response.status === 200) {
           const data = await response.json();
+          // Check if the user is registered too. If they are, log them in automatically
           if (data.email_address !== null) {
             const user = await fetch(ROUTE + '/api/users/email/' + data.email_address);
             const user_resp = await user.json()
             setLoggedInUser(user_resp.email_address, user_resp.username);
 
-            // If they are on "stay signed-in mode", remove the google oAuth component when site loads
+            // If they are on registered, remove the google OAuth component when site loads
             const element = document.getElementById('signInDiv').firstChild.firstChild
             if (element) {
-              console.log('a')
               element.remove()
             }
           }
         }
+        // If the browser has not been used before...
         else {
           setLoggedInUser(null);
-          // Create a temporary cookie user for the new browser window user
+          // Create a new cookie user for the new browser window user
           fetch(ROUTE + '/api/users/userID/post/' + userID, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "userID": userID, "email_address": null  })
+            body: JSON.stringify({ "userID": userID, "email_address": null })
           });
 
-          // Post the temp user with username of their cookie ID
+          // Post the cookie user with username of their cookie ID
           fetch(ROUTE + '/api/users/' + userID, {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({"email_address": null,  "username": userID })
+            body: JSON.stringify({ "email_address": null, "username": userID })
           });
-          console.log("Signed up successfully!")
-          console.log(userID)
         }
       } catch (error) {
         console.error('An error occurred while fetching user data:', error);
@@ -93,7 +96,6 @@ function App() {
   }, [newDate, date]);
 
   const openLoginModal = (email) => {
-    console.log(email)
     document.getElementById('sign-in-modal').style.display = 'block';
     document.getElementById('signUpEmail').value = email;
   }
@@ -102,8 +104,8 @@ function App() {
     document.getElementById('helpModal').style.display = 'block';
   }
 
-  const handleLoginSuccess = async(email, username) => {
-    // When they log in, remove the google oAuth component when site loads
+  // When they log in, remove the google oAuth component when site loads
+  const handleLoginSuccess = async (email, username) => {
     const element = document.getElementById('signInDiv').firstChild.firstChild
     if (element) {
       element.remove()
@@ -118,16 +120,17 @@ function App() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ "userID": userID, "email_address": email  })
+      body: JSON.stringify({ "userID": userID, "email_address": email })
     });
 
   };
 
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     // Clear the loggedInUser state
     setLoggedInUser(null);
 
     const uid = getUserID()
+
     // If the user logs out, remove their cookie user from the collection
     await fetch(ROUTE + '/api/users/userID/del/' + uid, {
       method: 'POST',
@@ -135,20 +138,22 @@ function App() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ "userID": uid})
+      body: JSON.stringify({ "userID": uid })
     });
 
+    // Remove their userID from localstorage
     localStorage.removeItem('userID');
+
+    // Immediately after logout, make a new temp user for the browser user with a newly generated cookie ID
     const userID = getUserID()
 
-    // Immediately after logout, make a new temp user for the browser user
     fetch(ROUTE + '/api/users/userID/post/' + userID, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ "userID": userID, "email_address": null  })
+      body: JSON.stringify({ "userID": userID, "email_address": null })
     });
 
     // Post the temp user with username of their cookie ID
@@ -158,7 +163,7 @@ function App() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({"email_address": null,  "username": userID })
+      body: JSON.stringify({ "email_address": null, "username": userID })
     });
   };
 

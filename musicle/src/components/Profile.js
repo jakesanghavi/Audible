@@ -1,3 +1,4 @@
+// The profile page for the user
 const Profile = ({ onLogout }) => {
 
   return (
