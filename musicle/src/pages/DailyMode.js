@@ -22,13 +22,22 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   const currentDate = new Date().toJSON().slice(0, 10);
 
   useEffect(() => {
-    // Update guesses when userDailyGuesses changes
-    setGuesses(userDailyGuesses);
+    if (userDailyGuesses) {
+      setGuesses(userDailyGuesses);
+    }
   }, [userDailyGuesses]);
 
   useEffect(() => {
-    // Update guesses when userDailyGuesses changes
-    setLastDay(userLastDay);
+    if (guesses && guesses.length > 0) {
+      setSkip(guesses.length)
+    }
+  }, [guesses])
+
+  useEffect(() => {
+    if (userLastDay) {
+      // Update guesses when userDailyGuesses changes
+      setLastDay(userLastDay);
+    }
   }, [userLastDay]);
 
   useEffect(() => {
@@ -53,8 +62,10 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
   const checkPlayed = () => {
     if (lastDay !== currentDate) {
+      if (lastDay) {
+        setGuesses([]);
+      }
       setLastDay(currentDate)
-      setGuesses([]);
     }
   }
 
@@ -88,7 +99,8 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   }, []);
 
   useEffect(() => {
-    if (loggedInUser) {
+    // Prevent random null POSTs or ones without a user
+    if (loggedInUser && lastDay) {
       fetch(ROUTE + '/api/users/patchstats/' + loggedInUser.username, {
         method: 'POST',
         headers: {
@@ -116,6 +128,11 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
       // Show the point where they gave up on guess board
       const listEl = getGuessElement();
+
+      if (!listEl) {
+        return
+      }
+
       listEl.innerHTML = 'Gave up!';
       listEl.classList.add('red')
 
@@ -146,6 +163,9 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
     // Determine which guess the search corresponds to 
     let listEl = getGuessElement();
+    if (!listEl) {
+      return;
+    }
 
     // Update the users daily guesses
     let tempGuesses = [];
@@ -186,6 +206,10 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
     // Determine which guess their search corresponds to
     let listEl = getGuessElement();
 
+    if (!listEl) {
+      return
+    }
+
     // Make the guess green
     listEl.innerHTML = x;
     listEl.classList.add('green');
@@ -217,22 +241,38 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   useEffect(() => {
     // If you're out of skips, disable the skip button
     if (skip >= 4) {
-      document.getElementById('skip').disabled = 'true';
+      const skipper =  document.getElementById('skip')
+      if (skipper) {
+        skipper.disabled = 'true';
+      }
     }
     // If you have lost...
     if (skip >= 5) {
       // Show the modal with the lose text
       const txt = document.getElementById("win-or-lose");
-      txt.className = "lose";
-      txt.innerHTML = "You lose.<br/>Maybe next time!"
+      if (txt) {
+        txt.className = "lose";
+        txt.innerHTML = "You lose.<br/>Maybe next time!"
+      }
       const modal = document.getElementById("song-details-modal");
-      modal.style.display = "block";
 
-      // Disable the buttons for skip and give up if the game is over
-      document.getElementById('giveup').disabled = 'true';
+      if (modal) {
+        modal.style.display = "block";
+      }
 
-      // Hide the search bar
-      document.getElementById('allSearch').style.display = 'none';
+      const giveup = document.getElementById('giveup')
+
+      if (giveup) {
+        // Disable the buttons for skip and give up if the game is over
+        giveup.disabled = 'true';
+      }
+
+      const allsearch = document.getElementById('giveup')
+
+      if (allsearch) {
+        // Hide the search bar
+        allsearch.style.display = 'none';
+      }
 
       // Hide the dropdown song list
       if (document.getElementById("song-list-container") !== null) {

@@ -3,6 +3,13 @@ import React from 'react';
 
 // Guess container
 const GuessBoard = ({ guesses }) => {
+
+  const decodeHTMLEntities = (text) => {
+    const parser = new DOMParser();
+    const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
+    return decodedString;
+  };
+
   if(!guesses || guesses === null || guesses.length === 0) {
     return (
       <div className="guess-container">
@@ -20,8 +27,7 @@ const GuessBoard = ({ guesses }) => {
     )
   }
   else {
-    console.log(guesses)
-    const paddedGuesses = guesses.concat(Array(Math.max(5 - guesses.length, 0)).fill("---"));
+    const paddedGuesses = guesses.concat(Array(Math.max(5 - guesses.length, 0)).fill("-------"));
 
     return (
       <div className="guess-container">
@@ -34,7 +40,7 @@ const GuessBoard = ({ guesses }) => {
           return (
             <React.Fragment key={index}>
               <li className="left-column">Guess {index}:</li>
-              <li className={`guess-content ${guessClass}`}>{guessContent}</li>
+              <li className={`guess-content ${guessClass}`}>{decodeHTMLEntities(guessContent)}</li>
             </React.Fragment>
           );
         })}
