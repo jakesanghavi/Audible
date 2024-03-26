@@ -61,10 +61,25 @@ function App() {
               element.remove()
             }
           }
+          else if (data.userID !== null) {
+            const user = await fetch(ROUTE + '/api/users/username/' + data.userID);
+            const user_resp = await user.json()
+            setLoggedInUser({email: null, username: user_resp.username});
+
+            setUserLastDay(user_resp.last_daily);
+            setUserDailyGuesses(user_resp.today_guesses);
+            setUserStats(user_resp.daily_history);
+
+            // If they are on registered, remove the google OAuth component when site loads
+            const element = document.getElementById('signInDiv').firstChild.firstChild
+            if (element) {
+              element.remove()
+            }
+          }
         }
         // If the browser has not been used before...
         else {
-          setLoggedInUser(null);
+          setLoggedInUser({email: null, username: getUserID()});
           // Create a new cookie user for the new browser window user
           fetch(ROUTE + '/api/users/userID/post/' + userID, {
             method: 'POST',
@@ -75,6 +90,10 @@ function App() {
             body: JSON.stringify({ "userID": userID, "email_address": null })
           });
 
+          const lastDay = " "
+          const todayGuesses = []
+          const userStats = []
+
           // Post the cookie user with username of their cookie ID
           fetch(ROUTE + '/api/users/' + userID, {
             method: 'POST',
@@ -82,7 +101,7 @@ function App() {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "email_address": null, "username": userID })
+            body: JSON.stringify({ "email_address": null, "username": userID, "lastDaily": lastDay, "todayGuesses": todayGuesses, "dailyHistory": userStats })
           });
         }
       } catch (error) {

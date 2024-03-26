@@ -33,7 +33,6 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
     const checkSkipper = setInterval(() => {
       const skipper = document.getElementById("skip");
       if (skipper) {
-        console.log(skipInitRef)
         clearInterval(checkSkipper); // Stop the interval once the element is found
         skipper.innerHTML = skipInitRef.current < 4 ? "SKIP " + skipCount[skipInitRef.current] : "SKIP";
       }

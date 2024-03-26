@@ -73,7 +73,7 @@ const updateUser = async (request, response) => {
     const user = await User.findOneAndDelete({ username: uid });
     response.status(200).json(user)
   }
-  // If a user with their credentials doesn't exists yet, edit their temp credentials to their new ones
+  // If a user with their credentials doesn't exist yet, edit their temp credentials to their new ones
   else {
     const user = await User.findOneAndUpdate(
       { username: uid },
@@ -96,7 +96,8 @@ const updateUserStats = async (request, response) => {
 
   // If not, something is wrong
   if (!existingUser) {
-    response.status(500).json({ error: error.message })
+    console.log('broken')
+    // response.status(500).json({  })
   }
   // If yes, edit their user stats
   else {
