@@ -10,7 +10,7 @@ import '../component_styles/home.css';
 import { ALL_SONGS, RANDOM_SONG } from '../constants';
 
 // Parent Component for the Main Page
-const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
+const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
   const [song, setSong] = useState(null);
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
@@ -210,4 +210,4 @@ const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
   );
 };
 
-export default Home;
+export default Endless;

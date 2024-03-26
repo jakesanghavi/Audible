@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useEffect, useState, useCallback } from 'react'
-import Home from './pages/Home'
+import Endless from './pages/Endless'
 import DailyMode from './pages/DailyMode'
 import Profile from './pages/Profile'
 import NavBar from './components/NavBar'
@@ -199,13 +199,13 @@ function App() {
         <NavBar openLoginModal={openLoginModal} openHelpModal={openHelpModal} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />
         <div className='pages'>
           <Routes>
-            <Route
+          <Route
               path="/"
-              element={<Home isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
+              element={<DailyMode isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} userLastDay={userLastDay} userDailyGuesses={userDailyGuesses} userStats={userStats} />}
             />
             <Route
-              path="/dailymode"
-              element={<DailyMode isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} userLastDay={userLastDay} userDailyGuesses={userDailyGuesses} userStats={userStats} />}
+              path="/endless"
+              element={<Endless isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
             />
             <Route
               path='/profile'
