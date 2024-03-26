@@ -41,8 +41,14 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
         txt.innerHTML = "Congratulations! You win!"
 
         if (guesses && guesses.length > 0) {
-          const guess = 1 ? "guess" : "guesses";
+          const guess = guesses.length === 1 ? "guess" : "guesses";
           // Create an h2 element if there have been guesses
+          // Make sure there is only one!
+          const h2first = document.getElementById("h2element")
+
+          if (h2first) {
+            h2first.remove();
+          }
           const h2Element = document.createElement("h2");
 
           // Set the text content of the h2 element
