@@ -14,6 +14,7 @@ const SongDetails = ({ song, decodeHTMLEntities }) => {
 
   // Closes the modal.
   const closeModal = () => {
+    // If there was some text saying how many guesses it took the user, delete it
     const h2element = document.getElementById("h2element");
     if (h2element) {
       h2element.remove()

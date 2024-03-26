@@ -9,6 +9,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
   const skipRef = useRef(null);
   const skipInitRef = useRef(skip_init);
 
+  // Not sure why, but using a ref removes a warning so I did this
   useEffect(() => {
     skipInitRef.current = skip_init;
   }, [skip_init]);
@@ -23,13 +24,17 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
     skips: [10, 30, 60, 100, 150]
   };
 
+  // useMemo also helped remove some warning
   const skipCount = useMemo(() => {
-    // Initialize skipCount here
-    // For example:
-    return ["+2s", "+3s", "+4s", "+5s"]; // Replace this with your initialization logic
-  }, []); // Dependency array is empty because skipCount is only initialized once
+    return ["+2s", "+3s", "+4s", "+5s"];
+  }, []);
 
+  // useCallback also helped remove a warning
+  // This function is called when a user who has previously made guesses today re-opens the page
+  // This properly updates the skip count to be updated across all components
   const initialSkip = useCallback(() => {
+    // Using set interval helps when stuff doesn't load in time.
+    // This makes sure that the skip UI is properly shown
     const checkSkipper = setInterval(() => {
       const skipper = document.getElementById("skip");
       if (skipper) {
@@ -48,7 +53,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
       skipInitRef.current = 4;
     }
     initialSkip();
-  }, [initialSkip]);
+  }, [initialSkip, skip_init]);
 
 
 

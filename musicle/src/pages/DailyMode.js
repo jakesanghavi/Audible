@@ -19,10 +19,14 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   const [lastDay, setLastDay] = useState(userLastDay);
   const [uStats, setUStats] = useState(userStats);
 
+  // Get the current date in the user's time zone
   const currentDate = new Date().toJSON().slice(0, 10);
 
+  // Call this when the user wins
+  // This will also call when a user who also won for the day re-opens the page
   const handleWinUI = useCallback(() => {
     const checkLoad = setInterval(() => {
+      // As before, just get all buttons/modals that need to be updated, and update them
       const allsearch = document.getElementById('allSearch')
 
       if (allsearch) {
@@ -74,8 +78,11 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
     return () => clearInterval(checkLoad);
   },[guesses]);
 
+
+  // Call this when the user loses
+  // This will also call when a user who also lost for the day re-opens the page
   const handleLossUI = () => {
-    // Show the modal with the lose text
+    // As before, just get all buttons/modals that need to be updated, and update them
     const checkLoad = setInterval(() => {
 
       //Show the modal with the win text
@@ -126,36 +133,44 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
   }
 
+  // Update the user's daily guesses once passed
   useEffect(() => {
     if (userDailyGuesses) {
       setGuesses(userDailyGuesses);
     }
   }, [userDailyGuesses]);
 
+  // Update the user's used skips guesses once their guesses are passed
   useEffect(() => {
     if (guesses && guesses.length > 0) {
       setSkip(guesses.length)
+
+      // Check whether they have already won or lost based on their guesses
+      // If so, call the respective win/loss UI helpers
       const final_guess = guesses[guesses.length - 1].split(" ");
       if (final_guess[0] === "green") {
         handleWinUI();
       }
       else if (guesses.length === 5) {
-        console.log(guesses.length)
         handleLossUI();
       }
     }
 
   }, [guesses, handleWinUI])
 
+  // Update the user's last day played once passed
+  // If they haven't played today, clear their guesses
   useEffect(() => {
     if (userLastDay) {
-      // Update guesses when userDailyGuesses changes
       setLastDay(userLastDay);
+      if (userLastDay !== currentDate) {
+        setGuesses([])
+      }
     }
-  }, [userLastDay]);
+  }, [userLastDay, currentDate]);
 
+  // Update the user's stats once passed
   useEffect(() => {
-    // Update guesses when userDailyGuesses changes
     setUStats(userStats);
   }, [userStats]);
 
@@ -174,11 +189,9 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
     return decodedString;
   };
 
+  // Check if the user has played today. If not, set last played date to today
   const checkPlayed = () => {
-    if (lastDay !== currentDate) {
-      if (lastDay) {
-        setGuesses([]);
-      }
+    if (lastDay && currentDate && lastDay !== currentDate) {
       setLastDay(currentDate)
     }
   }
@@ -212,6 +225,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
     fetchAll();
   }, []);
 
+  // POST the user's new data whenever it changes
   useEffect(() => {
     // Prevent random null POSTs or ones without a user
     if (loggedInUser && lastDay) {
@@ -263,7 +277,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
       setSkip(5);
     } else {
       // otherwise, increment skip
-      setSkip((prevSkip) => prevSkip + 1);
+      setSkip(skip + 1);
     }
   };
 

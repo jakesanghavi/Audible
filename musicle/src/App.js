@@ -61,6 +61,9 @@ function App() {
               element.remove()
             }
           }
+          // If the user is pseudo-registered (via cookies), fetch their data from a different route
+          // and make their loggedInUser have a null email address. This could be helpful for deciding
+          // when to make "sign in with google" show up
           else if (data.userID !== null) {
             const user = await fetch(ROUTE + '/api/users/username/' + data.userID);
             const user_resp = await user.json()
@@ -71,6 +74,7 @@ function App() {
             setUserStats(user_resp.daily_history);
 
             // If they are on registered, remove the google OAuth component when site loads
+            // We could maybe remove this for pseudo-users
             const element = document.getElementById('signInDiv').firstChild.firstChild
             if (element) {
               element.remove()
@@ -90,6 +94,8 @@ function App() {
             body: JSON.stringify({ "userID": userID, "email_address": null })
           });
 
+          // When posting a new user, they have no stats history. So, set them all
+          // to the default values
           const lastDay = " "
           const todayGuesses = []
           const userStats = []
@@ -112,6 +118,7 @@ function App() {
     fetchData(); // Call the asynchronous function
   }, [getUserID]); // Empty dependency array to run once when the component mounts
 
+  // I DONT THINK WE NEED THE BELOW FUNCTION ANYMORE
   // on load, compare today's date with the date stored in the DB
   useEffect(() => {
     // if the current date is not the same as the stored date
@@ -151,6 +158,7 @@ function App() {
 
   };
 
+  // Deal with users logging out
   const handleLogout = async () => {
     // Clear the loggedInUser state
     setLoggedInUser(null);
