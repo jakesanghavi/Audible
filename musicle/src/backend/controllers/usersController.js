@@ -40,8 +40,8 @@ const postUser = async (request, response) => {
   const email_address = request.body.email_address
   const username = request.body.username
   const last_daily = " "
-  const today_guesses = [" "]
-  const daily_history = [" "]
+  const today_guesses = []
+  const daily_history = []
 
   const existingUser = await User.findOne({ username: username });
 
@@ -52,6 +52,7 @@ const postUser = async (request, response) => {
       response.status(200).json(user)
     }
     catch (error) {
+      console.log(error.message)
       response.status(400).json({ error: error.message })
     }
   }

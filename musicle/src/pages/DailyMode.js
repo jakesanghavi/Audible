@@ -54,6 +54,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   const checkPlayed = () => {
     if (lastDay !== currentDate) {
       setLastDay(currentDate)
+      setGuesses([]);
     }
   }
 
@@ -97,7 +98,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
         body: JSON.stringify({ "username": loggedInUser.username, "lastDaily": lastDay, "todayGuesses": guesses, "userStats": uStats })
       });
     }
-  }, [guesses, lastDay, uStats]);
+  }, [guesses, lastDay, uStats, loggedInUser]);
 
   /**
    * Handles an incorrect guess from the user from either
@@ -119,11 +120,11 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
       listEl.classList.add('red')
 
       // Update the users daily guesses
-      const tempGuesses = guesses.slice(0);
-      tempGuesses.push(x);
-      if (tempGuesses[0] === " ") {
-        tempGuesses.shift();
+      let tempGuesses = [];
+      if (guesses && guesses.length === 0) {
+        tempGuesses = guesses.slice(0);
       }
+      tempGuesses.push('red ' + x);
       setGuesses(tempGuesses);
 
       // set skip count to 5
@@ -147,24 +148,28 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
     let listEl = getGuessElement();
 
     // Update the users daily guesses
-    const tempGuesses = guesses.slice(0);
-    tempGuesses.push(x);
-    if (tempGuesses[0] === " ") {
-      tempGuesses.shift();
+    let tempGuesses = [];
+    if (guesses && guesses.length > 0) {
+      tempGuesses = guesses.slice(0);
     }
-    setGuesses(tempGuesses);
 
     // if the user skipped
     if (x === 'Skip') {
       listEl.innerHTML = 'Skipped';
+      tempGuesses.push('black Skipped');
+      setGuesses(tempGuesses);
     }
     // if the user guessed -- determine artist guess
     else {
       listEl.innerHTML = x;
       if (y === 'y') {
+        tempGuesses.push('yellow ' + x);
+        setGuesses(tempGuesses);
         listEl.classList.add('yellow')
       }
       else {
+        tempGuesses.push('red ' + x);
+        setGuesses(tempGuesses);
         listEl.classList.add('red')
       }
     }
@@ -186,11 +191,11 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
     listEl.classList.add('green');
 
     // Update the users daily guesses
-    const tempGuesses = guesses.slice(0);
-    tempGuesses.push(x);
-    if (tempGuesses[0] === " ") {
-      tempGuesses.shift();
+    let tempGuesses = [];
+    if (guesses && guesses.length > 0) {
+      tempGuesses = guesses.slice(0);
     }
+    tempGuesses.push('green ' + x);
     setGuesses(tempGuesses);
 
     // Hide the search bar
@@ -271,7 +276,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
               song={dailySong}
               decodeHTMLEntities={decodeHTMLEntities} />
             {/* Guess board */}
-            <GuessBoard />
+            <GuessBoard guesses={guesses}/>
             {/* Game over bottom  */}
             <BottomSong
               song={dailySong}
