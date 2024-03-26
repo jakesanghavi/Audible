@@ -7,14 +7,34 @@ import BottomSong from '../components/BottomSong';
 import Login from '../components/Login';
 import Help from '../components/Help'
 import '../component_styles/home.css';
-import { ALL_SONGS, DAILY_SONG } from '../constants';
+import { ROUTE, ALL_SONGS, DAILY_SONG } from '../constants';
 
 // Parent Component for the Main Page
-const DailyMode = ({ loggedInUser, onLoginSuccess, uid }) => {
+const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGuesses, userStats }) => {
   const [dailySong, setDailySong] = useState(null);
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [guesses, setGuesses] = useState(userDailyGuesses);
+  const [lastDay, setLastDay] = useState(userLastDay);
+  const [uStats, setUStats] = useState(userStats);
+
+  const currentDate = new Date().toJSON().slice(0, 10);
+
+  useEffect(() => {
+    // Update guesses when userDailyGuesses changes
+    setGuesses(userDailyGuesses);
+  }, [userDailyGuesses]);
+
+  useEffect(() => {
+    // Update guesses when userDailyGuesses changes
+    setLastDay(userLastDay);
+  }, [userLastDay]);
+
+  useEffect(() => {
+    // Update guesses when userDailyGuesses changes
+    setUStats(userStats);
+  }, [userStats]);
 
   /**
    * Returns the element of the current guess
@@ -31,10 +51,16 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid }) => {
     return decodedString;
   };
 
+  const checkPlayed = () => {
+    if (lastDay !== currentDate) {
+      setLastDay(currentDate)
+    }
+  }
 
-  // GET one random song from the database (to guess)
+
+  // GET the daily song from the database (to guess)
   useEffect(() => {
-    const fetchRand = async () => {
+    const fetchDaily = async () => {
       const response = await fetch(DAILY_SONG);
       const json = await response.json();
 
@@ -43,7 +69,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid }) => {
       }
     };
 
-    fetchRand();
+    fetchDaily();
   }, []);
 
   // GET all songs from the database (for list)
@@ -60,12 +86,28 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid }) => {
     fetchAll();
   }, []);
 
+  useEffect(() => {
+    if (loggedInUser) {
+      fetch(ROUTE + '/api/users/patchstats/' + loggedInUser.username, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "username": loggedInUser.username, "lastDaily": lastDay, "todayGuesses": guesses, "userStats": uStats })
+      });
+    }
+  }, [guesses, lastDay, uStats]);
+
   /**
    * Handles an incorrect guess from the user from either
    * An incorrect guess OR clicking give up 
    * @param {An enter click from the user} x 
    */
   const handleIncorrectGuess = (x) => {
+
+    checkPlayed();
+
     // if Give up was pressed, user lost:
     if (x === 'Give up') {
       // Remove the search bar when they lose
@@ -75,6 +117,15 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid }) => {
       const listEl = getGuessElement();
       listEl.innerHTML = 'Gave up!';
       listEl.classList.add('red')
+
+      // Update the users daily guesses
+      const tempGuesses = guesses.slice(0);
+      tempGuesses.push(x);
+      if (tempGuesses[0] === " ") {
+        tempGuesses.shift();
+      }
+      setGuesses(tempGuesses);
+
       // set skip count to 5
       setSkip(5);
     } else {
@@ -89,8 +140,20 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid }) => {
    * @param {The color to indicate whether the artist was correct or not} y 
    */
   const handleIncorrectSearch = (x, y) => {
+
+    checkPlayed();
+
     // Determine which guess the search corresponds to 
     let listEl = getGuessElement();
+
+    // Update the users daily guesses
+    const tempGuesses = guesses.slice(0);
+    tempGuesses.push(x);
+    if (tempGuesses[0] === " ") {
+      tempGuesses.shift();
+    }
+    setGuesses(tempGuesses);
+
     // if the user skipped
     if (x === 'Skip') {
       listEl.innerHTML = 'Skipped';
@@ -113,12 +176,22 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid }) => {
    */
   const handleCorrectGuess = (x) => {
 
+    checkPlayed();
+
     // Determine which guess their search corresponds to
     let listEl = getGuessElement();
 
     // Make the guess green
     listEl.innerHTML = x;
     listEl.classList.add('green');
+
+    // Update the users daily guesses
+    const tempGuesses = guesses.slice(0);
+    tempGuesses.push(x);
+    if (tempGuesses[0] === " ") {
+      tempGuesses.shift();
+    }
+    setGuesses(tempGuesses);
 
     // Hide the search bar
     document.getElementById('allSearch').style.display = 'none';

@@ -10,6 +10,9 @@ function App() {
   const [date, setDate] = useState(new Date().toDateString());
   const [newDate, setNewDate] = useState(true);
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [userLastDay, setUserLastDay] = useState(null);
+  const [userDailyGuesses, setUserDailyGuesses] = useState(null);
+  const [userStats, setUserStats] = useState(null);
 
   // Function to generate a unique identifier
   const generateUserID = () => {
@@ -46,7 +49,11 @@ function App() {
           if (data.email_address !== null) {
             const user = await fetch(ROUTE + '/api/users/email/' + data.email_address);
             const user_resp = await user.json()
-            setLoggedInUser(user_resp.email_address, user_resp.username);
+            setLoggedInUser({email: user_resp.email_address, username: user_resp.username});
+
+            setUserLastDay(user_resp.last_daily);
+            setUserDailyGuesses(user_resp.today_guesses);
+            setUserStats(user_resp.daily_history);
 
             // If they are on registered, remove the google OAuth component when site loads
             const element = document.getElementById('signInDiv').firstChild.firstChild
@@ -114,7 +121,6 @@ function App() {
 
     const userID = getUserID()
     // Update the loggedInUser state
-    setLoggedInUser({ email, username });
     await fetch(ROUTE + '/api/users/userID/patch/' + userID, {
       method: 'POST',
       headers: {
@@ -180,7 +186,7 @@ function App() {
             />
             <Route
               path="/dailymode"
-              element={<DailyMode isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
+              element={<DailyMode isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} userLastDay={userLastDay} userDailyGuesses={userDailyGuesses} userStats={userStats} />}
             />
             <Route
               path='/profile'

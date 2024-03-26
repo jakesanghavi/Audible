@@ -39,13 +39,16 @@ const getUserByUsername = async (request, response) => {
 const postUser = async (request, response) => {
   const email_address = request.body.email_address
   const username = request.body.username
+  const last_daily = " "
+  const today_guesses = [" "]
+  const daily_history = [" "]
 
   const existingUser = await User.findOne({ username: username });
 
   if (!existingUser) {
     // add a user to database if one with that username doesn't exist
     try {
-      const user = await User.create({ email_address, username })
+      const user = await User.create({ email_address, username, last_daily, today_guesses, daily_history })
       response.status(200).json(user)
     }
     catch (error) {
@@ -80,9 +83,35 @@ const updateUser = async (request, response) => {
   }
 }
 
+// PATCH a user's stats
+const updateUserStats = async (request, response) => {
+  const username = request.body.username
+  const lastDay = request.body.lastDaily
+  const todayGuesses = request.body.todayGuesses
+  const userStats = request.body.userStats
+
+  // Check if a user with these credentials already exists
+  const existingUser = await User.findOne({ username: username });
+
+  // If not, something is wrong
+  if (!existingUser) {
+    response.status(500).json({ error: error.message })
+  }
+  // If yes, edit their user stats
+  else {
+    const user = await User.findOneAndUpdate(
+      { username: username },
+      { $set: { last_daily: lastDay, today_guesses: todayGuesses, daily_history: userStats } },
+      { new: true } // This option returns the updated document
+    );
+
+  }
+}
+
 module.exports = {
   getUserByUsername,
   getUserByEmail,
   postUser,
-  updateUser
+  updateUser,
+  updateUserStats
 }
