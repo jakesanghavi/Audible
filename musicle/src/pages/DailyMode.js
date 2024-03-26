@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import SongDetails from '../components/SongDetails';
 import SongSearch from '../components/SongSearch';
 import Player from '../components/Player';
@@ -21,6 +21,111 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
   const currentDate = new Date().toJSON().slice(0, 10);
 
+  const handleWinUI = useCallback(() => {
+    const checkLoad = setInterval(() => {
+      const allsearch = document.getElementById('allSearch')
+
+      if (allsearch) {
+        allsearch.style.display = 'none';
+      }
+
+      //Show the modal with the win text
+      const txt = document.getElementById("win-or-lose");
+
+      if (txt) {
+        txt.className = "win";
+        txt.innerHTML = "Congratulations! You win!"
+
+        if (guesses && guesses.length > 0) {
+          const guess = 1 ? "guess" : "guesses";
+          // Create an h2 element if there have been guesses
+          const h2Element = document.createElement("h2");
+
+          // Set the text content of the h2 element
+          h2Element.textContent = "You got it in " + guesses.length + " " + guess + "!";
+          h2Element.id = "h2element";
+          txt.insertAdjacentElement('afterend', h2Element);
+        }
+      }
+
+      const modal = document.getElementById("song-details-modal");
+
+      if (modal) {
+        modal.style.display = "block";
+      }
+
+      const skipper = document.getElementById('skip')
+      if (skipper) {
+        skipper.disabled = 'true';
+      }
+
+      const giveup = document.getElementById('giveup')
+
+      if (giveup) {
+        giveup.disabled = 'true';
+      }
+      // Disable the buttons for skip and give up if the game is over
+
+
+      if (txt && modal && skipper && giveup && allsearch) {
+        clearInterval(checkLoad); // Stop the interval once the element is found
+      }
+    }, 100); // Check every 100 milliseconds
+    return () => clearInterval(checkLoad);
+  },[guesses]);
+
+  const handleLossUI = () => {
+    // Show the modal with the lose text
+    const checkLoad = setInterval(() => {
+
+      //Show the modal with the win text
+      const txt = document.getElementById("win-or-lose");
+      if (txt) {
+        txt.className = "lose";
+        txt.innerHTML = "You lose.<br/>Maybe next time!"
+      }
+      const modal = document.getElementById("song-details-modal");
+
+      if (modal) {
+        modal.style.display = "block";
+      }
+
+      const skipper = document.getElementById('skip')
+      if (skipper) {
+        skipper.disabled = 'true';
+      }
+
+      const giveup = document.getElementById('giveup')
+
+      if (giveup) {
+        // Disable the buttons for skip and give up if the game is over
+        giveup.disabled = 'true';
+      }
+
+      const allsearch = document.getElementById('allSearch')
+
+      if (allsearch) {
+        // Hide the search bar
+        allsearch.style.display = 'none';
+      }
+
+      // Hide the dropdown song list
+      if (document.getElementById("song-list-container") !== null) {
+        document.getElementById("song-list-container").style.display = 'none';
+      }
+      // Set the number of skips back to 4
+      // This may be a bandaid fix and should be bettered later.
+      // setSkip(4);
+
+
+      if (txt && modal && giveup && allsearch && skipper) {
+        clearInterval(checkLoad); // Stop the interval once the element is found
+      }
+    }, 100); // Check every 100 milliseconds
+    return () => clearInterval(checkLoad);
+
+  }
+
   useEffect(() => {
     if (userDailyGuesses) {
       setGuesses(userDailyGuesses);
@@ -40,7 +145,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
       }
     }
 
-  }, [guesses])
+  }, [guesses, handleWinUI])
 
   useEffect(() => {
     if (userLastDay) {
@@ -121,100 +226,6 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
     }
   }, [guesses, lastDay, uStats, loggedInUser]);
 
-  const handleWinUI = () => {
-    const checkLoad = setInterval(() => {
-      const allsearch = document.getElementById('allSearch')
-
-      if (allsearch) {
-        allsearch.style.display = 'none';
-      }
-      
-
-      //Show the modal with the win text
-      const txt = document.getElementById("win-or-lose");
-
-      if (txt) {
-        txt.className = "win";
-        txt.innerHTML = "Congratulations! You win!"
-      }
-
-      const modal = document.getElementById("song-details-modal");
-
-      if (modal) {
-        modal.style.display = "block";
-      }
-
-      const skipper = document.getElementById('skip')
-      if (skipper) {
-        skipper.disabled = 'true';
-      }
-
-      const giveup = document.getElementById('giveup')
-
-      if (giveup) {
-        giveup.disabled = 'true';
-      }
-      // Disable the buttons for skip and give up if the game is over
-
-
-      if (txt && modal && skipper && giveup && allsearch) {
-        clearInterval(checkLoad); // Stop the interval once the element is found
-      }
-    }, 100); // Check every 100 milliseconds
-    return () => clearInterval(checkLoad);
-  }
-
-  const handleLossUI = () => {
-    // Show the modal with the lose text
-    const checkLoad = setInterval(() => {
-
-      //Show the modal with the win text
-      const txt = document.getElementById("win-or-lose");
-      if (txt) {
-        txt.className = "lose";
-        txt.innerHTML = "You lose.<br/>Maybe next time!"
-      }
-      const modal = document.getElementById("song-details-modal");
-
-      if (modal) {
-        modal.style.display = "block";
-      }
-
-      const skipper = document.getElementById('skip')
-      if (skipper) {
-        skipper.disabled = 'true';
-      }
-
-      const giveup = document.getElementById('giveup')
-
-      if (giveup) {
-        // Disable the buttons for skip and give up if the game is over
-        giveup.disabled = 'true';
-      }
-
-      const allsearch = document.getElementById('allSearch')
-
-      if (allsearch) {
-        // Hide the search bar
-        allsearch.style.display = 'none';
-      }
-
-      // Hide the dropdown song list
-      if (document.getElementById("song-list-container") !== null) {
-        document.getElementById("song-list-container").style.display = 'none';
-      }
-      // Set the number of skips back to 4
-      // This may be a bandaid fix and should be bettered later.
-      // setSkip(4);
-
-
-      if (txt && modal && giveup && allsearch && skipper) {
-        clearInterval(checkLoad); // Stop the interval once the element is found
-      }
-    }, 100); // Check every 100 milliseconds
-    return () => clearInterval(checkLoad);
-
-  }
 
   /**
    * Handles an incorrect guess from the user from either
