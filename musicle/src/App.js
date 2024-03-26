@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useEffect, useState, useCallback } from 'react'
-import Home from './components/Home'
-import Profile from './components/Profile'
+import Home from './pages/Home'
+import DailyMode from './pages/DailyMode'
+import Profile from './pages/Profile'
 import NavBar from './components/NavBar'
 import { ROUTE } from './constants';
 
@@ -176,6 +177,10 @@ function App() {
             <Route
               path="/"
               element={<Home isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
+            />
+            <Route
+              path="/dailymode"
+              element={<DailyMode isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
             />
             <Route
               path='/profile'

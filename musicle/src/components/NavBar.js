@@ -98,7 +98,7 @@ const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLoginSuccess, u
           </label>
           <div id="sidebarMenu" style={{ zIndex: 1000000 }}>
             <ul className="sidebarMenuInner">
-              <li><a href="/">Daily Mode</a></li>
+              <li><a href="/dailymode">Daily Mode</a></li>
               <li>Endless Mode<br />(Coming Soon!)</li>
               <li>Race Mode<br />(Coming Soon!)</li>
             </ul>

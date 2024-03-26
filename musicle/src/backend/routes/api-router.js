@@ -24,6 +24,10 @@ const {
     deleteCookieUser
 } = require('../controllers/cookieUsersController')
 
+const {
+    getDailySong
+} = require('../controllers/dailyController');
+
 const router = express.Router()
 
 // GET the homepage (prevent crashing)
@@ -45,6 +49,9 @@ router.get('/api/songs/:id', getSong)
 // router.delete('/:id', deleteSong)
 //UPDATE a song (?)
 // router.patch('/:id', updateSong)
+
+//GET the daily song
+router.get('/api/dailysong/', getDailySong)
 
 // GET a specific user by email
 router.get('/api/users/email/:id', getUserByEmail);
@@ -69,5 +76,8 @@ router.post('/api/users/userID/patch/:id', updateCookieUser)
 
 // DELETE a cookie user in the DB
 router.post('/api/users/userID/del/:id', deleteCookieUser)
+
+// GET a specific user by cookie ID
+router.get('/api/users/userID/:id', getCookieUser);
 
 module.exports = router

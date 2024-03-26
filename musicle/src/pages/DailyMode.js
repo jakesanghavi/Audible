@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
-import SongDetails from './SongDetails';
-import SongSearch from './SongSearch';
-import Player from './Player';
-import GuessBoard from './GuessBoard';
-import BottomSong from './BottomSong';
-import Login from './Login';
-import Help from './Help'
+import SongDetails from '../components/SongDetails';
+import SongSearch from '../components/SongSearch';
+import Player from '../components/Player';
+import GuessBoard from '../components/GuessBoard';
+import BottomSong from '../components/BottomSong';
+import Login from '../components/Login';
+import Help from '../components/Help'
 import '../component_styles/home.css';
-import { ALL_SONGS, RANDOM_SONG } from '../constants';
+import { ALL_SONGS, DAILY_SONG } from '../constants';
 
 // Parent Component for the Main Page
-const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
-  const [song, setSong] = useState(null);
+const DailyMode = ({ loggedInUser, onLoginSuccess, uid }) => {
+  const [dailySong, setDailySong] = useState(null);
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -35,17 +35,16 @@ const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
   // GET one random song from the database (to guess)
   useEffect(() => {
     const fetchRand = async () => {
-      const response = await fetch(RANDOM_SONG);
+      const response = await fetch(DAILY_SONG);
       const json = await response.json();
 
       if (response.ok) {
-        setSong(json);
+        setDailySong(json);
       }
     };
 
     fetchRand();
   }, []);
-
 
   // GET all songs from the database (for list)
   useEffect(() => {
@@ -175,9 +174,9 @@ const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
       <Help />
       <div className='main'>
         {/* only load the player when a random song is picked */}
-        {song &&
+        {dailySong &&
           <Player
-            song={song}
+            song={dailySong}
             skip_init={skip}
             onSkip={handleIncorrectGuess}
             onSkipSearch={handleIncorrectSearch}
@@ -187,7 +186,7 @@ const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
         {songs && isLoaded && (
           <>
             <SongSearch
-              song={song}
+              song={dailySong}
               songs={songs}
               onIncorrectGuess={handleIncorrectGuess}
               onCorrectGuess={handleCorrectGuess}
@@ -196,13 +195,13 @@ const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
             />
             {/* Game over popup */}
             <SongDetails
-              song={song}
+              song={dailySong}
               decodeHTMLEntities={decodeHTMLEntities} />
             {/* Guess board */}
             <GuessBoard />
             {/* Game over bottom  */}
             <BottomSong
-              song={song}
+              song={dailySong}
               decodeHTMLEntities={decodeHTMLEntities} />
           </>)}
       </div>
@@ -210,4 +209,4 @@ const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
   );
 };
 
-export default Home;
+export default DailyMode;
