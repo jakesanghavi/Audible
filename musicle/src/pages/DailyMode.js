@@ -180,6 +180,11 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
         modal.style.display = "block";
       }
 
+      const skipper = document.getElementById('skip')
+      if (skipper) {
+        skipper.disabled = 'true';
+      }
+
       const giveup = document.getElementById('giveup')
 
       if (giveup) {
@@ -203,7 +208,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
       // setSkip(4);
 
 
-      if (txt && modal && giveup && allsearch) {
+      if (txt && modal && giveup && allsearch && skipper) {
         clearInterval(checkLoad); // Stop the interval once the element is found
       }
     }, 100); // Check every 100 milliseconds
