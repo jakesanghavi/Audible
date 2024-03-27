@@ -156,6 +156,8 @@ function App() {
       body: JSON.stringify({ "userID": userID, "email_address": email })
     });
 
+    setLoggedInUser({email: email, username: username});
+
   };
 
   // Deal with users logging out
