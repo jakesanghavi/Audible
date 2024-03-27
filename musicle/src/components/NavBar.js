@@ -75,7 +75,7 @@ const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLoginSuccess, u
   // If there is no logged in user (as passed from App.js), show the sign-in with Google
   useEffect(() => {
     /* global google */
-    if (loggedInUser === null) {
+    if (loggedInUser === null || loggedInUser.email === null) {
       google.accounts.id.initialize({
         client_id: "294943120027-n845en83pcg77mf00c2nm2ce44t8ra10.apps.googleusercontent.com",
         callback: handleLoginResponse
@@ -99,7 +99,7 @@ const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLoginSuccess, u
           <div id="sidebarMenu" style={{ zIndex: 1000000 }}>
             <ul className="sidebarMenuInner">
               <li><a href="/">Daily Mode</a></li>
-              <li>Endless Mode<br />(Coming Soon!)</li>
+              <li><a href="/endless">Endless Mode</a><br /></li>
               <li>Race Mode<br />(Coming Soon!)</li>
             </ul>
           </div>
@@ -118,7 +118,7 @@ const NavBar = ({ openLoginModal, openHelpModal, loggedInUser, onLoginSuccess, u
           <h2><FontAwesomeIcon icon={faQuestionCircle} /></h2>
         </div>
         <div id="signInDiv">
-          {loggedInUser === null ? (
+          {loggedInUser === null || loggedInUser.email === null ? (
             // Render Google Sign-In button when loggedInUser is null
             // Add any additional styling or classes as needed
             <div id="googleSignInButton"></div>

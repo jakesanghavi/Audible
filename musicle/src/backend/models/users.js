@@ -10,6 +10,18 @@ const userSchema = new Schema({
    username: {
       type: String,
       required: true
+   },
+   last_daily: {
+      type: String,
+      required: true
+   },
+   today_guesses: {
+      type: [String],
+      required: true
+   },
+   daily_history: {
+      type: [Number],
+      required: true
    }
 });
 

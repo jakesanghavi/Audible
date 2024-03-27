@@ -14,7 +14,8 @@ const {
     getUserByUsername,
     getUserByEmail,
     postUser,
-    updateUser
+    updateUser,
+    updateUserStats
 } = require('../controllers/usersController')
 
 const {
@@ -23,6 +24,10 @@ const {
     updateCookieUser,
     deleteCookieUser
 } = require('../controllers/cookieUsersController')
+
+const {
+    getDailySong
+} = require('../controllers/dailyController');
 
 const router = express.Router()
 
@@ -46,6 +51,9 @@ router.get('/api/songs/:id', getSong)
 //UPDATE a song (?)
 // router.patch('/:id', updateSong)
 
+//GET the daily song
+router.get('/api/dailysong/', getDailySong)
+
 // GET a specific user by email
 router.get('/api/users/email/:id', getUserByEmail);
 
@@ -58,6 +66,9 @@ router.post('/api/users/:id', postUser)
 // PATCH a user in the DB
 router.post('/api/users/patchcookie/:id', updateUser)
 
+// PATCH a use's stats in the DB
+router.post('/api/users/patchstats/:id', updateUserStats)
+
 // GET a specific user by cookie ID
 router.get('/api/users/userID/:id', getCookieUser);
 
@@ -69,5 +80,8 @@ router.post('/api/users/userID/patch/:id', updateCookieUser)
 
 // DELETE a cookie user in the DB
 router.post('/api/users/userID/del/:id', deleteCookieUser)
+
+// GET a specific user by cookie ID
+router.get('/api/users/userID/:id', getCookieUser);
 
 module.exports = router

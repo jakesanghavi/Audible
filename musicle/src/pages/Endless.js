@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import SongDetails from './SongDetails';
-import SongSearch from './SongSearch';
-import Player from './Player';
-import GuessBoard from './GuessBoard';
-import BottomSong from './BottomSong';
-import Login from './Login';
-import Help from './Help'
+import SongDetails from '../components/SongDetails';
+import SongSearch from '../components/SongSearch';
+import Player from '../components/Player';
+import GuessBoard from '../components/GuessBoard';
+import BottomSong from '../components/BottomSong';
+import Login from '../components/Login';
+import Help from '../components/Help'
 import '../component_styles/home.css';
 import { ALL_SONGS, RANDOM_SONG } from '../constants';
 
 // Parent Component for the Main Page
-const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
+const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
   const [song, setSong] = useState(null);
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
@@ -210,4 +210,4 @@ const Home = ({ loggedInUser, onLoginSuccess, uid }) => {
   );
 };
 
-export default Home;
+export default Endless;

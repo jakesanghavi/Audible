@@ -1,4 +1,4 @@
-import { useEffect, useRef, useReducer } from 'react';
+import { useEffect, useRef, useReducer, useCallback, useMemo } from 'react';
 import '../component_styles/player_styles.css';
 
 // Song Player (Bar and Buttons)
@@ -7,12 +7,12 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
   const playPauseRef = useRef(null);
   const giveUpRef = useRef(null);
   const skipRef = useRef(null);
+  const skipInitRef = useRef(skip_init);
 
-
-  // Make sure not to over-index the skips array
-  if (skip_init > 4) {
-    skip_init = 4
-  }
+  // Not sure why, but using a ref removes a warning so I did this
+  useEffect(() => {
+    skipInitRef.current = skip_init;
+  }, [skip_init]);
 
   // set the initial state for the player (start song at 0:00)
   const initialState = {
@@ -24,7 +24,38 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
     skips: [10, 30, 60, 100, 150]
   };
 
-  const skipCount = ["+2s", "+3s", "+4s", "+5s"];
+  // useMemo also helped remove some warning
+  const skipCount = useMemo(() => {
+    return ["+2s", "+3s", "+4s", "+5s"];
+  }, []);
+
+  // useCallback also helped remove a warning
+  // This function is called when a user who has previously made guesses today re-opens the page
+  // This properly updates the skip count to be updated across all components
+  const initialSkip = useCallback(() => {
+    // Using set interval helps when stuff doesn't load in time.
+    // This makes sure that the skip UI is properly shown
+    const checkSkipper = setInterval(() => {
+      const skipper = document.getElementById("skip");
+      if (skipper) {
+        clearInterval(checkSkipper); // Stop the interval once the element is found
+        skipper.innerHTML = skipInitRef.current < 4 ? "SKIP " + skipCount[skipInitRef.current] : "SKIP";
+      }
+    }, 100); // Check every 100 milliseconds
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(checkSkipper);
+  }, [skipInitRef, skipCount]);
+
+  useEffect(() => {
+    // Make sure not to over-index the skips array
+    if (skipInitRef.current > 4) {
+      skipInitRef.current = 4;
+    }
+    initialSkip();
+  }, [initialSkip, skip_init]);
+
+
 
   /**
    * Updates the state based on user action
@@ -97,7 +128,7 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
     };
 
     const obj = document.getElementById('iFrame');
-    
+
     // Conditionally add the event listener. Fixes issues with changing pages.
     if (obj) {
       obj.addEventListener('load', handleLoad);
@@ -177,7 +208,10 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
       widgetRef.current.seekTo(0);
       widgetRef.current.play();
       // If you restart the song, change the play/pause button text
-      playPauseRef.current.innerHTML = "PAUSE"
+      if (playPauseRef) {
+        playPauseRef.current.innerHTML = "PAUSE";
+      }
+
       dispatch({ type: 'SET_IS_PLAYING', payload: true });
       dispatch({ type: 'SET_CURRENT_TIME', payload: 0 });
       dispatch({ type: 'SET_SLIDER_VALUE', payload: 0 });
@@ -190,7 +224,10 @@ const Player = ({ song, skip_init, onSkip, onSkipSearch, isLoaded, setIsLoaded }
       onSkipSearch('Skip')
       onSkip()
       restartSong()
-      document.getElementById("skip").innerHTML = skip_init < 3 ? "SKIP " + skipCount[skip_init + 1] : "SKIP";
+      const skipper = document.getElementById("skip")
+      if (skipper) {
+        skipper.innerHTML = skip_init < 3 ? "SKIP " + skipCount[skip_init + 1] : "SKIP";
+      }
     }
   };
 

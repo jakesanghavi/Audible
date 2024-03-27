@@ -28,13 +28,6 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
     map[key] = 1;
   });
 
-  // // Some strings have HTML characters. This converts them to English.
-  // const decodeHTMLEntities = (text) => {
-  //   const parser = new DOMParser();
-  //   const decodedString = parser.parseFromString(text, 'text/html').body.textContent;
-  //   return decodedString;
-  // };
-
   // Filter songs that match substring of query (in song or artist name)
   const filteredSongs = songs
     .filter((song) => {
@@ -118,7 +111,7 @@ const SongSearch = ({ song, songs, onCorrectGuess, onIncorrectGuess, onIncorrect
         {/* Search Bar */}
         <input
           type='text'
-          value={searchQuery}
+          value={decodeHTMLEntities(searchQuery)}
           onChange={handleSearch}
           onKeyDown={handleKeyPress}
           placeholder='Search for a song'

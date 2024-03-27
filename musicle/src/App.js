@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useEffect, useState, useCallback } from 'react'
-import Home from './components/Home'
-import Profile from './components/Profile'
+import Endless from './pages/Endless'
+import DailyMode from './pages/DailyMode'
+import Profile from './pages/Profile'
 import NavBar from './components/NavBar'
 import { ROUTE } from './constants';
 
@@ -9,6 +10,9 @@ function App() {
   const [date, setDate] = useState(new Date().toDateString());
   const [newDate, setNewDate] = useState(true);
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [userLastDay, setUserLastDay] = useState(null);
+  const [userDailyGuesses, setUserDailyGuesses] = useState(null);
+  const [userStats, setUserStats] = useState(null);
 
   // Function to generate a unique identifier
   const generateUserID = () => {
@@ -45,9 +49,32 @@ function App() {
           if (data.email_address !== null) {
             const user = await fetch(ROUTE + '/api/users/email/' + data.email_address);
             const user_resp = await user.json()
-            setLoggedInUser(user_resp.email_address, user_resp.username);
+            setLoggedInUser({email: user_resp.email_address, username: user_resp.username});
+
+            setUserLastDay(user_resp.last_daily);
+            setUserDailyGuesses(user_resp.today_guesses);
+            setUserStats(user_resp.daily_history);
 
             // If they are on registered, remove the google OAuth component when site loads
+            const element = document.getElementById('signInDiv').firstChild.firstChild
+            if (element) {
+              element.remove()
+            }
+          }
+          // If the user is pseudo-registered (via cookies), fetch their data from a different route
+          // and make their loggedInUser have a null email address. This could be helpful for deciding
+          // when to make "sign in with google" show up
+          else if (data.userID !== null) {
+            const user = await fetch(ROUTE + '/api/users/username/' + data.userID);
+            const user_resp = await user.json()
+            setLoggedInUser({email: null, username: user_resp.username});
+
+            setUserLastDay(user_resp.last_daily);
+            setUserDailyGuesses(user_resp.today_guesses);
+            setUserStats(user_resp.daily_history);
+
+            // If they are on registered, remove the google OAuth component when site loads
+            // We could maybe remove this for pseudo-users
             const element = document.getElementById('signInDiv').firstChild.firstChild
             if (element) {
               element.remove()
@@ -56,7 +83,7 @@ function App() {
         }
         // If the browser has not been used before...
         else {
-          setLoggedInUser(null);
+          setLoggedInUser({email: null, username: getUserID()});
           // Create a new cookie user for the new browser window user
           fetch(ROUTE + '/api/users/userID/post/' + userID, {
             method: 'POST',
@@ -67,6 +94,12 @@ function App() {
             body: JSON.stringify({ "userID": userID, "email_address": null })
           });
 
+          // When posting a new user, they have no stats history. So, set them all
+          // to the default values
+          const lastDay = " "
+          const todayGuesses = []
+          const userStats = []
+
           // Post the cookie user with username of their cookie ID
           fetch(ROUTE + '/api/users/' + userID, {
             method: 'POST',
@@ -74,7 +107,7 @@ function App() {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "email_address": null, "username": userID })
+            body: JSON.stringify({ "email_address": null, "username": userID, "lastDaily": lastDay, "todayGuesses": todayGuesses, "dailyHistory": userStats })
           });
         }
       } catch (error) {
@@ -85,6 +118,7 @@ function App() {
     fetchData(); // Call the asynchronous function
   }, [getUserID]); // Empty dependency array to run once when the component mounts
 
+  // I DONT THINK WE NEED THE BELOW FUNCTION ANYMORE
   // on load, compare today's date with the date stored in the DB
   useEffect(() => {
     // if the current date is not the same as the stored date
@@ -113,7 +147,6 @@ function App() {
 
     const userID = getUserID()
     // Update the loggedInUser state
-    setLoggedInUser({ email, username });
     await fetch(ROUTE + '/api/users/userID/patch/' + userID, {
       method: 'POST',
       headers: {
@@ -123,8 +156,11 @@ function App() {
       body: JSON.stringify({ "userID": userID, "email_address": email })
     });
 
+    setLoggedInUser({email: email, username: username});
+
   };
 
+  // Deal with users logging out
   const handleLogout = async () => {
     // Clear the loggedInUser state
     setLoggedInUser(null);
@@ -173,9 +209,13 @@ function App() {
         <NavBar openLoginModal={openLoginModal} openHelpModal={openHelpModal} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />
         <div className='pages'>
           <Routes>
-            <Route
+          <Route
               path="/"
-              element={<Home isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
+              element={<DailyMode isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} userLastDay={userLastDay} userDailyGuesses={userDailyGuesses} userStats={userStats} />}
+            />
+            <Route
+              path="/endless"
+              element={<Endless isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
             />
             <Route
               path='/profile'
