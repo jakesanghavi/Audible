@@ -101,12 +101,20 @@ const updateUserStats = async (request, response) => {
   }
   // If yes, edit their user stats
   else {
-    const user = await User.findOneAndUpdate(
-      { username: username },
-      { $set: { last_daily: lastDay, today_guesses: todayGuesses, daily_history: userStats } },
-      { new: true } // This option returns the updated document
-    );
-
+    if (userStats.length === 0) {
+      const user = await User.findOneAndUpdate(
+        { username: username },
+        { $set: { last_daily: lastDay, today_guesses: todayGuesses } },
+        { new: true } // This option returns the updated document
+      );
+    }
+    else {
+      const user = await User.findOneAndUpdate(
+        { username: username },
+        { $set: { last_daily: lastDay, today_guesses: todayGuesses, daily_history: userStats } },
+        { new: true } // This option returns the updated document
+      );
+    }
   }
 }
 

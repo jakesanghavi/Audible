@@ -19,6 +19,8 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   const [lastDay, setLastDay] = useState(userLastDay);
   const [uStats, setUStats] = useState(userStats);
 
+  console.log(userStats)
+
   // Get the current date in the user's time zone
   const currentDate = new Date().toJSON().slice(0, 10);
 
@@ -159,14 +161,26 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
           // The content/title is after the first space
       const guessContent = firstSpaceIndex !== -1 ? final_guess.substring(firstSpaceIndex + 1) : final_guess;
       if (guessClass === "green") {
+        let tempStats = [];
+        if (userStats) {
+          tempStats = userStats.slice(0);
+        }
+        tempStats.push(guesses.length)
+        setUStats(tempStats)
         handleWinUI();
       }
       else if (guessContent === "Gave up!" || guesses.length === 5) {
+        let tempStats = [];
+        if (userStats) {
+          tempStats = userStats.slice(0);
+        }
+        tempStats.push(null)
+        setUStats(tempStats)
         handleLossUI();
       }
     }
 
-  }, [guesses, handleWinUI])
+  }, [guesses, handleWinUI, userStats])
 
   // Update the user's last day played once passed
   // If they haven't played today, clear their guesses
@@ -181,7 +195,12 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
   // Update the user's stats once passed
   useEffect(() => {
-    setUStats(userStats);
+    if (userStats) {
+      setUStats(userStats);
+    }
+    else {
+      setUStats([]);
+    }
   }, [userStats]);
 
   /**
@@ -237,10 +256,9 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
   // POST the user's new data whenever it changes
   useEffect(() => {
-    console.log(loggedInUser);
-    console.log(lastDay)
     // Prevent random null POSTs or ones without a user
-    if (loggedInUser && lastDay) {
+    // Also, no need to update stats if they are empty. This constraint fixes bugs
+    if (loggedInUser && lastDay && guesses && uStats) {
       fetch(ROUTE + '/api/users/patchstats/' + loggedInUser.username, {
         method: 'POST',
         headers: {
@@ -369,20 +387,20 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   }
 
   // Controls the skip button (and toggles a loss when needed)
-  // This is commented out for now bc it caused bugs!
-  // useEffect(() => {
-  //   // If you're out of skips, disable the skip button
-  //   if (skip >= 4) {
-  //     const skipper = document.getElementById('skip')
-  //     if (skipper) {
-  //       skipper.disabled = 'true';
-  //     }
-  //   }
-  //   // If you have lost...
-  //   if (guesses && guesses.length >= 5) {
-  //     handleLossUI();
-  //   }
-  // }, [skip, guesses]);
+  useEffect(() => {
+    // If you're out of skips, disable the skip button
+    if (skip >= 4) {
+      const skipper = document.getElementById('skip')
+      if (skipper) {
+        skipper.disabled = 'true';
+      }
+    }
+    // // If you have lost...
+    // This is commented out for now bc it caused bugs!
+    // if (guesses && guesses.length >= 5) {
+    //   handleLossUI();
+    // }
+  }, [skip, guesses]);
 
   return (
     <div>

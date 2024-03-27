@@ -116,7 +116,7 @@ function App() {
     };
 
     fetchData(); // Call the asynchronous function
-  }, [getUserID]); // Empty dependency array to run once when the component mounts
+  }, [getUserID]);
 
   // I DONT THINK WE NEED THE BELOW FUNCTION ANYMORE
   // on load, compare today's date with the date stored in the DB

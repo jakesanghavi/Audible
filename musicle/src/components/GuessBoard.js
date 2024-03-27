@@ -4,8 +4,6 @@ import React from 'react';
 // Guess container
 const GuessBoard = ({ guesses }) => {
 
-  console.log(guesses)
-
   // Some song titles have stuff like "&amp;". This turns those into readable text, i.e. "&"
   const decodeHTMLEntities = (text) => {
     const parser = new DOMParser();
