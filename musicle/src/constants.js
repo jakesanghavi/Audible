@@ -6,16 +6,15 @@ function define(name, value) {
   });
 }
 
-// define("ORIGIN", 'https://musicle-official.netlify.app');
-// define("RANDOM_SONG",'https://musicle-official.onrender.com/api/songs/random/random/');
-// define("DAILY_SONG",'https://musicle-official.onrender.com/api/dailysong/');
-// define("ALL_SONGS", 'https://musicle-official.onrender.com/api/songs/');
-// define("ROUTE", 'https://musicle-official.onrender.com');
-//
+define("ORIGIN", 'https://musicle-official.netlify.app');
+define("RANDOM_SONG",'https://musicle-official.onrender.com/api/songs/random/random/');
+define("DAILY_SONG",'https://musicle-official.onrender.com/api/dailysong/');
+define("ALL_SONGS", 'https://musicle-official.onrender.com/api/songs/');
+define("ROUTE", 'https://musicle-official.onrender.com');
 
 // For Development:
-define("ORIGIN", 'http://localhost:3000');
-define("RANDOM_SONG", 'http://localhost:3008/api/songs/random/random/');
-define("DAILY_SONG",'http://localhost:3008/api/dailysong/');
-define("ALL_SONGS", 'http://localhost:3008/api/songs/');
-define("ROUTE", 'http://localhost:3008');
+// define("ORIGIN", 'http://localhost:3000');
+// define("RANDOM_SONG", 'http://localhost:3008/api/songs/random/random/');
+// define("DAILY_SONG",'http://localhost:3008/api/dailysong/');
+// define("ALL_SONGS", 'http://localhost:3008/api/songs/');
+// define("ROUTE", 'http://localhost:3008');

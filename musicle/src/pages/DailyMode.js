@@ -369,19 +369,20 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   }
 
   // Controls the skip button (and toggles a loss when needed)
-  useEffect(() => {
-    // If you're out of skips, disable the skip button
-    if (skip >= 4) {
-      const skipper = document.getElementById('skip')
-      if (skipper) {
-        skipper.disabled = 'true';
-      }
-    }
-    // If you have lost...
-    if (skip >= 5) {
-      handleLossUI();
-    }
-  }, [skip]);
+  // This is commented out for now bc it caused bugs!
+  // useEffect(() => {
+  //   // If you're out of skips, disable the skip button
+  //   if (skip >= 4) {
+  //     const skipper = document.getElementById('skip')
+  //     if (skipper) {
+  //       skipper.disabled = 'true';
+  //     }
+  //   }
+  //   // If you have lost...
+  //   if (guesses && guesses.length >= 5) {
+  //     handleLossUI();
+  //   }
+  // }, [skip, guesses]);
 
   return (
     <div>
