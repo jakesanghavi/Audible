@@ -19,8 +19,6 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   const [lastDay, setLastDay] = useState(userLastDay);
   const [uStats, setUStats] = useState(userStats);
 
-  console.log(userStats)
-
   // Get the current date in the user's time zone
   const currentDate = new Date().toJSON().slice(0, 10);
 
@@ -184,14 +182,13 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
   // Update the user's last day played once passed
   // If they haven't played today, clear their guesses
-  // useEffect(() => {
-  //   if (userLastDay) {
-  //     setLastDay(userLastDay);
-  //     if (userLastDay !== currentDate) {
-  //       setGuesses([])
-  //     }
-  //   }
-  // }, [userLastDay, currentDate]);
+  useEffect(() => {
+    if (userLastDay) {
+      if (userLastDay !== currentDate && userLastDay !== " ") {
+        setGuesses([])
+      }
+    }
+  }, [currentDate, userLastDay]);
 
   // Update the user's stats once passed
   useEffect(() => {
@@ -202,14 +199,6 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
       setUStats([]);
     }
   }, [userStats]);
-
-  /**
-   * Returns the element of the current guess
-   */
-  // const getGuessElement = () => {
-  //   const num = (skip + 1) * 2
-  //   return document.querySelector(".guess-container li:nth-of-type(" + num + ")");
-  // }
 
   // Decodes song names with HTML special characters
   const decodeHTMLEntities = (text) => {
@@ -282,18 +271,6 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
     // if Give up was pressed, user lost:
     if (x === 'Give up') {
-      // Remove the search bar when they lose
-      // document.getElementById('allSearch').style.display = 'none';
-
-      // Show the point where they gave up on guess board
-      // const listEl = getGuessElement();
-
-      // if (!listEl) {
-      //   return
-      // }
-
-      // listEl.innerHTML = 'Gave up!';
-      // listEl.classList.add('red')
 
       // Update the users daily guesses
       let tempGuesses = [];
@@ -322,12 +299,6 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
     checkPlayed();
 
-    // Determine which guess the search corresponds to 
-    // let listEl = getGuessElement();
-    // if (!listEl) {
-    //   return;
-    // }
-
     // Update the users daily guesses
     let tempGuesses = [];
     if (guesses && guesses.length > 0) {
@@ -336,22 +307,18 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
     // if the user skipped
     if (x === 'Skip') {
-      // listEl.innerHTML = 'Skipped';
       tempGuesses.push('black Skipped');
       setGuesses(tempGuesses);
     }
     // if the user guessed -- determine artist guess
     else {
-      // listEl.innerHTML = x;
       if (y === 'y') {
         tempGuesses.push('yellow ' + x);
         setGuesses(tempGuesses);
-        // listEl.classList.add('yellow')
       }
       else {
         tempGuesses.push('red ' + x);
         setGuesses(tempGuesses);
-        // listEl.classList.add('red')
       }
     }
   }
@@ -363,17 +330,6 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   const handleCorrectGuess = (x) => {
 
     checkPlayed();
-
-    // Determine which guess their search corresponds to
-    // let listEl = getGuessElement();
-
-    // if (!listEl) {
-    //   return
-    // }
-
-    // Make the guess green
-    // listEl.innerHTML = x;
-    // listEl.classList.add('green');
 
     // Update the users daily guesses
     let tempGuesses = [];

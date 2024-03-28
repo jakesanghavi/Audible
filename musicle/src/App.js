@@ -165,6 +165,11 @@ function App() {
     // Clear the loggedInUser state
     setLoggedInUser(null);
 
+    // Also clears guesses
+    setUserDailyGuesses([]);
+    setUserStats([]);
+    setUserLastDay(" ");
+
     const uid = getUserID()
 
     // If the user logs out, remove their cookie user from the collection
