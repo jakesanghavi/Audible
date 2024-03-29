@@ -21,7 +21,9 @@ const Profile = ({ onLogout, loggedInUser, userStats }) => {
       <div>
         {user ? user.username : null}
       </div>
-      Stats
+      <div>
+        Stats
+      </div>
       <StatsPlot data={userStats}/>
       <button onClick={() => {onLogout(); backHome();}}>
         Sign out
