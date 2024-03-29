@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import StatsPlot from '../components/StatsPlot'
 
 // The profile page for the user
 const Profile = ({ onLogout, loggedInUser, userStats }) => {
@@ -20,6 +21,8 @@ const Profile = ({ onLogout, loggedInUser, userStats }) => {
       <div>
         {user ? user.username : null}
       </div>
+      Stats
+      <StatsPlot data={userStats}/>
       <button onClick={() => {onLogout(); backHome();}}>
         Sign out
       </button>

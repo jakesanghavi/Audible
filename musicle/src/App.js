@@ -158,6 +158,14 @@ function App() {
 
     setLoggedInUser({email: email, username: username});
 
+    const user = await fetch(ROUTE + '/api/users/email/' + email);
+    const user_resp = await user.json()
+    setLoggedInUser({email: user_resp.email_address, username: user_resp.username});
+
+    setUserLastDay(user_resp.last_daily);
+    setUserDailyGuesses(user_resp.today_guesses);
+    setUserStats(user_resp.daily_history);
+
   };
 
   // Deal with users logging out
