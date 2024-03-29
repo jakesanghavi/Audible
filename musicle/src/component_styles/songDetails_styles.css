@@ -77,3 +77,7 @@ a:hover { text-decoration: none; }
 
 
 a:active { text-decoration: none; }
+
+#h3element {
+  color: gray;
+}

@@ -224,7 +224,7 @@ function App() {
             />
             <Route
               path='/profile'
-              element={<Profile onLogout={handleLogout} />}
+              element={<Profile onLogout={handleLogout} loggedInUser={loggedInUser} userStats={userStats}/>}
             />
           </Routes>
         </div>

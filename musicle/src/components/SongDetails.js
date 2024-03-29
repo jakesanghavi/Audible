@@ -46,12 +46,27 @@ const SongDetails = ({ song, decodeHTMLEntities }) => {
     <div id="song-details-modal" ref={modalRef}>
       <div className="song-details">
         <span className="close" onClick={closeModal}>&times;</span>
-        <h2 id="win-or-lose" className="win">Congratulations!<br />You win!</h2>
+        <h2 id="win-or-lose" className="win">Congratulations!<br/>You win!</h2>
         <a id="full-song" target="_blank" rel='noreferrer' href={song.full_link}>
           <h4>{decodeHTMLEntities(song.song_title)}</h4>
+          {/* <img src={song.album_cover} alt="album cover" /> */}
+        </a>
+        <iframe
+          width="100%"
+          height="200"
+          id="iFrame2"
+          title="player"
+          allow="autoplay"
+          visual="true"
+          show_artwork="true"
+          src={song.soundcloud_link.replace(/visual=false/, "visual=true")}
+          loading='eager'
+          style={{width: "100%"}}
+        />
+        <a id="full-song" target="_blank" rel='noreferrer' href={song.full_link}>
           <p><strong>Artist: </strong>{decodeHTMLEntities(song.artist)}</p>
           <p><strong>Album: </strong>{decodeHTMLEntities(song.album_name)}</p>
-          <img src={song.album_cover} alt="album cover" />
+          {/* <img src={song.album_cover} alt="album cover" /> */}
         </a>
       </div>
     </div>

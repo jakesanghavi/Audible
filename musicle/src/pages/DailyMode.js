@@ -38,23 +38,23 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
       if (txt) {
         txt.className = "win";
-        txt.innerHTML = "Congratulations! You win!"
+        txt.innerHTML = "Congratulations!<br/>You win!";
 
         if (guesses && guesses.length > 0) {
           const guess = guesses.length === 1 ? "guess" : "guesses";
           // Create an h2 element if there have been guesses
           // Make sure there is only one!
-          const h2first = document.getElementById("h2element")
+          const h3first = document.getElementById("h3element")
 
-          if (h2first) {
-            h2first.remove();
+          if (h3first) {
+            h3first.remove();
           }
-          const h2Element = document.createElement("h2");
+          const h3Element = document.createElement("h3");
 
           // Set the text content of the h2 element
-          h2Element.textContent = "You got it in " + guesses.length + " " + guess + "!";
-          h2Element.id = "h2element";
-          txt.insertAdjacentElement('afterend', h2Element);
+          h3Element.textContent = "You got it in " + guesses.length + " " + guess + "!";
+          h3Element.id = "h3element";
+          txt.insertAdjacentElement('afterend', h3Element);
         }
       }
 

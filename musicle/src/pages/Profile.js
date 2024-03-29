@@ -1,9 +1,26 @@
+import { useEffect, useState } from 'react'
+
 // The profile page for the user
-const Profile = ({ onLogout }) => {
+const Profile = ({ onLogout, loggedInUser, userStats }) => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if(loggedInUser) {
+      setUser(loggedInUser);
+    }
+  }, [loggedInUser])
+
+  // Make the user also navigate back to the home page when they log out
+  const backHome = () => {
+    window.location.href = '/';
+  }
 
   return (
     <div>
-      <button onClick={onLogout}>
+      <div>
+        {user ? user.username : null}
+      </div>
+      <button onClick={() => {onLogout(); backHome();}}>
         Sign out
       </button>
     </div>
