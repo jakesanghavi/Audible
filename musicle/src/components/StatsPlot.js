@@ -74,10 +74,10 @@ const StatsPlot = ({ data }) => {
                 .tickValues(domain));
 
         // Draw y-axis with custom tick values
-        svg.append("g")
-            .call(d3.axisLeft(yScale)
-                .tickValues(Object.values(counts))
-                .tickFormat(d3.format("d"))); // Format ticks as integers;
+        // svg.append("g")
+        //     .call(d3.axisLeft(yScale)
+        //         .tickValues(Object.values(counts))
+        //         .tickFormat(d3.format("d"))); // Format ticks as integers;
 
         // Add labels
         svg.append("text")

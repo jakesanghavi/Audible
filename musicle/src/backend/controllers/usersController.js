@@ -116,28 +116,34 @@ const updateUserStats = async (request, response) => {
         { new: true } // This option returns the updated document
       );
 
-      const final_guess = todayGuesses[todayGuesses.length - 1];
-      const firstSpaceIndex = final_guess.indexOf(" ");
-      const guessClass = firstSpaceIndex !== -1 ? final_guess.substring(0, firstSpaceIndex) : "";
-
-      // If the user's guess ends the game, add to the stats for the daily song
-      if (final_guess === "red Gave up!" || guessClass === "green") {
-        const dailySong = await Daily.findOne({ current_date: lastDay });
-        // Make a unique identifier for the user's stats to be added
-
-        if (dailySong && userStats) {
-          // Update the document to push the new value to the user_guesses array
-          // Using $addToSet makes sure that the same user can't add their day's stats twice,
-          // which was previously an issue
-          await Daily.findOneAndUpdate(
-            { current_date: lastDay },
-            { $push: { user_guesses: userStats.slice(-1) } },
-          );
-          // Return success response or do any further processing
-        } else {
-          console.log('Daily song not found');
-          // Handle the case where the document is not found
+      // Sometimes this post request would be called unexpectedly and crash the site
+      try {
+        const final_guess = todayGuesses[todayGuesses.length - 1];
+        const firstSpaceIndex = final_guess.indexOf(" ");
+        const guessClass = firstSpaceIndex !== -1 ? final_guess.substring(0, firstSpaceIndex) : "";
+  
+        // If the user's guess ends the game, add to the stats for the daily song
+        if (final_guess === "red Gave up!" || guessClass === "green") {
+          const dailySong = await Daily.findOne({ current_date: lastDay });
+          // Make a unique identifier for the user's stats to be added
+  
+          if (dailySong && userStats) {
+            // Update the document to push the new value to the user_guesses array
+            // Using $addToSet makes sure that the same user can't add their day's stats twice,
+            // which was previously an issue
+            await Daily.findOneAndUpdate(
+              { current_date: lastDay },
+              { $push: { user_guesses: userStats.slice(-1) } },
+            );
+            // Return success response or do any further processing
+          } else {
+            console.log('Daily song not found');
+            // Handle the case where the document is not found
+          }
         }
+      }
+      catch (error) {
+        console.log('post failure')
       }
     }
 
