@@ -36,6 +36,10 @@ const dailySongSchema = new Schema({
         type: String,
         required: true
     },
+    user_guesses: {
+        type: [Number],
+        required: true
+    },
 }, {timestamps: true})
 
 module.exports = mongoose.model(process.env.DAILY_COLLECTION, dailySongSchema)

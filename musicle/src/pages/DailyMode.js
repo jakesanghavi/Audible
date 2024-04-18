@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import SongDetails from '../components/SongDetails';
 import SongSearch from '../components/SongSearch';
 import Player from '../components/Player';
@@ -18,6 +18,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   const [guesses, setGuesses] = useState(userDailyGuesses);
   const [lastDay, setLastDay] = useState(userLastDay);
   const [uStats, setUStats] = useState(userStats);
+  const timerRef = useRef(null);
 
   // Get the current date in the user's time zone
   const currentDate = new Date().toJSON().slice(0, 10);
@@ -245,18 +246,26 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
   // POST the user's new data whenever it changes
   useEffect(() => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
     // Prevent random null POSTs or ones without a user
     // Also, no need to update stats if they are empty. This constraint fixes bugs
-    if (loggedInUser && lastDay && guesses && uStats) {
-      fetch(ROUTE + '/api/users/patchstats/' + loggedInUser.username, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ "username": loggedInUser.username, "lastDaily": lastDay, "todayGuesses": guesses, "userStats": uStats })
-      });
-    }
+    // Set a timer as otherwise there are too many POSTs which can make users push
+    // stats to a song more than once
+    timerRef.current = setTimeout(() => {
+      // Your fetch logic here
+      if (loggedInUser && lastDay && guesses && uStats) {
+        fetch(ROUTE + '/api/users/patchstats/' + loggedInUser.username, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ "username": loggedInUser.username, "lastDaily": lastDay, "todayGuesses": guesses, "userStats": uStats })
+        });
+      }
+    }, 100); // Adjust the delay as needed
   }, [guesses, lastDay, uStats, loggedInUser]);
 
 

@@ -22,6 +22,25 @@ const getDailySong = async (request, response) => {
 
 }
 
+// const patchDailySong = async (request, response) => {
+//     const guessNum = request.body.todayGuesses;
+//     const lastDay = request.body.lastDay;
+
+//     const dailySong = await Daily.findOne({ current_date: lastDay });
+//     console.log('hello?')
+
+//     if (dailySong && guessNum) {
+//         const updated = await Daily.findOneAndUpdate(
+//                   { current_date: lastDay },
+//                   { $push: { user_guesses: guessNum } },
+//                   { new: true }
+//                 );
+//     }
+//     else {
+//         console.log('err!')
+//     }
+// }
+
 module.exports = {
     getDailySong
 }
