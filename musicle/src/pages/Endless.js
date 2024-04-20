@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import SongDetails from '../components/SongDetails';
 import SongSearch from '../components/SongSearch';
 import Player from '../components/Player';
@@ -15,14 +15,96 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const gameOver = useRef(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [guesses, setGuesses] = useState([]);
 
-  /**
-   * Returns the element of the current guess
-   */
-  const getGuessElement = () => {
-    const num = (skip + 1) * 2
-    return document.querySelector(".guess-container li:nth-of-type(" + num + ")");
+  const handleWinUI = useCallback(() => {
+    console.log(guesses)
+    const checkLoad = setInterval(() => {
+      // As before, just get all buttons/modals that need to be updated, and update them
+
+      //Show the modal with the win text
+      const txt = document.getElementById("win-or-lose");
+
+      if (txt) {
+        txt.className = "win";
+        txt.innerHTML = "Congratulations!<br/>You win!";
+
+        if (guesses && guesses.length > 0) {
+          const guess = guesses.length === 1 ? "guess" : "guesses";
+          // Create an h2 element if there have been guesses
+          // Make sure there is only one!
+          const h3first = document.getElementById("h3element")
+
+          if (h3first) {
+            h3first.remove();
+          }
+          const h3Element = document.createElement("h3");
+
+          // Set the text content of the h2 element
+          h3Element.textContent = "You got it in " + guesses.length + " " + guess + "!";
+          h3Element.id = "h3element";
+          txt.insertAdjacentElement('afterend', h3Element);
+        }
+      }
+
+      const skipper = document.getElementById('skip')
+      if (skipper) {
+        skipper.disabled = 'true';
+      }
+
+      const giveup = document.getElementById('giveup')
+
+      if (giveup) {
+        giveup.disabled = 'true';
+      }
+      // Disable the buttons for skip and give up if the game is over
+
+
+      if (txt && skipper && giveup) {
+        clearInterval(checkLoad); // Stop the interval once the element is found
+      }
+    }, 100); // Check every 100 milliseconds
+    return () => clearInterval(checkLoad);
+  }, [guesses]);
+
+
+  // Call this when the user loses
+  // This will also call when a user who also lost for the day re-opens the page
+  const handleLossUI = () => {
+    // As before, just get all buttons/modals that need to be updated, and update them
+    const checkLoad = setInterval(() => {
+
+      //Show the modal with the win text
+      const txt = document.getElementById("win-or-lose");
+      if (txt) {
+        txt.className = "lose";
+        txt.innerHTML = "You lose.<br/>Maybe next time!"
+      }
+
+      const skipper = document.getElementById('skip')
+      if (skipper) {
+        skipper.disabled = 'true';
+      }
+
+      const giveup = document.getElementById('giveup')
+
+      if (giveup) {
+        // Disable the buttons for skip and give up if the game is over
+        giveup.disabled = 'true';
+      }
+
+      // Set the number of skips back to 4
+      // This may be a bandaid fix and should be bettered later.
+      // setSkip(4);
+
+
+      if (txt && giveup && skipper) {
+        clearInterval(checkLoad); // Stop the interval once the element is found
+      }
+    }, 100); // Check every 100 milliseconds
+    return () => clearInterval(checkLoad);
+
   }
 
   // Decodes song names with HTML special characters
@@ -68,20 +150,25 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
    * @param {An enter click from the user} x 
    */
   const handleIncorrectGuess = (x) => {
+
     // if Give up was pressed, user lost:
     if (x === 'Give up') {
-      // Remove the search bar when they lose
-      document.getElementById('allSearch').style.display = 'none';
 
-      // Show the point where they gave up on guess board
-      const listEl = getGuessElement();
-      listEl.innerHTML = 'Gave up!';
-      listEl.classList.add('red')
+      // Update the users daily guesses
+      let tempGuesses = [];
+      if (guesses && guesses.length > 0) {
+        tempGuesses = guesses.slice(0);
+      }
+      tempGuesses.push('red Gave up!');
+      setGuesses(tempGuesses);
+      setGameOver(true);
+      handleLossUI();
+
       // set skip count to 5
-      setSkip(5);
+      // setSkip(5);
     } else {
       // otherwise, increment skip
-      setSkip((prevSkip) => prevSkip + 1);
+      setSkip(skip + 1);
     }
   };
 
@@ -91,20 +178,27 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
    * @param {The color to indicate whether the artist was correct or not} y 
    */
   const handleIncorrectSearch = (x, y) => {
-    // Determine which guess the search corresponds to 
-    let listEl = getGuessElement();
+
+    // Update the users daily guesses
+    let tempGuesses = [];
+    if (guesses && guesses.length > 0) {
+      tempGuesses = guesses.slice(0);
+    }
+
     // if the user skipped
     if (x === 'Skip') {
-      listEl.innerHTML = 'Skipped';
+      tempGuesses.push('black Skipped');
+      setGuesses(tempGuesses);
     }
     // if the user guessed -- determine artist guess
     else {
-      listEl.innerHTML = x;
       if (y === 'y') {
-        listEl.classList.add('yellow')
+        tempGuesses.push('yellow ' + x);
+        setGuesses(tempGuesses);
       }
       else {
-        listEl.classList.add('red')
+        tempGuesses.push('red ' + x);
+        setGuesses(tempGuesses);
       }
     }
   }
@@ -115,58 +209,35 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
    */
   const handleCorrectGuess = (x) => {
 
-    // Determine which guess their search corresponds to
-    let listEl = getGuessElement();
+    // Update the users daily guesses
+    let tempGuesses = [];
+    if (guesses && guesses.length > 0) {
+      tempGuesses = guesses.slice(0);
+    }
+    tempGuesses.push('green ' + x);
+    setGuesses(tempGuesses);
+    setGameOver(true);
 
-    // Make the guess green
-    listEl.innerHTML = x;
-    listEl.classList.add('green');
-
-    // Hide the search bar
-    document.getElementById('allSearch').style.display = 'none';
-
-    //Show the modal with the win text
-    const txt = document.getElementById("win-or-lose");
-    txt.className = "win";
-    txt.innerHTML = "Congratulations! You win!"
-    const modal = document.getElementById("song-details-modal");
-    modal.style.display = "block";
-
-    // Disable the buttons for skip and give up if the game is over
-    document.getElementById('skip').disabled = 'true';
-    document.getElementById('giveup').disabled = 'true';
+    handleWinUI();
   }
 
   // Controls the skip button (and toggles a loss when needed)
   useEffect(() => {
+    console.log(guesses.length)
     // If you're out of skips, disable the skip button
     if (skip >= 4) {
-      document.getElementById('skip').disabled = 'true';
-    }
-    // If you have lost...
-    if (skip >= 5) {
-      // Show the modal with the lose text
-      const txt = document.getElementById("win-or-lose");
-      txt.className = "lose";
-      txt.innerHTML = "You lose.<br/>Maybe next time!"
-      const modal = document.getElementById("song-details-modal");
-      modal.style.display = "block";
-
-      // Disable the buttons for skip and give up if the game is over
-      document.getElementById('giveup').disabled = 'true';
-
-      // Hide the search bar
-      document.getElementById('allSearch').style.display = 'none';
-
-      // Hide the dropdown song list
-      if (document.getElementById("song-list-container") !== null) {
-        document.getElementById("song-list-container").style.display = 'none';
+      const skipper = document.getElementById('skip')
+      if (skipper) {
+        skipper.disabled = 'true';
       }
-      // Set the number of skips back to 4
-      // This may be a bandaid fix and should be bettered later.
-      // setSkip(4);
     }
-  }, [skip]);
+    // // If you have lost...
+    // This is commented out for now bc it caused bugs!
+    if (guesses && guesses.length >= 5) {
+      setGameOver(true)
+      handleLossUI();
+    }
+  }, [skip, guesses]);
 
   return (
     <div>
@@ -200,10 +271,11 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
               <SongDetails
                 song={song}
                 decodeHTMLEntities={decodeHTMLEntities}
+                setGameOver={setGameOver}
               />
             )}
             {/* Guess board */}
-            <GuessBoard />
+            <GuessBoard guesses={guesses}/>
             {/* Game over bottom  */}
             <BottomSong
               song={song}

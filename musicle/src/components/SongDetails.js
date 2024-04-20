@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import '../component_styles/songDetails_styles.css';
 
 // Pop-up with song info (game over)
-const SongDetails = ({ song, decodeHTMLEntities }) => {
+const SongDetails = ({ song, decodeHTMLEntities, setGameOver }) => {
   const modalRef = useRef(null);
 
   // // Some song names have HTML special characters. This decodes them.
@@ -13,16 +13,18 @@ const SongDetails = ({ song, decodeHTMLEntities }) => {
   // };
 
   // Closes the modal.
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     // If there was some text saying how many guesses it took the user, delete it
     const h2element = document.getElementById("h2element");
     if (h2element) {
       h2element.remove()
     }
-    modalRef.current.style.display = 'none';
-    //Show the song details below after closing the modal
+
+    // Show the song details below after closing the modal
     document.getElementById('bottom-songs').style.display = 'flex';
-  };
+    setGameOver(false);
+  }, [setGameOver]);
+
 
   // Closes the modal if the user clicks outside of it
   useEffect(() => {
@@ -39,7 +41,7 @@ const SongDetails = ({ song, decodeHTMLEntities }) => {
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, []);
+  }, [setGameOver, closeModal]);
 
 
   return (

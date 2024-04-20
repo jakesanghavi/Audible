@@ -376,6 +376,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
               <SongDetails
                 song={dailySong}
                 decodeHTMLEntities={decodeHTMLEntities}
+                setGameOver={setGameOver}
               />
             )}
             {/* Guess board */}
