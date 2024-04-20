@@ -19,6 +19,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   const [lastDay, setLastDay] = useState(userLastDay);
   const [uStats, setUStats] = useState(userStats);
   const timerRef = useRef(null);
+  const [gameOver, setGameOver] = useState(false);
 
   // Get the current date in the user's time zone
   const currentDate = new Date().toJSON().slice(0, 10);
@@ -28,11 +29,6 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
   const handleWinUI = useCallback(() => {
     const checkLoad = setInterval(() => {
       // As before, just get all buttons/modals that need to be updated, and update them
-      const allsearch = document.getElementById('allSearch')
-
-      if (allsearch) {
-        allsearch.style.display = 'none';
-      }
 
       //Show the modal with the win text
       const txt = document.getElementById("win-or-lose");
@@ -59,12 +55,6 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
         }
       }
 
-      const modal = document.getElementById("song-details-modal");
-
-      if (modal) {
-        modal.style.display = "block";
-      }
-
       const skipper = document.getElementById('skip')
       if (skipper) {
         skipper.disabled = 'true';
@@ -78,12 +68,12 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
       // Disable the buttons for skip and give up if the game is over
 
 
-      if (txt && modal && skipper && giveup && allsearch) {
+      if (txt && skipper && giveup) {
         clearInterval(checkLoad); // Stop the interval once the element is found
       }
     }, 100); // Check every 100 milliseconds
     return () => clearInterval(checkLoad);
-  },[guesses]);
+  }, [guesses]);
 
 
   // Call this when the user loses
@@ -98,11 +88,6 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
         txt.className = "lose";
         txt.innerHTML = "You lose.<br/>Maybe next time!"
       }
-      const modal = document.getElementById("song-details-modal");
-
-      if (modal) {
-        modal.style.display = "block";
-      }
 
       const skipper = document.getElementById('skip')
       if (skipper) {
@@ -116,23 +101,12 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
         giveup.disabled = 'true';
       }
 
-      const allsearch = document.getElementById('allSearch')
-
-      if (allsearch) {
-        // Hide the search bar
-        allsearch.style.display = 'none';
-      }
-
-      // Hide the dropdown song list
-      if (document.getElementById("song-list-container") !== null) {
-        document.getElementById("song-list-container").style.display = 'none';
-      }
       // Set the number of skips back to 4
       // This may be a bandaid fix and should be bettered later.
       // setSkip(4);
 
 
-      if (txt && modal && giveup && allsearch && skipper) {
+      if (txt && giveup && skipper) {
         clearInterval(checkLoad); // Stop the interval once the element is found
       }
     }, 100); // Check every 100 milliseconds
@@ -157,7 +131,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
       const final_guess = guesses[guesses.length - 1];
       const firstSpaceIndex = final_guess.indexOf(" ");
       const guessClass = firstSpaceIndex !== -1 ? final_guess.substring(0, firstSpaceIndex) : "";
-          // The content/title is after the first space
+      // The content/title is after the first space
       const guessContent = firstSpaceIndex !== -1 ? final_guess.substring(firstSpaceIndex + 1) : final_guess;
       if (guessClass === "green") {
         let tempStats = [];
@@ -165,7 +139,8 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
           tempStats = userStats.slice(0);
         }
         tempStats.push(guesses.length)
-        setUStats(tempStats)
+        setUStats(tempStats);
+        setGameOver(true);
         handleWinUI();
       }
       else if (guessContent === "Gave up!" || guesses.length === 5) {
@@ -175,6 +150,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
         }
         tempStats.push(null)
         setUStats(tempStats)
+        setGameOver(true);
         handleLossUI();
       }
     }
@@ -288,7 +264,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
       }
       tempGuesses.push('red Gave up!');
       setGuesses(tempGuesses);
-
+      setGameOver(true);
       handleLossUI();
 
       // set skip count to 5
@@ -347,6 +323,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
     }
     tempGuesses.push('green ' + x);
     setGuesses(tempGuesses);
+    setGameOver(true);
 
     handleWinUI();
   }
@@ -386,18 +363,21 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
         {/* only load the search bar and guesses when there are songs & player is loaded */}
         {songs && isLoaded && (
           <>
-            <SongSearch
+            {gameOver === false && (<SongSearch
               song={dailySong}
               songs={songs}
               onIncorrectGuess={handleIncorrectGuess}
               onCorrectGuess={handleCorrectGuess}
               onIncorrectSearch={handleIncorrectSearch}
               decodeHTMLEntities={decodeHTMLEntities}
-            />
+            />)}
             {/* Game over popup */}
-            <SongDetails
-              song={dailySong}
-              decodeHTMLEntities={decodeHTMLEntities} />
+            {gameOver === true && (
+              <SongDetails
+                song={dailySong}
+                decodeHTMLEntities={decodeHTMLEntities}
+              />
+            )}
             {/* Guess board */}
             <GuessBoard guesses={guesses} />
             {/* Game over bottom  */}

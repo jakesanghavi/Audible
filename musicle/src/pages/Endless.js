@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import SongDetails from '../components/SongDetails';
 import SongSearch from '../components/SongSearch';
 import Player from '../components/Player';
@@ -15,6 +15,7 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const gameOver = useRef(false);
 
   /**
    * Returns the element of the current guess
@@ -186,18 +187,21 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
         {/* only load the search bar and guesses when there are songs & player is loaded */}
         {songs && isLoaded && (
           <>
-            <SongSearch
+            {gameOver === false && (<SongSearch
               song={song}
               songs={songs}
               onIncorrectGuess={handleIncorrectGuess}
               onCorrectGuess={handleCorrectGuess}
               onIncorrectSearch={handleIncorrectSearch}
               decodeHTMLEntities={decodeHTMLEntities}
-            />
+            />)}
             {/* Game over popup */}
-            <SongDetails
-              song={song}
-              decodeHTMLEntities={decodeHTMLEntities} />
+            {gameOver === true && (
+              <SongDetails
+                song={song}
+                decodeHTMLEntities={decodeHTMLEntities}
+              />
+            )}
             {/* Guess board */}
             <GuessBoard />
             {/* Game over bottom  */}
