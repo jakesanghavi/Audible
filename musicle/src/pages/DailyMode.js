@@ -26,7 +26,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
 
   // Call this when the user wins
   // This will also call when a user who also won for the day re-opens the page
-  const handleWinUI = useCallback(() => {
+  const handleWinUI = useCallback((temporary) => {
     const checkLoad = setInterval(() => {
       // As before, just get all buttons/modals that need to be updated, and update them
 
@@ -37,8 +37,8 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
         txt.className = "win";
         txt.innerHTML = "Congratulations!<br/>You win!";
 
-        if (guesses && guesses.length > 0) {
-          const guess = guesses.length === 1 ? "guess" : "guesses";
+        if (temporary && temporary.length > 0) {
+          const guess = temporary.length === 1 ? "guess" : "guesses";
           // Create an h2 element if there have been guesses
           // Make sure there is only one!
           const h3first = document.getElementById("h3element")
@@ -49,7 +49,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
           const h3Element = document.createElement("h3");
 
           // Set the text content of the h2 element
-          h3Element.textContent = "You got it in " + guesses.length + " " + guess + "!";
+          h3Element.textContent = "You got it in " + temporary.length + " " + guess + "!";
           h3Element.id = "h3element";
           txt.insertAdjacentElement('afterend', h3Element);
         }
@@ -73,7 +73,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
       }
     }, 100); // Check every 100 milliseconds
     return () => clearInterval(checkLoad);
-  }, [guesses]);
+  }, []);
 
 
   // Call this when the user loses
@@ -325,7 +325,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
     setGuesses(tempGuesses);
     setGameOver(true);
 
-    handleWinUI();
+    handleWinUI(tempGuesses);
   }
 
   // Controls the skip button (and toggles a loss when needed)
