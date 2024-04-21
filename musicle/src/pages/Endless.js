@@ -10,13 +10,20 @@ import '../component_styles/home.css';
 import { ALL_SONGS, RANDOM_SONG } from '../constants';
 
 // Parent Component for the Main Page
-const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
+const Endless = ({ onLoginSuccess, uid }) => {
   const [song, setSong] = useState(null);
   const [songs, setSongs] = useState(null);
   const [skip, setSkip] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [guesses, setGuesses] = useState([]);
+  const [dummy, setDummy] = useState(0);
+
+  const helpReRender = () => {
+    setDummy(dummy + 1);
+    setGuesses([])
+    setSkip(0)
+  }
 
   const handleWinUI = useCallback((temporary) => {
     console.log(temporary)
@@ -46,6 +53,22 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
           h3Element.id = "h3element";
           txt.insertAdjacentElement('afterend', h3Element);
         }
+        else if (guesses && guesses.length > 0) {
+          const guess = guesses.length === 1 ? "guess" : "guesses";
+          // Create an h2 element if there have been guesses
+          // Make sure there is only one!
+          const h3first = document.getElementById("h3element")
+
+          if (h3first) {
+            h3first.remove();
+          }
+          const h3Element = document.createElement("h3");
+
+          // Set the text content of the h2 element
+          h3Element.textContent = "You got it in " + guesses.length + " " + guess + "!";
+          h3Element.id = "h3element";
+          txt.insertAdjacentElement('afterend', h3Element);
+        }
       }
 
       const skipper = document.getElementById('skip')
@@ -66,7 +89,7 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
       }
     }, 100); // Check every 100 milliseconds
     return () => clearInterval(checkLoad);
-  }, []);
+  }, [guesses]);
 
 
   // Call this when the user loses
@@ -127,7 +150,7 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
     };
 
     fetchRand();
-  }, []);
+  }, [dummy]);
 
 
   // GET all songs from the database (for list)
@@ -241,7 +264,7 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
   }, [skip, guesses]);
 
   return (
-    <div>
+    <div key={dummy}>
       {/* Login Pop-up */}
       <Login onLoginSuccess={onLoginSuccess} uid={uid} />
       {/* Help Page Pop-up */}
@@ -273,6 +296,7 @@ const Endless = ({ loggedInUser, onLoginSuccess, uid }) => {
                 song={song}
                 decodeHTMLEntities={decodeHTMLEntities}
                 setGameOver={setGameOver}
+                helpReRender={helpReRender}
               />
             )}
             {/* Guess board */}

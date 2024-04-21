@@ -228,7 +228,7 @@ function App() {
             />
             <Route
               path="/endless"
-              element={<Endless isNewDay={newDate} loggedInUser={loggedInUser} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
+              element={<Endless isNewDay={newDate} onLoginSuccess={handleLoginSuccess} uid={getUserID} />}
             />
             <Route
               path='/profile'

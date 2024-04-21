@@ -53,6 +53,22 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
           h3Element.id = "h3element";
           txt.insertAdjacentElement('afterend', h3Element);
         }
+        else if (guesses && guesses.length > 0) {
+          const guess = guesses.length === 1 ? "guess" : "guesses";
+          // Create an h2 element if there have been guesses
+          // Make sure there is only one!
+          const h3first = document.getElementById("h3element")
+
+          if (h3first) {
+            h3first.remove();
+          }
+          const h3Element = document.createElement("h3");
+
+          // Set the text content of the h2 element
+          h3Element.textContent = "You got it in " + guesses.length + " " + guess + "!";
+          h3Element.id = "h3element";
+          txt.insertAdjacentElement('afterend', h3Element);
+        }
       }
 
       const skipper = document.getElementById('skip')
@@ -73,7 +89,7 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
       }
     }, 100); // Check every 100 milliseconds
     return () => clearInterval(checkLoad);
-  }, []);
+  }, [guesses]);
 
 
   // Call this when the user loses
@@ -377,6 +393,8 @@ const DailyMode = ({ loggedInUser, onLoginSuccess, uid, userLastDay, userDailyGu
                 song={dailySong}
                 decodeHTMLEntities={decodeHTMLEntities}
                 setGameOver={setGameOver}
+                loggedInUser={loggedInUser}
+                dailySong={dailySong}
               />
             )}
             {/* Guess board */}
